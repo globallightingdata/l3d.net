@@ -67,7 +67,14 @@ namespace L3D.Net.Tests
             openFile.Close();
             openFile.Dispose();
 
-            Directory.Delete(directory, true);
+            try
+            {
+                Directory.Delete(directory, true);
+            }
+            catch
+            {
+                // ignored
+            }
         }
     }
 }
