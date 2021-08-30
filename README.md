@@ -13,7 +13,6 @@ With the Reader is is possible to read the content of a L3D container and to par
 ### Requirements
 
 - [.NET Standard 2.0](https://docs.microsoft.com/de-de/dotnet/standard/net-standard) compatible project
-- OBJ-Loader ????
 
 ### Nuget package
 

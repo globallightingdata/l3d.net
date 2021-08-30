@@ -61,13 +61,20 @@ namespace L3D.Net.Tests
 
             var openFile = File.OpenWrite(Path.Combine(directory, Guid.NewGuid().ToString()));
 
-            scope.CleanUp();
-            Directory.Exists(directory).Should().BeTrue();
+            Action action = () => scope.CleanUp();
+            action.Should().NotThrow();
 
             openFile.Close();
             openFile.Dispose();
 
-            Directory.Delete(directory, true);
+            try
+            {
+                Directory.Delete(directory, true);
+            }
+            catch
+            {
+                // ignored
+            }
         }
     }
 }
