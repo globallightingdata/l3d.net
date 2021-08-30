@@ -39,6 +39,10 @@
     </AssemblyAttribute>
   </ItemGroup>
   
+  <PropertyGroup>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+  </PropertyGroup>
+  
   <ItemGroup>
     <EmbeddedResource Include="XSD\V0_9_0.xsd" />
     <None Include=".\..\..\README.md">
