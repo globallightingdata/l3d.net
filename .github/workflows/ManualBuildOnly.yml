@@ -1,0 +1,25 @@
+name: ManualBuildOnly
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: |
+       dotnet restore ./src/L3D.Net/L3D.Net.csproj
+       dotnet restore ./src/L3D.Net.Tests/L3D.Net.Tests.csproj
+    - name: Build
+      run: |
+       dotnet build --no-restore --configuration Release ./src/L3D.Net/L3D.Net.csproj
+       dotnet build --no-restore --configuration Debug ./src/L3D.Net.Tests/L3D.Net.Tests.csproj
+    - name: Test
+      run: dotnet test --no-build --verbosity normal ./src/L3D.Net.Tests/L3D.Net.Tests.csproj
