@@ -100,10 +100,10 @@ namespace L3D.Net.Tests
             var faceIndex = 1;
             var groupIndex = 2;
 
-            context.Options.WithLightEmittingSurfaceOnParent(faceIndex, groupIndex);
+            context.Options.WithLightEmittingSurfaceOnParent(context.KnownPartName, lesOptions => lesOptions);
 
             context.LightEmittingSurfaceHolder.Received(1)
-                .CreateLightEmittingSurface(context.KnownPartName, faceIndex, groupIndex);
+                .WithLightEmittingSurface(context.KnownPartName, Arg.Any<Action<ILightEmittingSurfaceOptions>>());
         }
 
         [Test]
@@ -114,10 +114,10 @@ namespace L3D.Net.Tests
             var faceIndexEnd = 2;
             var groupIndex = 3;
 
-            context.Options.WithLightEmittingSurfacesOnParent(faceIndexBegin, faceIndexEnd, groupIndex);
+            context.Options.WithLightEmittingSurfaceOnParent(context.KnownPartName, lesOptions => lesOptions);
 
             context.LightEmittingSurfaceHolder.Received(1)
-                .CreateLightEmittingSurfaces(context.KnownPartName, faceIndexBegin, faceIndexEnd, groupIndex);
+                .WithLightEmittingSurface(context.KnownPartName, Arg.Any<Action<ILightEmittingSurfaceOptions>>());
         }
     }
 }

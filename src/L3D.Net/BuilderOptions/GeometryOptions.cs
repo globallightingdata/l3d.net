@@ -27,7 +27,8 @@ namespace L3D.Net.BuilderOptions
             return this;
         }
 
-        public GeometryOptions AddRectangularLightEmittingObject(string partName, double sizeX, double sizeY, Func<LightEmittinObjectOptions, LightEmittinObjectOptions> options = null)
+        public GeometryOptions AddRectangularLightEmittingObject(string partName, double sizeX, double sizeY,
+            Func<LightEmittinObjectOptions, LightEmittinObjectOptions> options = null)
         {
             LuminaireBuilder.ThrowWhenPartNameIsInvalid(partName);
 
@@ -40,7 +41,8 @@ namespace L3D.Net.BuilderOptions
             return this;
         }
 
-        public GeometryOptions AddCircularLightEmittingObject(string partName, double diameter, Func<LightEmittinObjectOptions, LightEmittinObjectOptions> options = null)
+        public GeometryOptions AddCircularLightEmittingObject(string partName, double diameter,
+            Func<LightEmittinObjectOptions, LightEmittinObjectOptions> options = null)
         {
             LuminaireBuilder.ThrowWhenPartNameIsInvalid(partName);
 
@@ -65,34 +67,16 @@ namespace L3D.Net.BuilderOptions
             return this;
         }
 
-        public GeometryOptions WithLightEmittingSurfaces(string leoPartName, int faceIndexBegin, int faceIndexEnd, int groupIndex = 0)
+        public GeometryOptions WithLightEmittingSurface(string partName,
+            Func<LightEmittingSurfaceOptions, LightEmittingSurfaceOptions> options)
         {
-            if (!LuminaireBuilder.IsValidLightEmittingPartName(leoPartName))
-                throw new ArgumentException("The given light emitting part name is not known. Please declare the light emitting part first!");
+            LuminaireBuilder.ThrowWhenPartNameIsInvalid(partName);
 
-            if (faceIndexBegin == faceIndexEnd)
-                return WithLightEmittingSurface(leoPartName, faceIndexBegin, groupIndex);
+            var les = new LightEmittingSurfacePart(partName);
+            Data.LightEmittingSurfaces.Add(les);
 
-            if (!Data.GeometryDefinition.Model.IsFaceIndexValid(groupIndex, faceIndexBegin))
-                Logger?.Log(LogLevel.Warning, $@"The given groupIndex({groupIndex})/faceIndexBegin({faceIndexBegin}) combination is not valid!");
+            options.Invoke(new LightEmittingSurfaceOptions(LuminaireBuilder, les, Data, Logger));
 
-            if (!Data.GeometryDefinition.Model.IsFaceIndexValid(groupIndex, faceIndexEnd))
-                Logger?.Log(LogLevel.Warning, $@"The given groupIndex({groupIndex})/faceIndexEnd({faceIndexEnd}) combination is not valid!");
-
-            Data.LightEmittingFaceAssignments.Add(new LightEmittingFaceRangeAssignment(leoPartName, groupIndex, faceIndexBegin, faceIndexEnd));
-
-            return this;
-        }
-
-        public GeometryOptions WithLightEmittingSurface(string leoPartName, int faceIndex, int groupIndex = 0)
-        {
-            if (!LuminaireBuilder.IsValidLightEmittingPartName(leoPartName))
-                throw new ArgumentException("The given light emitting part name is not known. Please declare the light emitting part first!");
-
-            if (!Data.GeometryDefinition.Model.IsFaceIndexValid(groupIndex, faceIndex))
-                Logger?.Log(LogLevel.Warning, $@"The given groupIndex({groupIndex})/faceIndex({faceIndex}) combination is not valid!");
-
-            Data.LightEmittingFaceAssignments.Add(new SingleLightEmittingFaceAssignment(leoPartName, groupIndex, faceIndex));
             return this;
         }
 
@@ -144,14 +128,14 @@ namespace L3D.Net.BuilderOptions
             return this;
         }
 
-        void ILightEmittingSurfaceHolder.CreateLightEmittingSurfaces(string leoPartName, int faceIndexBegin, int faceIndexEnd, int groupIndex)
+        void ILightEmittingSurfaceHolder.WithLightEmittingSurface(string lesPartName,
+            Action<ILightEmittingSurfaceOptions> options)
         {
-            WithLightEmittingSurfaces(leoPartName, faceIndexBegin, faceIndexEnd, groupIndex);
-        }
-
-        void ILightEmittingSurfaceHolder.CreateLightEmittingSurface(string leoPartName, int faceIndex, int groupIndex)
-        {
-            WithLightEmittingSurface(leoPartName, faceIndex, groupIndex);
+            WithLightEmittingSurface(lesPartName, lesOptions =>
+            {
+                options(lesOptions);
+                return lesOptions;
+            });
         }
     }
 }

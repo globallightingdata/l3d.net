@@ -4,6 +4,13 @@ using System.Linq;
 using L3D.Net.API.Dto;
 using L3D.Net.Data;
 using L3D.Net.Internal.Abstract;
+using CircleDto = L3D.Net.API.Dto.CircleDto;
+using GeometryDefinitionDto = L3D.Net.API.Dto.GeometryDefinitionDto;
+using HeaderDto = L3D.Net.API.Dto.HeaderDto;
+using LuminaireDto = L3D.Net.API.Dto.LuminaireDto;
+using LuminousHeightsDto = L3D.Net.API.Dto.LuminousHeightsDto;
+using RectangleDto = L3D.Net.API.Dto.RectangleDto;
+using ShapeDto = L3D.Net.API.Dto.ShapeDto;
 
 namespace L3D.Net.API
 {
@@ -175,7 +182,7 @@ namespace L3D.Net.API
                 Joints = geometry.Joints.Select(joint => Convert(joint, knownGeometryDefinitions)).ToList(),
                 LightEmittingObjects = geometry.LightEmittingObjects.Select(Convert).ToList(),
                 Sensors = geometry.Sensors.Select(Convert).ToList(),
-                LightEmittingFaceAssignments = geometry.LightEmittingFaceAssignments.Select(Convert).ToList(),
+                LightEmittingSurfaces = geometry.LightEmittingSurfaces.Select(Convert).ToList(),
                 ElectricalConnectors = geometry.ElectricalConnectors.ToList(),
                 PendulumConnectors = geometry.PendulumConnectors.ToList(),
                 ExcludedFromMeasurement = geometry.ExcludedFromMeasurement,
@@ -280,23 +287,53 @@ namespace L3D.Net.API
             };
         }
 
-        internal BaseAssignmentDto Convert(LightEmittingFaceAssignment assignment)
+        internal LightEmittingSurfacePartDto Convert(LightEmittingSurfacePart les)
+        {
+            if (les == null) return null;
+
+            return new LightEmittingSurfacePartDto
+            {
+                Name = les.Name,
+                LightEmittingObjects = new Dictionary<string, double>(
+                    les.LightEmittingPartIntensityMapping.ToDictionary(pair => pair.Key, pair => pair.Value)),
+                FaceAssignments = les.FaceAssignments.Select<FaceAssignment, BaseAssignmentDto>(assignment =>
+                {
+                    switch (assignment)
+                    {
+                        case SingleFaceAssignment singleAssignment:
+                            return new SingleFaceAssignmentDto
+                            {
+                                GroupIndex = singleAssignment.GroupIndex,
+                                FaceIndex = singleAssignment.FaceIndex
+                            };
+                        case FaceRangeAssignment rangeAssignment:
+                            return new RangeFaceAssignmentDto
+                            {
+                                GroupIndex = rangeAssignment.GroupIndex,
+                                FaceIndexBegin = rangeAssignment.FaceIndexBegin,
+                                FaceIndexEnd = rangeAssignment.FaceIndexEnd
+                            };
+                        default: throw new Exception();
+                    }
+                }).ToList()
+            };
+        }
+
+        internal BaseAssignmentDto Convert(FaceAssignment assignment)
         {
             if (assignment == null)
                 return null;
 
-            if (assignment is SingleLightEmittingFaceAssignment single)
+            if (assignment is SingleFaceAssignment single)
                 return new SingleFaceAssignmentDto
                 {
-                    LightEmittingPartName = assignment.PartName,
                     GroupIndex = assignment.GroupIndex,
                     FaceIndex = single.FaceIndex
                 };
 
-            if (assignment is LightEmittingFaceRangeAssignment range)
+            if (assignment is FaceRangeAssignment range)
                 return new RangeFaceAssignmentDto
                 {
-                    LightEmittingPartName = assignment.PartName,
                     GroupIndex = assignment.GroupIndex,
                     FaceIndexBegin = range.FaceIndexBegin,
                     FaceIndexEnd = range.FaceIndexEnd

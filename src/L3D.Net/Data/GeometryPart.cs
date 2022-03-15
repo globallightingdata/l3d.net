@@ -20,7 +20,7 @@ namespace L3D.Net.Data
 
         public List<Vector3> PendulumConnectors { get; } = new List<Vector3>();
         public List<LightEmittingPart> LightEmittingObjects { get; } = new List<LightEmittingPart>();
-        public List<LightEmittingFaceAssignment> LightEmittingFaceAssignments { get; } = new List<LightEmittingFaceAssignment>();
+        public List<LightEmittingSurfacePart> LightEmittingSurfaces { get; } = new ();
         public List<SensorPart> Sensors { get; } = new List<SensorPart>();
     }
 }

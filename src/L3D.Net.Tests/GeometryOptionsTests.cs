@@ -305,7 +305,7 @@ namespace L3D.Net.Tests
         {
             var context = CreateContext();
 
-            Action action = () => context.Options.WithLightEmittingSurface(Guid.NewGuid().ToString(), 1, 2);
+            Action action = () => context.Options.WithLightEmittingSurface(Guid.NewGuid().ToString(), lesOptions => lesOptions.WithLightEmittingPart(Guid.NewGuid().ToString()));
 
             action.Should().Throw<ArgumentException>();
         }
@@ -320,7 +320,7 @@ namespace L3D.Net.Tests
 
             context.Options
                 .AddCircularLightEmittingObject(partName, 0.1)
-                .WithLightEmittingSurface(partName, 10, 20);
+                .WithLightEmittingSurface(partName, lesOption => lesOption.WithSurface(10, 20));
 
             context.Logger.Received(1).Log(LogLevel.Warning, "The given groupIndex(20)/faceIndex(10) combination is not valid!");
         }
@@ -330,31 +330,12 @@ namespace L3D.Net.Tests
         {
             var context = CreateContext();
 
-            var partName = Guid.NewGuid().ToString();
+            var lesPartName = Guid.NewGuid().ToString();
+            var leoPartName = Guid.NewGuid().ToString();
 
-            Action action = () => context.Options.WithLightEmittingSurface(partName, 1, 2);
-
-            action.Should().Throw<ArgumentException>();
-        }
-
-        [Test]
-        public void WithLightEmittingSurfaces_ShouldThrowArgumentException_WhenLeoPartNameIsUnknown()
-        {
-            var context = CreateContext();
-
-            Action action = () => context.Options.WithLightEmittingSurfaces(Guid.NewGuid().ToString(), 1, 2, 3);
-
-            action.Should().Throw<ArgumentException>();
-        }
-
-        [Test]
-        public void WithLightEmittingSurfaces_ShouldThrowArgumentException_WhenLeoPartNameIsNotLightEmittingObject()
-        {
-            var context = CreateContext();
-
-            var partName = Guid.NewGuid().ToString();
-
-            Action action = () => context.Options.WithLightEmittingSurfaces(partName, 1, 2, 3);
+            Action action = () => context.Options.WithLightEmittingSurface(lesPartName, lesOptions => lesOptions
+                .WithLightEmittingPart(leoPartName)
+                .WithSurface(1, 2));
 
             action.Should().Throw<ArgumentException>();
         }
@@ -369,7 +350,7 @@ namespace L3D.Net.Tests
 
             context.Options
                 .AddCircularLightEmittingObject(partName, 0.1)
-                .WithLightEmittingSurfaces(partName, 10, 20, 30);
+                .WithLightEmittingSurface(partName, lesOptions => lesOptions.WithSurfaceRange(10, 20, 30));
 
             context.Logger.Received(1).LogWarning(@"The given groupIndex(30)/faceIndexBegin(10) combination is not valid!");
         }
@@ -385,7 +366,7 @@ namespace L3D.Net.Tests
 
             context.Options
                 .AddCircularLightEmittingObject(partName, 0.1)
-                .WithLightEmittingSurfaces(partName, 10, 20, 30);
+                .WithLightEmittingSurface(partName, lesOptions => lesOptions.WithSurfaceRange(10, 20, 30));
 
             context.Logger.Received(1).LogWarning(@"The given groupIndex(30)/faceIndexEnd(20) combination is not valid!");
         }
@@ -398,52 +379,68 @@ namespace L3D.Net.Tests
                 .WithValidLightEmittingPartName(partName)
                 .WithValidGeometryDefinitionModel()
             );
-            var expectedAssignement = new SingleLightEmittingFaceAssignment(partName, 1, 2);
+            var faceIndex = 1;
+            var groupIndex = 2;
+            var expectedAssignement = new LightEmittingSurfacePart(partName);
+            expectedAssignement.AddFaceAssignment(groupIndex, faceIndex);
 
             context.Options
                 .AddCircularLightEmittingObject(partName, 0.1)
-                .WithLightEmittingSurface(partName, expectedAssignement.FaceIndex, expectedAssignement.GroupIndex);
+                .WithLightEmittingSurface(partName, lesOptions => lesOptions.WithSurface(faceIndex, groupIndex));
 
-            context.KnownGeometryPart.LightEmittingFaceAssignments[0]
-                .Should().BeOfType<SingleLightEmittingFaceAssignment>().Which
+            context.KnownGeometryPart.LightEmittingSurfaces[0]
+                .Should().BeOfType<LightEmittingSurfacePart>().Which
                 .Should().BeEquivalentTo(expectedAssignement);
         }
 
         [Test]
         public void WithLightEmittingSurfaces_ShouldAddLightEmittingSurfaceRange_WithCorrectParameters()
         {
-            var partName = Guid.NewGuid().ToString();
+            var leoPartName = Guid.NewGuid().ToString();
+            var lesPartName = Guid.NewGuid().ToString();
             var context = CreateContext(options => options
-                .WithValidLightEmittingPartName(partName)
+                .WithValidLightEmittingPartName(leoPartName)
                 .WithValidGeometryDefinitionModel()
             );
-            var expectedAssignement = new LightEmittingFaceRangeAssignment(partName, 1, 2, 3);
+
+            var faceIndexBegin = 1;
+            var faceIndexEnd = 5;
+            var groupIndex = 2;
+            var expectedAssignement = new LightEmittingSurfacePart(lesPartName);
+            expectedAssignement.AddFaceAssignment(groupIndex, faceIndexBegin, faceIndexEnd);
+            expectedAssignement.AddLightEmittingObject(leoPartName);
 
             context.Options
-                .AddCircularLightEmittingObject(expectedAssignement.PartName, 0.1)
-                .WithLightEmittingSurfaces(expectedAssignement.PartName, expectedAssignement.FaceIndexBegin, expectedAssignement.FaceIndexEnd, expectedAssignement.GroupIndex);
+                .AddCircularLightEmittingObject(leoPartName, 0.1)
+                .WithLightEmittingSurface( lesPartName, lesOptions => lesOptions
+                    .WithLightEmittingPart(leoPartName)
+                    .WithSurfaceRange(faceIndexBegin, faceIndexEnd, groupIndex));
 
-            context.KnownGeometryPart.LightEmittingFaceAssignments[0]
-                .Should().BeOfType<LightEmittingFaceRangeAssignment>().Which
+            context.KnownGeometryPart.LightEmittingSurfaces[0]
+                .Should().BeOfType<LightEmittingSurfacePart>().Which
                 .Should().BeEquivalentTo(expectedAssignement);
         }
 
         [Test]
         public void WithLightEmittingSurfaces_ShouldAddSingleLightEmittingSurfaceAssignment_WhenFaceIndexBeginAndFaceIndexEndAreaEqual()
         {
-            var partName = Guid.NewGuid().ToString();
+            var leoPartName = Guid.NewGuid().ToString();
+            var lesPartName = Guid.NewGuid().ToString();
             var context = CreateContext(options => options
-                .WithValidLightEmittingPartName(partName)
+                .WithValidLightEmittingPartName(leoPartName)
                 .WithValidGeometryDefinitionModel()
             );
-            var expectedAssignement = new SingleLightEmittingFaceAssignment(partName, 1, 2);
+            var groupIndex = 2;
+            var faceIndex = 1;
+            var expectedAssignement = new LightEmittingSurfacePart(lesPartName);
+            expectedAssignement.AddFaceAssignment(groupIndex, faceIndex);
 
-            context.Options
-                .AddCircularLightEmittingObject(expectedAssignement.PartName, 0.1)
-                .WithLightEmittingSurfaces(expectedAssignement.PartName, expectedAssignement.FaceIndex, expectedAssignement.FaceIndex, expectedAssignement.GroupIndex);
+             context.Options
+                .AddCircularLightEmittingObject(leoPartName, 0.1)
+                .WithLightEmittingSurface(lesPartName, lesOptions => lesOptions.WithSurfaceRange(faceIndex, faceIndex, groupIndex));
 
-            context.KnownGeometryPart.LightEmittingFaceAssignments[0]
-                .Should().BeOfType<SingleLightEmittingFaceAssignment>().Which
+            context.KnownGeometryPart.LightEmittingSurfaces[0]
+                .Should().BeOfType<LightEmittingSurfacePart>().Which
                 .Should().BeEquivalentTo(expectedAssignement);
         }
 

@@ -120,7 +120,7 @@ namespace L3D.Net.Tests
                                 .AddGeometry(localHeadPartName, _tempFilenames[1], GeometricUnits.m, headOptions =>
                                     headOptions
                                         .AddCircularLightEmittingObject(localLeoPartName, 0.1, leoOptions => leoOptions
-                                            .WithLightEmittingSurfaceOnParent(10)))));
+                                            .WithLightEmittingSurfaceOnParent("les", lesOptions => lesOptions.WithSurface(10))))));
                 });
 
                 return this;
