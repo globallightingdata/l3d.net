@@ -33,7 +33,7 @@ namespace L3D.Net.Tests
 
                 TestDataDirectory = Path.Combine(testBinDirectory, "TestData");
 
-                ExamplesDirectory = Path.Combine(TestDataDirectory, "xml", "v0.9.1");
+                ExamplesDirectory = Path.Combine(TestDataDirectory, "xml", "v0.9.2");
                 ExampleXmlFiles = Directory.EnumerateFiles(ExamplesDirectory, "*.xml", SearchOption.AllDirectories).ToList();
                 ExampleObjFiles = Directory.EnumerateFiles(ExamplesDirectory, "*.obj", SearchOption.AllDirectories).ToList();
 

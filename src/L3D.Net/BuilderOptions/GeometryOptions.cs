@@ -80,9 +80,9 @@ namespace L3D.Net.BuilderOptions
             return this;
         }
 
-        public GeometryOptions WithExcludedFromMeasurement(bool excluded = true)
+        public GeometryOptions WithIncludedInMeasurement(bool included)
         {
-            Data.ExcludedFromMeasurement = excluded;
+            Data.IncludedInMeasurement = included;
             return this;
         }
 

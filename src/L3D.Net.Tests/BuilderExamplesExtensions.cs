@@ -81,7 +81,7 @@ namespace L3D.Net.Tests
                                                             .AddGeometry("head", headObjPath, GeometricUnits.mm,
                                                                 headOptions => headOptions
                                                                     .WithPosition(0, -0.05, -0.525)
-                                                                    .WithExcludedFromMeasurement()
+                                                                    .WithIncludedInMeasurement(false)
                                                                     .AddRectangularLightEmittingObject("leo", 0.18,
                                                                         0.08,
                                                                         leoOptions => leoOptions
@@ -164,7 +164,7 @@ namespace L3D.Net.Tests
                         .WithRotation(45, 0, 0)
                         .WithZAxisDegreesOfFreedom(-30, 30, 1)
                         .AddGeometry("head", headObjPath, GeometricUnits.mm, headOptions => headOptions
-                            .WithExcludedFromMeasurement()
+                            .WithIncludedInMeasurement(false)
                             .WithPosition(0, -0.3535, -0.3535)
                             .WithRotation(-45, 0, 0)
                             .AddRectangularLightEmittingObject("leo", 0.15, 0.035, leoOptions => leoOptions

@@ -16,7 +16,7 @@ namespace L3D.Net.XML
     {
         private static readonly Dictionary<string, L3dXmlVersion> SchemeVersions = new()
         {
-            { Constants.CurrentSchemeUri, L3dXmlVersion.V0_9_1 }
+            { Constants.CurrentSchemeUri, L3dXmlVersion.V0_9_2 }
         };
 
         public bool ValidateFile(string xmlFilename, out L3dXmlVersion validatedVersion, ILogger validationLogger)

@@ -6,8 +6,8 @@ using System.Numerics;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
 using L3D.Net.Data;
-using L3D.Net.XML.V0_9_1;
-using L3D.Net.XML.V0_9_1.Dto;
+using L3D.Net.XML.V0_9_2;
+using L3D.Net.XML.V0_9_2.Dto;
 using NUnit.Framework;
 
 namespace L3D.Net.Tests

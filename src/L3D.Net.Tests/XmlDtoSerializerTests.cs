@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
 using FluentAssertions;
-using L3D.Net.XML.V0_9_1;
-using L3D.Net.XML.V0_9_1.Dto;
+using L3D.Net.XML.V0_9_2;
+using L3D.Net.XML.V0_9_2.Dto;
 using NUnit.Framework;
 
 namespace L3D.Net.Tests

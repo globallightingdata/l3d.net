@@ -1,7 +1,7 @@
 ﻿using System;
 using L3D.Net.Data;
 using L3D.Net.Internal.Abstract;
-using L3D.Net.XML.V0_9_1;
+using L3D.Net.XML.V0_9_2;
 using Microsoft.Extensions.Logging;
 
 namespace L3D.Net.XML
@@ -24,13 +24,13 @@ namespace L3D.Net.XML
 
             switch (version)
             {
-                case L3dXmlVersion.V0_9_1: return ReadV0_9_0(filename, workingDirectory);
+                case L3dXmlVersion.V0_9_2: return ReadV0_9_2(filename, workingDirectory);
             }
             
             throw new Exception($"Unknown version of the l3d xml: '{version}'");
         }
 
-        private Luminaire ReadV0_9_0(string filepath, string workingDirectory)
+        private Luminaire ReadV0_9_2(string filepath, string workingDirectory)
         {
             var xmlSerializer = new XmlDtoSerializer();
             var luminaireConstructor = new LuminaireFromDtoConstructor();

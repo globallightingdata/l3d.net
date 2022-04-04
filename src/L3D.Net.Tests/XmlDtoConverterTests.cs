@@ -7,15 +7,15 @@ using FluentAssertions.Equivalency;
 using L3D.Net.API.Dto;
 using L3D.Net.Data;
 using L3D.Net.Internal.Abstract;
-using L3D.Net.XML.V0_9_1;
-using L3D.Net.XML.V0_9_1.Dto;
+using L3D.Net.XML.V0_9_2;
+using L3D.Net.XML.V0_9_2.Dto;
 using NSubstitute;
 using NUnit.Framework;
-using CircleDto = L3D.Net.XML.V0_9_1.Dto.CircleDto;
-using HeaderDto = L3D.Net.XML.V0_9_1.Dto.HeaderDto;
-using LuminaireDto = L3D.Net.XML.V0_9_1.Dto.LuminaireDto;
-using LuminousHeightsDto = L3D.Net.XML.V0_9_1.Dto.LuminousHeightsDto;
-using RectangleDto = L3D.Net.XML.V0_9_1.Dto.RectangleDto;
+using CircleDto = L3D.Net.XML.V0_9_2.Dto.CircleDto;
+using HeaderDto = L3D.Net.XML.V0_9_2.Dto.HeaderDto;
+using LuminaireDto = L3D.Net.XML.V0_9_2.Dto.LuminaireDto;
+using LuminousHeightsDto = L3D.Net.XML.V0_9_2.Dto.LuminousHeightsDto;
+using RectangleDto = L3D.Net.XML.V0_9_2.Dto.RectangleDto;
 
 // ReSharper disable ExpressionIsAlwaysNull
 
@@ -568,7 +568,7 @@ namespace L3D.Net.Tests
             {
                 Position = position,
                 Rotation = rotation,
-                ExcludedFromMeasurement = true,
+                IncludedInMeasurement = true,
                 Joints = { jointPart },
                 LightEmittingObjects = { leoPart },
                 Sensors = { sensorPart },
@@ -594,7 +594,7 @@ namespace L3D.Net.Tests
                     Y = rotation.Y,
                     Z = rotation.Z
                 },
-                ExcludedFromMeasurement = true,
+                IncludedInMeasurement = true,
                 GeometrySource = new GeometryReferenceDto { GeometryId = geomDefId },
                 Joints = geometryPart.Joints.Select(part => converter.Convert(part)).ToList(),
                 LightEmittingObjects = geometryPart.LightEmittingObjects.Select(part => converter.Convert(part)).ToList(),
@@ -624,7 +624,7 @@ namespace L3D.Net.Tests
                 PartName = partName,
                 Position = new Vector3Dto(),
                 Rotation = new Vector3Dto(),
-                ExcludedFromMeasurement = false,
+                IncludedInMeasurement = true,
                 GeometrySource = new GeometryReferenceDto { GeometryId = geomDefId },
                 Joints = new List<JointNodeDto>(),
                 LightEmittingObjects = new List<LightEmittingNodeDto>(),

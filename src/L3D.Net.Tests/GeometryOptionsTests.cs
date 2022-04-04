@@ -481,13 +481,13 @@ namespace L3D.Net.Tests
         [Test]
         [TestCase(true)]
         [TestCase(false)]
-        public void AddGeometryOptions_ShouldSetExcludedFromMeasurement(bool isExcluded)
+        public void AddGeometryOptions_ShouldSetIncludedInMeasurement(bool isExcluded)
         {
             var context = CreateContext();
 
-            context.Options.WithExcludedFromMeasurement(isExcluded);
+            context.Options.WithIncludedInMeasurement(isExcluded);
 
-            context.KnownGeometryPart.ExcludedFromMeasurement.Should().Be(isExcluded);
+            context.KnownGeometryPart.IncludedInMeasurement.Should().Be(isExcluded);
         }
 
     }

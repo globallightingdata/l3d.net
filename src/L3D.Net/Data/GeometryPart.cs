@@ -14,7 +14,7 @@ namespace L3D.Net.Data
 
         public List<JointPart> Joints { get; } = new List<JointPart>();
 
-        public bool ExcludedFromMeasurement { get; set; }
+        public bool IncludedInMeasurement { get; set; } = true;
 
         public List<Vector3> ElectricalConnectors { get; } = new List<Vector3>();
 

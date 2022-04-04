@@ -185,7 +185,7 @@ namespace L3D.Net.API
                 LightEmittingSurfaces = geometry.LightEmittingSurfaces.Select(Convert).ToList(),
                 ElectricalConnectors = geometry.ElectricalConnectors.ToList(),
                 PendulumConnectors = geometry.PendulumConnectors.ToList(),
-                ExcludedFromMeasurement = geometry.ExcludedFromMeasurement,
+                IncludedInMeasurement = geometry.IncludedInMeasurement,
             };
         }
 
