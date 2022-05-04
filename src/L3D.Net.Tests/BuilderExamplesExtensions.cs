@@ -82,8 +82,8 @@ namespace L3D.Net.Tests
                                                                 headOptions => headOptions
                                                                     .WithPosition(0, -0.05, -0.525)
                                                                     .WithIncludedInMeasurement(false)
-                                                                    .AddRectangularLightEmittingObject("leo", 0.18,
-                                                                        0.08,
+                                                                    .AddRectangularLightEmittingObject("leo", 0.08,
+                                                                        0.18,
                                                                         leoOptions => leoOptions
                                                                             .WithPosition(0, 0.04631, 0.6771)
                                                                             .WithRotation(90, 0, 180)
@@ -115,7 +115,7 @@ namespace L3D.Net.Tests
             builder
                 .WithTool("Keyboard-v1.0")
                 .AddGeometry("luminaire", objPath, GeometricUnits.mm, geomOptions => geomOptions
-                    .AddCircularLightEmittingObject("leo", 0.1, leoOptions => leoOptions
+                    .AddCircularLightEmittingObject("leo", 0.2, leoOptions => leoOptions
                         .WithLightEmittingSurfaceOnParent("les", lesOptions => lesOptions.WithSurfaceRange(1199, 1235))));
 
             return builder;

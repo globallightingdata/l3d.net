@@ -64,7 +64,7 @@
                                                                                 <LightEmittingObject partName="leo">
                                                                                     <Position x="0" y="0.04631" z="0.6771" />
                                                                                     <Rotation x="90" y="0" z="180" />
-                                                                                    <Rectangle sizeX="0.18" sizeY="0.08" />
+                                                                                    <Rectangle sizeX="0.08" sizeY="0.18" />
                                                                                 </LightEmittingObject>
                                                                             </LightEmittingObjects>
                                                                             <LightEmittingSurfaces>
