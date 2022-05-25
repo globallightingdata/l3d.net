@@ -11,7 +11,7 @@ namespace L3D.Net.API.Dto
         public List<SensorPartDto> Sensors { get; set; }
         public List<Vector3> ElectricalConnectors { get; set; }
         public List<Vector3> PendulumConnectors { get; set; }
-        public bool ExcludedFromMeasurement { get; set; }
-        public List<BaseAssignmentDto> LightEmittingFaceAssignments { get; set; }
+        public bool IncludedInMeasurement { get; set; }
+        public List<LightEmittingSurfacePartDto> LightEmittingSurfaces { get; set; }
     }
 }

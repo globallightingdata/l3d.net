@@ -14,10 +14,10 @@ namespace L3D.Net.Tests
             builder
                 .WithTool("Example-Tool")
                 .AddGeometry("luminaire", cubeObjPath, GeometricUnits.m, geomOptions => geomOptions
-                .AddRectangularLightEmittingObject("leo", 0.5, 0.25, leoOptions => leoOptions
-                    .WithLightEmittingSurfaceOnParent(3)
-                )
-            );
+                    .AddRectangularLightEmittingObject("leo", 0.5, 0.25, leoOptions => leoOptions
+                        .WithLightEmittingSurfaceOnParent("les", lesOptions => lesOptions.WithSurface(3))
+                    )
+                );
 
             return builder;
         }
@@ -30,12 +30,12 @@ namespace L3D.Net.Tests
             builder
                 .WithTool("Example-Tool")
                 .AddGeometry("luminaire", cubeObjPath, GeometricUnits.m, geomOptions => geomOptions
-                .WithPosition(-0.25, -0.125, 0.05)
-                .AddRectangularLightEmittingObject("leo", 0.5, 0.25, leoOptions => leoOptions
-                    .WithPosition(0.25, 0.125, -0.05)
-                    .WithLightEmittingSurfaceOnParent(3)
-                )
-            );
+                    .WithPosition(-0.25, -0.125, 0.05)
+                    .AddRectangularLightEmittingObject("leo", 0.5, 0.25, leoOptions => leoOptions
+                        .WithPosition(0.25, 0.125, -0.05)
+                        .WithLightEmittingSurfaceOnParent("les", lesOptions => lesOptions.WithSurface(3))
+                    )
+                );
 
             return builder;
         }
@@ -81,15 +81,18 @@ namespace L3D.Net.Tests
                                                             .AddGeometry("head", headObjPath, GeometricUnits.mm,
                                                                 headOptions => headOptions
                                                                     .WithPosition(0, -0.05, -0.525)
-                                                                    .WithExcludedFromMeasurement()
-                                                                    .AddRectangularLightEmittingObject("leo", 0.18, 0.08,
+                                                                    .WithIncludedInMeasurement(false)
+                                                                    .AddRectangularLightEmittingObject("leo", 0.08,
+                                                                        0.18,
                                                                         leoOptions => leoOptions
                                                                             .WithPosition(0, 0.04631, 0.6771)
                                                                             .WithRotation(90, 0, 180)
-                                                                            .WithLightEmittingSurfaceOnParent(16)
-                                                                            .WithLightEmittingSurfaceOnParent(17)
-                                                                            .WithLightEmittingSurfaceOnParent(18)
-                                                                            .WithLightEmittingSurfacesOnParent(19, 21)
+                                                                            .WithLightEmittingSurfaceOnParent("les",
+                                                                                lesOptions => lesOptions
+                                                                                    .WithSurface(16)
+                                                                                    .WithSurface(17)
+                                                                                    .WithSurface(18)
+                                                                                    .WithSurfaceRange(19, 21))
                                                                     )
                                                             )
                                                     )
@@ -112,8 +115,8 @@ namespace L3D.Net.Tests
             builder
                 .WithTool("Keyboard-v1.0")
                 .AddGeometry("luminaire", objPath, GeometricUnits.mm, geomOptions => geomOptions
-                .AddCircularLightEmittingObject("leo", 0.1, leoOptions => leoOptions
-                    .WithLightEmittingSurfacesOnParent(1199, 1235)));
+                    .AddCircularLightEmittingObject("leo", 0.2, leoOptions => leoOptions
+                        .WithLightEmittingSurfaceOnParent("les", lesOptions => lesOptions.WithSurfaceRange(1199, 1235))));
 
             return builder;
         }
@@ -126,23 +129,21 @@ namespace L3D.Net.Tests
             builder
                 .WithTool("Keyboard-v1.0")
                 .AddGeometry("luminaire", objPath, GeometricUnits.mm, geomOptions => geomOptions
-                .WithPosition(0, 0, -0.5)
-                .AddRectangularLightEmittingObject("leo_top", 0.15, 1.0, leoOptions => leoOptions
-                    .WithPosition(0, 0, 0.0375)
-                    .WithRotation(180, 0, 90)
-                    .WithLightEmittingSurfaceOnParent(84)
-                    .WithLightEmittingSurfaceOnParent(85)
-                )
-                .AddRectangularLightEmittingObject("leo_bottom", 0.17, 1.175, leoOptions => leoOptions
-                    .WithPosition(0, 0, 0.0025)
-                    .WithRotation(0, 0, -90)
-                    .WithLightEmittingSurfaceOnParent(90)
-                    .WithLightEmittingSurfaceOnParent(91)
-                )
-                .WithElectricalConnector(-0.575, 0, 0.04)
-                .WithPendulumConnector(-0.55, 0, 0.04)
-                .WithPendulumConnector(0.55, 0, 0.04)
-            );
+                    .WithPosition(0, 0, -0.5)
+                    .AddRectangularLightEmittingObject("leo_top", 0.15, 1.0, leoOptions => leoOptions
+                        .WithPosition(0, 0, 0.0375)
+                        .WithRotation(180, 0, 90)
+                        .WithLightEmittingSurfaceOnParent("les_top", lesOptions => lesOptions.WithSurface(84).WithSurface(85))
+                    )
+                    .AddRectangularLightEmittingObject("leo_bottom", 0.17, 1.175, leoOptions => leoOptions
+                        .WithPosition(0, 0, 0.0025)
+                        .WithRotation(0, 0, -90)
+                        .WithLightEmittingSurfaceOnParent("les_bottom", lesOptions => lesOptions.WithSurface(90).WithSurface(91))
+                    )
+                    .WithElectricalConnector(-0.575, 0, 0.04)
+                    .WithPendulumConnector(-0.55, 0, 0.04)
+                    .WithPendulumConnector(0.55, 0, 0.04)
+                );
 
             return builder;
         }
@@ -163,13 +164,18 @@ namespace L3D.Net.Tests
                         .WithRotation(45, 0, 0)
                         .WithZAxisDegreesOfFreedom(-30, 30, 1)
                         .AddGeometry("head", headObjPath, GeometricUnits.mm, headOptions => headOptions
-                            .WithExcludedFromMeasurement()
+                            .WithIncludedInMeasurement(false)
                             .WithPosition(0, -0.3535, -0.3535)
                             .WithRotation(-45, 0, 0)
                             .AddRectangularLightEmittingObject("leo", 0.15, 0.035, leoOptions => leoOptions
                                 .WithPosition(0, -0.064, 0.475)
                                 .WithRotation(-45, 0, 0)
-                                .WithLightEmittingSurfacesOnParent(158, 179))))
+                                .WithLightEmittingSurfaceOnParent("les", lesOptions => lesOptions
+                                    .WithSurfaceRange(158, 179)
+                                )
+                            )
+                        )
+                    )
                 );
 
             return builder;
@@ -196,8 +202,11 @@ namespace L3D.Net.Tests
                                 .AddCircularLightEmittingObject($"leo-{index}", 0.1, leoOptions => leoOptions
                                     .WithPosition(0.045, -0.043, 0)
                                     .WithRotation(0, -90, 0)
-                                    .WithLightEmittingSurfacesOnParent(50, 97)))
-
+                                    .WithLightEmittingSurfaceOnParent($"les-{index}", lesOptions => lesOptions
+                                        .WithSurfaceRange(50, 97)
+                                    )
+                                )
+                            )
                         )));
             }
 
@@ -225,42 +234,44 @@ namespace L3D.Net.Tests
             builder
                 .WithTool("Experimental")
                 .AddGeometry("base", baseObjPath, GeometricUnits.mm, baseOptions => baseOptions
-                .AddJoint("base-head-con-joint-0", joint0Options => joint0Options
-                    .WithPosition(-0.4, 0, 0.0375)
-                    .WithZAxisDegreesOfFreedom(-180, 180, 1)
-                    .WithDefaultRotation(0, 0, 0)
-                    .AddGeometry("base-head-con-0", baseHeadConeObjPath, GeometricUnits.mm, conOptions =>
-                        conOptions
-                            .WithPosition(0.4, 0, -0.0375)
-                            .AddJoint("head-joint-0", joint1Options => joint1Options
-                                .WithPosition(-0.4, 0, 0.0375)
-                                .WithXAxisDegreesOfFreedom(-45, 45, 1)
-                                .WithDefaultRotation(0, 0, 0)
-                                .AddGeometry("head-0", headObjPath, GeometricUnits.mm, headOptions => headOptions
-                                    .WithPosition(0.4, 0, -0.0375)
-                                    .AddCircularLightEmittingObject("LEO0", 0.0575, leoOptions => leoOptions
-                                        .WithPosition(-0.4, 0, 0.01)
-                                        .WithLuminousHeights(10, 10, 10, 10)
-                                        .WithLightEmittingSurfacesOnParent(574, 607))))))
-                .AddJoint("base-head-con-joint-1", joint0Options => joint0Options
-                    .WithPosition(0.4, 0, 0.0375)
-                    .WithZAxisDegreesOfFreedom(-180, 180, 1)
-                    .WithDefaultRotation(0, 0, 0)
-                    .AddGeometry("base-head-con-1", baseHeadConeObjPath, GeometricUnits.mm, conOptions =>
-                        conOptions
-                            .WithPosition(0.4, 0, -0.0375)
-                            .AddJoint("head-joint-1", joint1Options => joint1Options
-                                .WithPosition(-0.4, 0, 0.0375)
-                                .WithXAxisDegreesOfFreedom(-45, 45, 1)
-                                .WithDefaultRotation(0, 0, 0)
-                                .AddGeometry("head-1", headObjPath, GeometricUnits.mm, headOptions => headOptions
-                                    .WithPosition(0.4, 0, -0.0375)
-                                    .AddCircularLightEmittingObject("LEO1", 0.0575, leoOptions => leoOptions
-                                        .WithPosition(-0.4, 0, 0.01)
-                                        .WithLuminousHeights(10, 10, 10, 10)
-                                        .WithLightEmittingSurfacesOnParent(574, 607))))))
-                .AddSensorObject("Sensor", sensorOptions => sensorOptions)
-            );
+                    .AddJoint("base-head-con-joint-0", joint0Options => joint0Options
+                        .WithPosition(-0.4, 0, 0.0375)
+                        .WithZAxisDegreesOfFreedom(-180, 180, 1)
+                        .WithDefaultRotation(0, 0, 0)
+                        .AddGeometry("base-head-con-0", baseHeadConeObjPath, GeometricUnits.mm, conOptions =>
+                            conOptions
+                                .WithPosition(0.4, 0, -0.0375)
+                                .AddJoint("head-joint-0", joint1Options => joint1Options
+                                    .WithPosition(-0.4, 0, 0.0375)
+                                    .WithXAxisDegreesOfFreedom(-45, 45, 1)
+                                    .WithDefaultRotation(0, 0, 0)
+                                    .AddGeometry("head-0", headObjPath, GeometricUnits.mm, headOptions => headOptions
+                                        .WithPosition(0.4, 0, -0.0375)
+                                        .AddCircularLightEmittingObject("LEO0", 0.0575, leoOptions => leoOptions
+                                            .WithPosition(-0.4, 0, 0.01)
+                                            .WithLuminousHeights(10, 10, 10, 10)
+                                            .WithLightEmittingSurfaceOnParent("LES0", lesOptions => lesOptions
+                                                .WithSurfaceRange(574, 607)))))))
+                    .AddJoint("base-head-con-joint-1", joint0Options => joint0Options
+                        .WithPosition(0.4, 0, 0.0375)
+                        .WithZAxisDegreesOfFreedom(-180, 180, 1)
+                        .WithDefaultRotation(0, 0, 0)
+                        .AddGeometry("base-head-con-1", baseHeadConeObjPath, GeometricUnits.mm, conOptions =>
+                            conOptions
+                                .WithPosition(0.4, 0, -0.0375)
+                                .AddJoint("head-joint-1", joint1Options => joint1Options
+                                    .WithPosition(-0.4, 0, 0.0375)
+                                    .WithXAxisDegreesOfFreedom(-45, 45, 1)
+                                    .WithDefaultRotation(0, 0, 0)
+                                    .AddGeometry("head-1", headObjPath, GeometricUnits.mm, headOptions => headOptions
+                                        .WithPosition(0.4, 0, -0.0375)
+                                        .AddCircularLightEmittingObject("LEO1", 0.0575, leoOptions => leoOptions
+                                            .WithPosition(-0.4, 0, 0.01)
+                                            .WithLuminousHeights(10, 10, 10, 10)
+                                            .WithLightEmittingSurfaceOnParent("LES1", lesOptions => lesOptions
+                                                .WithSurfaceRange(574, 607)))))))
+                    .AddSensorObject("Sensor", sensorOptions => sensorOptions)
+                );
 
             return builder;
         }
@@ -274,12 +285,11 @@ namespace L3D.Net.Tests
                 .WithTool("Example-Tool")
                 .AddGeometry("luminaire", cubeObjPath, GeometricUnits.m, geomOptions => geomOptions
                     .AddRectangularLightEmittingObject("leo", 0.5, 0.25, leoOptions => leoOptions
-                        .WithLightEmittingSurfaceOnParent(3)
+                        .WithLightEmittingSurfaceOnParent("les", lesOptions => lesOptions.WithSurface(3))
                     )
                 );
 
             return builder;
         }
-
     }
 }

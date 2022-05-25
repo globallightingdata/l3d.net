@@ -6,8 +6,8 @@ using System.Numerics;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
 using L3D.Net.Data;
-using L3D.Net.XML.V0_9_0;
-using L3D.Net.XML.V0_9_0.Dto;
+using L3D.Net.XML.V0_9_2;
+using L3D.Net.XML.V0_9_2.Dto;
 using NUnit.Framework;
 
 namespace L3D.Net.Tests
@@ -124,16 +124,19 @@ namespace L3D.Net.Tests
             action.Should().Throw<Exception>().WithMessage(@"Invalid Shape type in LightEmittingNodeDto: *");
         }
 
-        private class InvalidAssignment : AssignmentBaseDto
+        private class InvalidFaceAssignmentDto : FaceAssignmentBaseDto
         {
-
+            public InvalidFaceAssignmentDto()
+            {
+                GroupIndex = 0;
+            }
         };
 
         [Test]
         public void BuildLuminaireFromDto_ShouldThrowArgumentException_WhenLightEmittingAssignmentHasInvalidType()
         {
             CreateExample000TestData(out var luminaireDto, out var exampleDirectory);
-            luminaireDto.Parts.First().LightEmittingFaceAssignments[0] = new InvalidAssignment();
+            luminaireDto.Parts.First().LightEmittingSurfaces[0].FaceAssignments[0] = new InvalidFaceAssignmentDto();
 
             Action action = () => new LuminaireFromDtoConstructor().BuildLuminaireFromDto(Builder.NewLuminaire(), luminaireDto, exampleDirectory);
             action.Should().Throw<Exception>().WithMessage(@"Invalid AssignmentDto in GeometryNodeDto: *");
@@ -143,7 +146,7 @@ namespace L3D.Net.Tests
         public void BuildLuminaireFromDto_ShouldThrowArgumentException_WhenLightEmittingFaceAssignemntIsNull()
         {
             CreateExample000TestData(out var luminaireDto, out var exampleDirectory);
-            luminaireDto.Parts.First().LightEmittingFaceAssignments[0] = null;
+            luminaireDto.Parts.First().LightEmittingSurfaces[0].FaceAssignments[0] = null;
 
             Action action = () => new LuminaireFromDtoConstructor().BuildLuminaireFromDto(Builder.NewLuminaire(), luminaireDto, exampleDirectory);
             action.Should().Throw<Exception>().WithMessage(@"Invalid AssignmentDto in GeometryNodeDto: *");

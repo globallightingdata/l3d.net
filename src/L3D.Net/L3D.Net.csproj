@@ -44,7 +44,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <EmbeddedResource Include="XSD\V0_9_0.xsd" />
+    <EmbeddedResource Include="XSD\V0_9_2.xsd" />
     <None Include=".\..\..\README.md">
       <Pack>true</Pack>
       <PackagePath>\</PackagePath>

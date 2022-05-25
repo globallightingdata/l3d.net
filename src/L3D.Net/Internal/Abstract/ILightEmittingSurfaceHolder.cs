@@ -1,9 +1,17 @@
-﻿namespace L3D.Net.Internal.Abstract
+﻿using System;
+using L3D.Net.Data;
+
+namespace L3D.Net.Internal.Abstract
 {
+    interface ILightEmittingSurfaceOptions
+    {
+        ILightEmittingSurfaceOptions WithLightEmittingPart(string leoPartName);
+        ILightEmittingSurfaceOptions WithSurface(int faceIndex, int groupIndex);
+        ILightEmittingSurfaceOptions WithSurfaceRange(int faceIndexBegin, int faceIndexEnd, int groupIndex);
+    }
+    
     interface ILightEmittingSurfaceHolder
     {
-        void CreateLightEmittingSurfaces(string leoPartName, int faceIndexBegin, int faceIndexEnd, int groupIndex);
-
-        void CreateLightEmittingSurface(string leoPartName, int faceIndex, int groupIndex);
+        void WithLightEmittingSurface(string lesPartName, Action<ILightEmittingSurfaceOptions> options);
     }
 }

@@ -7,15 +7,15 @@ using FluentAssertions.Equivalency;
 using L3D.Net.API.Dto;
 using L3D.Net.Data;
 using L3D.Net.Internal.Abstract;
-using L3D.Net.XML.V0_9_0;
-using L3D.Net.XML.V0_9_0.Dto;
+using L3D.Net.XML.V0_9_2;
+using L3D.Net.XML.V0_9_2.Dto;
 using NSubstitute;
 using NUnit.Framework;
-using CircleDto = L3D.Net.XML.V0_9_0.Dto.CircleDto;
-using HeaderDto = L3D.Net.XML.V0_9_0.Dto.HeaderDto;
-using LuminaireDto = L3D.Net.XML.V0_9_0.Dto.LuminaireDto;
-using LuminousHeightsDto = L3D.Net.XML.V0_9_0.Dto.LuminousHeightsDto;
-using RectangleDto = L3D.Net.XML.V0_9_0.Dto.RectangleDto;
+using CircleDto = L3D.Net.XML.V0_9_2.Dto.CircleDto;
+using HeaderDto = L3D.Net.XML.V0_9_2.Dto.HeaderDto;
+using LuminaireDto = L3D.Net.XML.V0_9_2.Dto.LuminaireDto;
+using LuminousHeightsDto = L3D.Net.XML.V0_9_2.Dto.LuminousHeightsDto;
+using RectangleDto = L3D.Net.XML.V0_9_2.Dto.RectangleDto;
 
 // ReSharper disable ExpressionIsAlwaysNull
 
@@ -260,7 +260,7 @@ namespace L3D.Net.Tests
         [Test]
         public void Convert_LightEmittingFaceAssignment_ShouldReturnNull_WhenArgumentIsNull()
         {
-            LightEmittingFaceAssignment assignment = null;
+            FaceAssignment assignment = null;
 
             var converted = new XmlDtoConverter().Convert(assignment);
 
@@ -270,13 +270,11 @@ namespace L3D.Net.Tests
         [Test]
         public void Convert_LightEmittingFaceAssignment_ShouldReturnCorrectDto_WhenArgumentIsSingleLightEmittingFaceAssignment()
         {
-            var partName = Guid.NewGuid().ToString();
             var groupIndex = NextPositiveInt();
             var faceIndex = NextPositiveInt();
-            var assignment = new SingleLightEmittingFaceAssignment(partName, groupIndex, faceIndex);
-            var expectedDto = new AssignmentDto
+            var assignment = new SingleFaceAssignment(groupIndex, faceIndex);
+            var expectedDto = new FaceAssignmentDto
             {
-                LightEmittingPartName = partName,
                 GroupIndex = groupIndex,
                 FaceIndex = faceIndex
             };
@@ -289,14 +287,12 @@ namespace L3D.Net.Tests
         [Test]
         public void Convert_LightEmittingFaceAssignment_ShouldReturnCorrectDto_WhenArgumentIsRangeLightEmittingFaceAssignment()
         {
-            var partName = Guid.NewGuid().ToString();
             var groupIndex = NextPositiveInt();
             var faceIndexBegin = NextPositiveInt();
             var faceIndexEnd = faceIndexBegin + NextPositiveInt();
-            var assignment = new LightEmittingFaceRangeAssignment(partName, groupIndex, faceIndexBegin, faceIndexEnd);
-            var expectedDto = new RangeAssignmentDto
+            var assignment = new FaceRangeAssignment(groupIndex, faceIndexBegin, faceIndexEnd);
+            var expectedDto = new FaceRangeAssignmentDto
             {
-                LightEmittingPartName = partName,
                 GroupIndex = groupIndex,
                 FaceIndexBegin = faceIndexBegin,
                 FaceIndexEnd = faceIndexEnd
@@ -307,9 +303,9 @@ namespace L3D.Net.Tests
             converted.Should().BeEquivalentTo(expectedDto, Config);
         }
 
-        class UnknownAssignement : LightEmittingFaceAssignment
+        class UnknownAssignement : FaceAssignment
         {
-            public UnknownAssignement(string partName, int groupIndex) : base(partName, groupIndex)
+            public UnknownAssignement(int groupIndex) : base(groupIndex)
             {
             }
         }
@@ -317,10 +313,9 @@ namespace L3D.Net.Tests
         [Test]
         public void Convert_LightEmittingFaceAssignment_ShouldThrowArgumentOutOfRangeException_WhenAssignmentTypeIsUnknown()
         {
-            var partName = Guid.NewGuid().ToString();
             var groupIndex = NextPositiveInt();
 
-            var assignment = new UnknownAssignement(partName, groupIndex);
+            var assignment = new UnknownAssignement(groupIndex);
 
             Action action = () => new XmlDtoConverter().Convert(assignment);
 
@@ -568,18 +563,18 @@ namespace L3D.Net.Tests
             var sensorPart = new SensorPart(Guid.NewGuid().ToString());
             var electricalConnector = NextVector3();
             var pendulumConnector = NextVector3();
-            var assignment = new SingleLightEmittingFaceAssignment(Guid.NewGuid().ToString(), NextPositiveInt(), NextPositiveInt());
+            var lightEmittingSurface = new LightEmittingSurfacePart(Guid.NewGuid().ToString());
             var geometryPart = new GeometryPart(partName, geometryDefinition)
             {
                 Position = position,
                 Rotation = rotation,
-                ExcludedFromMeasurement = true,
+                IncludedInMeasurement = true,
                 Joints = { jointPart },
                 LightEmittingObjects = { leoPart },
                 Sensors = { sensorPart },
                 ElectricalConnectors = { electricalConnector },
                 PendulumConnectors = { pendulumConnector },
-                LightEmittingFaceAssignments = { assignment }
+                LightEmittingSurfaces = { lightEmittingSurface }
             };
 
             var converter = new XmlDtoConverter();
@@ -599,12 +594,12 @@ namespace L3D.Net.Tests
                     Y = rotation.Y,
                     Z = rotation.Z
                 },
-                ExcludedFromMeasurement = true,
+                IncludedInMeasurement = true,
                 GeometrySource = new GeometryReferenceDto { GeometryId = geomDefId },
                 Joints = geometryPart.Joints.Select(part => converter.Convert(part)).ToList(),
                 LightEmittingObjects = geometryPart.LightEmittingObjects.Select(part => converter.Convert(part)).ToList(),
                 SensorObjects = geometryPart.Sensors.Select(part => converter.Convert(part)).ToList(),
-                LightEmittingFaceAssignments = geometryPart.LightEmittingFaceAssignments.Select(faceAssignment => converter.Convert(faceAssignment)).ToList(),
+                LightEmittingSurfaces = geometryPart.LightEmittingSurfaces.Select(faceAssignment => converter.Convert(faceAssignment)).ToList(),
                 PendulumConnectors = geometryPart.PendulumConnectors.Select(v => converter.Convert(v)).ToList(),
                 ElectricalConnectors = geometryPart.ElectricalConnectors.Select(v => converter.Convert(v)).ToList(),
             };
@@ -629,12 +624,12 @@ namespace L3D.Net.Tests
                 PartName = partName,
                 Position = new Vector3Dto(),
                 Rotation = new Vector3Dto(),
-                ExcludedFromMeasurement = false,
+                IncludedInMeasurement = true,
                 GeometrySource = new GeometryReferenceDto { GeometryId = geomDefId },
                 Joints = new List<JointNodeDto>(),
                 LightEmittingObjects = new List<LightEmittingNodeDto>(),
                 SensorObjects = new List<SensorObjectDto>(),
-                LightEmittingFaceAssignments = new List<AssignmentBaseDto>(),
+                LightEmittingSurfaces = new List<LightEmittingSurfaceDto>(),
                 PendulumConnectors = new List<Vector3Dto>(),
                 ElectricalConnectors = new List<Vector3Dto>(),
             };
