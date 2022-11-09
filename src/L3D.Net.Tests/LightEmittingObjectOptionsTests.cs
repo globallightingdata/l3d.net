@@ -97,8 +97,6 @@ namespace L3D.Net.Tests
         public void WithLightEmittingSurface_ShouldCallLightEmittingSurfaceHolderCreateLightEmittingSurface()
         {
             var context = CreateContext();
-            var faceIndex = 1;
-            var groupIndex = 2;
 
             context.Options.WithLightEmittingSurfaceOnParent(context.KnownPartName, lesOptions => lesOptions);
 
@@ -110,9 +108,6 @@ namespace L3D.Net.Tests
         public void WithLightEmittingSurfaces_ShouldCallLightEmittingSurfaceHolderCreateLightEmittingSurfaces()
         {
             var context = CreateContext();
-            var faceIndexBegin = 1;
-            var faceIndexEnd = 2;
-            var groupIndex = 3;
 
             context.Options.WithLightEmittingSurfaceOnParent(context.KnownPartName, lesOptions => lesOptions);
 
