@@ -5,7 +5,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Company>DIAL GmbH</Company>
     <Authors>DIAL GmbH</Authors>
-    <LangVersion>9</LangVersion>
+    <LangVersion>10</LangVersion>
     <Copyright>DIAL GmbH © 2021</Copyright>
     <Description>L3D XML serializer, validator, builder and .l3d container reader</Description>
     <PackageId>L3D.Net</PackageId>
@@ -24,10 +24,10 @@
   
   <ItemGroup>
     <PackageReference Include="JeremyAnsel.Media.WavefrontObj" Version="2.0.19" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-    <PackageReference Include="MinVer" PrivateAssets="all" Version="2.5.0" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="MinVer" PrivateAssets="all" Version="4.3.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
   </ItemGroup>
   
   <ItemGroup>
@@ -41,7 +41,6 @@
   
   <PropertyGroup>
     <MinVerTagPrefix>v</MinVerTagPrefix>
-    <MinVerDefaultPreReleasePhase>preview</MinVerDefaultPreReleasePhase>
   </PropertyGroup>
   
   <ItemGroup>
