@@ -54,6 +54,15 @@ namespace L3D.Net.Tests
                 Environment.NewLine
             };
         }
+        
+        public static List<byte[]> EmptyByteArrayValues()
+        {
+            return new List<byte[]>
+            {
+                null,
+                Array.Empty<byte>()
+            };
+        }
 
         public static readonly Dictionary<string, Func<LuminaireBuilder, LuminaireBuilder>> ExampleBuilderMapping =
             new Dictionary<string, Func<LuminaireBuilder, LuminaireBuilder>>

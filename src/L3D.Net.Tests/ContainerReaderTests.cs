@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using FluentAssertions;
 using L3D.Net.API.Dto;
@@ -76,6 +77,14 @@ namespace L3D.Net.Tests
 
             return context;
         }
+        
+        public enum ContainerTypeToTest
+        {
+            Path,
+            Bytes
+        }
+
+        public static IEnumerable<ContainerTypeToTest> ContainerTypeToTestEnumValues => Enum.GetValues<ContainerTypeToTest>();
 
         [Test]
         public void Constructor_ShouldThrowArgumentNullException_WhenFileHandlerIsNull()
@@ -113,8 +122,7 @@ namespace L3D.Net.Tests
             action.Should().Throw<ArgumentNullException>();
         }
 
-        [Test]
-        [TestCaseSource(typeof(Setup), nameof(Setup.EmptyStringValues))]
+        [Test, TestCaseSource(typeof(Setup), nameof(Setup.EmptyStringValues))]
         public void Read_ShouldThrowArgumentException_WhenContainerPathIsNullOrEmpty(string containerPath)
         {
             var context = CreateContext();
@@ -124,107 +132,199 @@ namespace L3D.Net.Tests
             action.Should().Throw<ArgumentException>();
         }
 
-        [Test]
-        public void Read_ShouldCallFileHandlerCreateTemporaryDirectoryScope()
+        [Test, TestCaseSource(typeof(Setup), nameof(Setup.EmptyByteArrayValues))]
+        public void Read_ShouldThrowArgumentException_WhenContainerBytesIsNullOrEmpty(byte[] containerBytes)
         {
             var context = CreateContext();
 
-            context.Reader.Read(Guid.NewGuid().ToString());
+            Action action = () => context.Reader.Read(containerBytes);
+
+            action.Should().Throw<ArgumentException>();
+        }
+
+        [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
+        public void Read_ShouldCallFileHandlerCreateTemporaryDirectoryScope_ContainerPath(ContainerTypeToTest containerTypeToTest)
+        {
+            var context = CreateContext();
+
+            switch (containerTypeToTest)
+            {
+                case ContainerTypeToTest.Path:
+                    context.Reader.Read(Guid.NewGuid().ToString());
+                    break;
+                case ContainerTypeToTest.Bytes:
+                    context.Reader.Read(new byte[] { 0, 1, 2, 3, 4 });
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
+            }
 
             context.FileHandler.Received(1).CreateContainerDirectory();
         }
 
-        [Test]
-        public void Read_ShouldCallFileHandlerExtractContainerToDirectory_WithCorrectPath()
+        [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
+        public void Read_ShouldCallFileHandlerExtractContainerToDirectory_WithCorrectPath(ContainerTypeToTest containerTypeToTest)
         {
             string workingDirectory = null;
             var context = CreateContext(options =>
                 options.WithTemporaryScopeWorkingDirectory(out _, out workingDirectory));
-            var containerPath = Guid.NewGuid().ToString();
-            context.Reader.Read(containerPath);
+            switch (containerTypeToTest)
+            {
+                case ContainerTypeToTest.Path:
+                    var containerPath = Guid.NewGuid().ToString();
+                    context.Reader.Read(containerPath);
 
-            context.FileHandler.Received(1)
-                .ExtractContainerToDirectory(Arg.Is(containerPath), Arg.Is(workingDirectory));
+                    context.FileHandler.Received(1)
+                        .ExtractContainerToDirectory(Arg.Is(containerPath), Arg.Is(workingDirectory));
+                    break;
+                case ContainerTypeToTest.Bytes:
+                    var containerBytes = new byte[] { 0, 1, 2, 3, 4 };
+                    context.Reader.Read(containerBytes);
+
+                    context.FileHandler.Received(1)
+                        .ExtractContainerToDirectory(Arg.Is(containerBytes), Arg.Is(workingDirectory));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
+            }
         }
 
-        [Test]
-        public void Read_ShouldCallL3dXmlReaderRead_WithCorrectXmlFilePath()
+        [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
+        public void Read_ShouldCallL3dXmlReaderRead_WithCorrectXmlFilePath_ContainerPath(ContainerTypeToTest containerTypeToTest)
         {
             string workingDirectory = null;
             var context = CreateContext(options =>
                 options.WithTemporaryScopeWorkingDirectory(out _, out workingDirectory));
             var xmlPath = Path.Combine(workingDirectory, Constants.L3dXmlFilename);
-            context.Reader.Read(Guid.NewGuid().ToString());
+            switch (containerTypeToTest)
+            {
+                case ContainerTypeToTest.Path:
+                    context.Reader.Read(Guid.NewGuid().ToString());
+                    break;
+                case ContainerTypeToTest.Bytes:
+                    context.Reader.Read(new byte[] { 0, 1, 2, 3, 4 });
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
+            }
 
-            context.L3dXmlReader.Received(1).Read(xmlPath,  Arg.Any<string>());
+            context.L3dXmlReader.Received(1).Read(xmlPath, Arg.Any<string>());
         }
 
-        [Test]
-        public void Read_ShouldCallL3dXmlReaderRead_WithCorrectWorkingPath()
+        [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
+        public void Read_ShouldCallL3dXmlReaderRead_WithCorrectWorkingPath(ContainerTypeToTest containerTypeToTest)
         {
             string workingDirectory = null;
             var context = CreateContext(options =>
                 options.WithTemporaryScopeWorkingDirectory(out _, out workingDirectory));
-            context.Reader.Read(Guid.NewGuid().ToString());
+            switch (containerTypeToTest)
+            {
+                case ContainerTypeToTest.Path:
+                    context.Reader.Read(Guid.NewGuid().ToString());
+                    break;
+                case ContainerTypeToTest.Bytes:
+                    context.Reader.Read(new byte[] { 0, 1, 2, 3, 4 });
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
+            }
 
             context.L3dXmlReader.Received(1).Read(Arg.Any<string>(), workingDirectory);
         }
 
-        [Test]
-        public void Read_ShouldCallApiDtoConverterConvert()
+        [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
+        public void Read_ShouldCallApiDtoConverterConvert(ContainerTypeToTest containerTypeToTest)
         {
             Luminaire luminaire = new Luminaire();
             var context = CreateContext();
             context.L3dXmlReader.Read(Arg.Any<string>(), Arg.Any<string>()).Returns(luminaire);
 
-            context.Reader.Read(Guid.NewGuid().ToString());
+            switch (containerTypeToTest)
+            {
+                case ContainerTypeToTest.Path:
+                    context.Reader.Read(Guid.NewGuid().ToString());
+                    break;
+                case ContainerTypeToTest.Bytes:
+                    context.Reader.Read(new byte[] { 0, 1, 2, 3, 4 });
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
+            }
 
             context.Converter.Received(1).Convert(Arg.Is(luminaire), Arg.Any<string>());
         }
 
-        [Test]
-        public void Read_ShouldReturnConvertedDto()
+        [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
+        public void Read_ShouldReturnConvertedDto(ContainerTypeToTest containerTypeToTest)
         {
             LuminaireDto luminaire = null;
             var context = CreateContext(options => options.WithConvertedDto(out luminaire));
 
-            var readLuminaire = context.Reader.Read(Guid.NewGuid().ToString());
+            var readLuminaire = containerTypeToTest switch
+            {
+                ContainerTypeToTest.Path => context.Reader.Read(Guid.NewGuid().ToString()),
+                ContainerTypeToTest.Bytes => context.Reader.Read(new byte[] { 0, 1, 2, 3, 4 }),
+                _ => throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null)
+            };
             readLuminaire.Should().Be(luminaire);
         }
 
-        [Test]
-        public void Read_ShouldCallContainerDirectoryCleanUp_WhenNoErrorOccured()
+        [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
+        public void Read_ShouldCallContainerDirectoryCleanUp_WhenNoErrorOccured(ContainerTypeToTest containerTypeToTest)
         {
             IContainerDirectory scope = null;
             var context = CreateContext(options => options.WithTemporaryScopeWorkingDirectory(out scope, out _));
 
-            context.Reader.Read(Guid.NewGuid().ToString());
+            switch (containerTypeToTest)
+            {
+                case ContainerTypeToTest.Path:
+                    context.Reader.Read(Guid.NewGuid().ToString());
+                    break;
+                case ContainerTypeToTest.Bytes:
+                    context.Reader.Read(new byte[] { 0, 1, 2, 3, 4 });
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
+            }
 
             scope.Received(1).CleanUp();
         }
 
-        [Test]
+        [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
         public void
-            Read_ShouldCallContainerDirectoryCleanUp_AndNotCatch_WhenFileHandlerExtractContainerToDirectoryThrows()
+            Read_ShouldCallContainerDirectoryCleanUp_AndNotCatch_WhenFileHandlerExtractContainerToDirectoryThrows_ContainerPath(ContainerTypeToTest containerTypeToTest)
         {
             IContainerDirectory scope = null;
             var context = CreateContext(options => options
                 .WithTemporaryScopeWorkingDirectory(out scope, out _));
 
             var message = Guid.NewGuid().ToString();
-            
-            context.FileHandler
-                .When(handler => handler.ExtractContainerToDirectory(Arg.Any<string>(), Arg.Any<string>()))
-                .Throw(new Exception(message));
 
-            Action action = () => context.Reader.Read(Guid.NewGuid().ToString());
+            Action action;
+            switch (containerTypeToTest)
+            {
+                case ContainerTypeToTest.Path:
+                    context.FileHandler
+                        .When(handler => handler.ExtractContainerToDirectory(Arg.Any<string>(), Arg.Any<string>()))
+                        .Throw(new Exception(message));
+                    action = () => context.Reader.Read(Guid.NewGuid().ToString());
+                    break;
+                case ContainerTypeToTest.Bytes:
+                    context.FileHandler
+                        .When(handler => handler.ExtractContainerToDirectory(Arg.Any<byte[]>(), Arg.Any<string>()))
+                        .Throw(new Exception(message));
+                    action = () => context.Reader.Read(new byte[] { 0, 1, 2, 3, 4 });
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
+            }
 
             action.Should().Throw<Exception>().WithMessage(message);
             scope.Received(1).CleanUp();
         }
 
-        [Test]
-        public void Read_ShouldCallContainerDirectoryCleanUp_AndNotCatch_WhenXmlValidatorValidateFileThrows()
+        [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
+        public void Read_ShouldCallContainerDirectoryCleanUp_AndNotCatch_WhenXmlValidatorValidateFileThrows(ContainerTypeToTest containerTypeToTest)
         {
             IContainerDirectory scope = null;
             var context = CreateContext(options => options
@@ -233,14 +333,19 @@ namespace L3D.Net.Tests
             var message = Guid.NewGuid().ToString();
             context.L3dXmlReader.Read(Arg.Any<string>(), Arg.Any<string>()).Throws(new Exception(message));
 
-            Action action = () => context.Reader.Read(Guid.NewGuid().ToString());
+            Action action = containerTypeToTest switch
+            {
+                ContainerTypeToTest.Path => () => context.Reader.Read(Guid.NewGuid().ToString()),
+                ContainerTypeToTest.Bytes => () => context.Reader.Read(new byte[] { 0, 1, 2, 3, 4 }),
+                _ => throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null)
+            };
 
             action.Should().Throw<Exception>().WithMessage(message);
             scope.Received(1).CleanUp();
         }
 
-        [Test]
-        public void Read_ShouldCallContainerDirectoryCleanUp_AndNotCatch_WhenApiDtoConverterConvertThrows()
+        [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
+        public void Read_ShouldCallContainerDirectoryCleanUp_AndNotCatch_WhenApiDtoConverterConvertThrows(ContainerTypeToTest containerTypeToTest)
         {
             IContainerDirectory scope = null;
             var context = CreateContext(options => options
@@ -252,7 +357,12 @@ namespace L3D.Net.Tests
                 .When(converter => converter.Convert(Arg.Any<Luminaire>(), Arg.Any<string>()))
                 .Throw(new Exception(message));
 
-            Action action = () => context.Reader.Read(Guid.NewGuid().ToString());
+            Action action = containerTypeToTest switch
+            {
+                ContainerTypeToTest.Path => () => context.Reader.Read(Guid.NewGuid().ToString()),
+                ContainerTypeToTest.Bytes => () => context.Reader.Read(new byte[] { 0, 1, 2, 3, 4 }),
+                _ => throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null)
+            };
 
             action.Should().Throw<Exception>().WithMessage(message);
             scope.Received(1).CleanUp();

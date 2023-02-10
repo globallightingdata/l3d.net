@@ -42,10 +42,18 @@ namespace L3D.Net.Tests
                 }
             }
         }
+        
+        public enum ContainerTypeToTest
+        {
+            Path,
+            Bytes
+        }
+
+        public static IEnumerable<ContainerTypeToTest> ContainerTypeToTestEnumValues => Enum.GetValues<ContainerTypeToTest>();
 
         [Test]
-        [TestCaseSource(nameof(ExampleDirectories))]
-        public void Reader_ShouldBeAbleToReadAllExampleFiles(string exampleDirectory)
+        public void Reader_ShouldBeAbleToReadAllExampleFiles_ContainerPath([ValueSource(nameof(ExampleDirectories))] string exampleDirectory,
+                                                                           [ValueSource(nameof(ContainerTypeToTestEnumValues))] ContainerTypeToTest containerTypeToTest)
         {
             var exampleName = Path.GetFileName(exampleDirectory).ToLower();
 
@@ -61,7 +69,16 @@ namespace L3D.Net.Tests
             var containerPath = Path.Combine(containerTempDirectory, "luminaire" + Constants.L3dExtension);
             builder.Build(containerPath);
 
-            Action action = () => new Reader().ReadContainer(containerPath);
+            Action action = containerTypeToTest switch
+            {
+                ContainerTypeToTest.Path => () => new Reader().ReadContainer(containerPath),
+                ContainerTypeToTest.Bytes => () =>
+                {
+                    var containerBytes = File.ReadAllBytes(containerPath);
+                    new Reader().ReadContainer(containerBytes);
+                },
+                _ => throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null)
+            };
 
             action.Should().NotThrow<Exception>();
         }

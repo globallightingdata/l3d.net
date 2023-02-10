@@ -91,6 +91,14 @@ namespace L3D.Net.Tests
             return model3D;
         }
 
+        public enum ContainerTypeToTest
+        {
+            Path,
+            Bytes
+        }
+
+        public static IEnumerable<ContainerTypeToTest> ContainerTypeToTestEnumValues => Enum.GetValues<ContainerTypeToTest>();
+
         [Test]
         public void CreateContianerFromDirectory_ShouldZipGivenDirectoryToGivenPath()
         {
@@ -113,8 +121,8 @@ namespace L3D.Net.Tests
             unzippedFiles.Should().BeEquivalentTo(sourceFiles);
         }
 
-        [Test]
-        public void ExtractContainerToDirectory_ShouldUnzipGivenPathToGivenDirectory()
+        [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
+        public void ExtractContainerToDirectory_ShouldUnzipGivenPathToGivenDirectory(ContainerTypeToTest containerTypeToTest)
         {
             var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
             var targetZipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".zip");
@@ -127,7 +135,18 @@ namespace L3D.Net.Tests
 
             File.Exists(targetZipPath).Should().BeTrue();
 
-            new FileHandler().ExtractContainerToDirectory(targetZipPath, targetTestDirectory);
+            switch (containerTypeToTest)
+            {
+                case ContainerTypeToTest.Path:
+                    new FileHandler().ExtractContainerToDirectory(targetZipPath, targetTestDirectory);
+                    break;
+                case ContainerTypeToTest.Bytes:
+                    var containerBytes = File.ReadAllBytes(targetZipPath);
+                    new FileHandler().ExtractContainerToDirectory(containerBytes, targetTestDirectory);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
+            }
 
             var sourceFiles = Directory.EnumerateFiles(sourceDirectory, "*", SearchOption.AllDirectories).Select(filePath => Path.GetRelativePath(sourceDirectory, filePath)).ToList();
             var unzippedFiles = Directory.EnumerateFiles(targetTestDirectory, "*", SearchOption.AllDirectories).Select(filePath => Path.GetRelativePath(targetTestDirectory, filePath)).ToList();
