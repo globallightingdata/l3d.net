@@ -11,13 +11,21 @@ namespace L3D.Net
     {
         public LuminaireDto ReadContainer(string containerPath, ILogger logger = null)
         {
+            return CreateContainerReader(logger).Read(containerPath);
+        }
+        
+        public LuminaireDto ReadContainer(byte[] containerBytes, ILogger logger = null)
+        {
+            return CreateContainerReader(logger).Read(containerBytes);
+        }
+
+        private ContainerReader CreateContainerReader(ILogger logger)
+        {
             var fileHandler = new FileHandler();
 
-            return new ContainerReader(
-                    fileHandler,
-                    new L3dXmlReader(new XmlValidator(), logger),
-                    new ApiDtoConverter(fileHandler))
-                .Read(containerPath);
+            return new ContainerReader(fileHandler,
+                                       new L3dXmlReader(new XmlValidator(), logger),
+                                       new ApiDtoConverter(fileHandler));
         }
     }
 }

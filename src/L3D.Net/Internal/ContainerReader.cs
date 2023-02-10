@@ -30,5 +30,17 @@ namespace L3D.Net.Internal
             var luminaire = _l3dXmlReader.Read(structurePath, directoryScope.Directory);
             return _apiDtoConverter.Convert(luminaire, directoryScope.Directory);
         }
+
+        public LuminaireDto Read(byte[] containerBytes)
+        {
+            if (containerBytes == null || containerBytes.LongLength == 0)
+                throw new ArgumentException(@"Value cannot be null or empty array.", nameof(containerBytes));
+
+            using var directoryScope = new ContainerDirectoryScope(_fileHandler.CreateContainerDirectory());
+            _fileHandler.ExtractContainerToDirectory(containerBytes, directoryScope.Directory);
+            var structurePath = Path.Combine(directoryScope.Directory, Constants.L3dXmlFilename);
+            var luminaire = _l3dXmlReader.Read(structurePath, directoryScope.Directory);
+            return _apiDtoConverter.Convert(luminaire, directoryScope.Directory);
+        }
     }
 }

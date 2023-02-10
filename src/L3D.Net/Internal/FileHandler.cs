@@ -18,6 +18,13 @@ namespace L3D.Net.Internal
             ZipFile.ExtractToDirectory(containerPath, directory);
         }
 
+        public void ExtractContainerToDirectory(byte[] containerBytes, string directory)
+        {
+            using var archiveMemoryStream = new MemoryStream(containerBytes);
+            using var archive = new ZipArchive(archiveMemoryStream);
+            archive.ExtractToDirectory(directory);
+        }
+
         public byte[] GetTextureBytes(string directory, string geomId, string textureName)
         {
             if (directory == null) throw new ArgumentNullException(nameof(directory));
