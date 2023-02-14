@@ -1,11 +1,10 @@
 ﻿using System.Numerics;
 
-namespace L3D.Net.API.Dto
+namespace L3D.Net.API.Dto;
+
+public class PartDto
 {
-    public class PartDto
-    {
-        public string Name { get; set; }
-        public Vector3 Position { get; set; }
-        public Vector3 Rotation { get; set; }
-    }
+    public string Name { get; set; }
+    public Vector3 Position { get; set; }
+    public Vector3 Rotation { get; set; }
 }

@@ -1,9 +1,8 @@
-﻿namespace L3D.Net.Data
+﻿namespace L3D.Net.Data;
+
+internal class SensorPart : TransformablePart
 {
-    internal class SensorPart : TransformablePart
+    public SensorPart(string name) : base(name)
     {
-        public SensorPart(string name) : base(name)
-        {
-        }
     }
 }

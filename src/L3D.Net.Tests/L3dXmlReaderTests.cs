@@ -5,16 +5,15 @@ using NUnit.Framework;
 
 // ReSharper disable ObjectCreationAsStatement
 
-namespace L3D.Net.Tests
+namespace L3D.Net.Tests;
+
+[TestFixture]
+class L3dXmlReaderTests
 {
-    [TestFixture]
-    class L3dXmlReaderTests
+    [Test]
+    public void Constructor_ShouldNotThrowArgumentNullException_WhenLoggerIsNull()
     {
-        [Test]
-        public void Constructor_ShouldNotThrowArgumentNullException_WhenLoggerIsNull()
-        {
-            Action action = () => new L3dXmlReader(null);
-            action.Should().NotThrow();
-        }
+        Action action = () => new L3dXmlReader(null);
+        action.Should().NotThrow();
     }
 }

@@ -1,9 +1,8 @@
-﻿namespace L3D.Net.Internal.Abstract
-{
-    interface IContainerDirectory
-    {
-        string Path { get; }
+﻿namespace L3D.Net.Internal.Abstract;
 
-        void CleanUp();
-    }
+interface IContainerDirectory
+{
+    string Path { get; }
+
+    void CleanUp();
 }

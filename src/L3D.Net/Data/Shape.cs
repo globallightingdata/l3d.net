@@ -1,5 +1,4 @@
-﻿namespace L3D.Net.Data
-{
-    internal abstract class Shape
-    { }
-}
+﻿namespace L3D.Net.Data;
+
+internal abstract class Shape
+{ }

@@ -1,6 +1,5 @@
-﻿namespace L3D.Net.XML.V0_9_2.Dto
+﻿namespace L3D.Net.XML.V0_9_2.Dto;
+
+public abstract class ShapeDto
 {
-    public abstract class ShapeDto
-    {
-    }
 }

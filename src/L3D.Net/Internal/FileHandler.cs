@@ -4,90 +4,89 @@ using System.IO.Compression;
 using System.Linq;
 using L3D.Net.Internal.Abstract;
 
-namespace L3D.Net.Internal
+namespace L3D.Net.Internal;
+
+internal class FileHandler : IFileHandler
 {
-    internal class FileHandler : IFileHandler
+    public void CreateContainerFromDirectory(string directory, string containerPath)
     {
-        public void CreateContainerFromDirectory(string directory, string containerPath)
+        ZipFile.CreateFromDirectory(directory, containerPath);
+    }
+
+    public void ExtractContainerToDirectory(string containerPath, string directory)
+    {
+        ZipFile.ExtractToDirectory(containerPath, directory);
+    }
+
+    public void ExtractContainerToDirectory(byte[] containerBytes, string directory)
+    {
+        using var archiveMemoryStream = new MemoryStream(containerBytes);
+        using var archive = new ZipArchive(archiveMemoryStream);
+        archive.ExtractToDirectory(directory);
+    }
+
+    public byte[] GetTextureBytes(string directory, string geomId, string textureName)
+    {
+        if (directory == null) throw new ArgumentNullException(nameof(directory));
+        if (string.IsNullOrWhiteSpace(geomId))
+            throw new ArgumentException(@$"'{nameof(geomId)}' cannot be null or whitespace.", nameof(geomId));
+        if (string.IsNullOrWhiteSpace(textureName))
+            throw new ArgumentException(@$"'{nameof(textureName)}' cannot be null or whitespace.", nameof(textureName));
+
+        var texturePath = Path.Combine(directory, geomId, textureName);
+
+        return File.ReadAllBytes(texturePath);
+    }
+
+    public IContainerDirectory CreateContainerDirectory()
+    {
+        return new ContainerDirectory();
+    }
+
+    public void CopyModelFiles(IModel3D model3D, string targetDirectory)
+    {
+        ThrowWhenModelIsInvalid(model3D);
+
+        if (string.IsNullOrWhiteSpace(targetDirectory))
+            throw new ArgumentException(@"Value cannot be null or whitespace.", nameof(targetDirectory));
+
+        if (Directory.Exists(targetDirectory))
+            throw new ArgumentException($"The given directory already exists: {targetDirectory}");
+
+        Directory.CreateDirectory(targetDirectory);
+
+        CopyFile(model3D.FilePath, targetDirectory);
+
+        foreach (var materialLibraryFilename in model3D.ReferencedMaterialLibraryFiles)
         {
-            ZipFile.CreateFromDirectory(directory, containerPath);
+            CopyFile(materialLibraryFilename, targetDirectory);
         }
 
-        public void ExtractContainerToDirectory(string containerPath, string directory)
+        foreach (var textureFilename in model3D.ReferencedTextureFiles)
         {
-            ZipFile.ExtractToDirectory(containerPath, directory);
+            CopyFile(textureFilename, targetDirectory);
         }
+    }
 
-        public void ExtractContainerToDirectory(byte[] containerBytes, string directory)
-        {
-            using var archiveMemoryStream = new MemoryStream(containerBytes);
-            using var archive = new ZipArchive(archiveMemoryStream);
-            archive.ExtractToDirectory(directory);
-        }
+    private void CopyFile(string filepath, string targetDirectory)
+    {
+        var fileName = Path.GetFileName(filepath);
+        var targetFileName = Path.Combine(targetDirectory, fileName);
 
-        public byte[] GetTextureBytes(string directory, string geomId, string textureName)
-        {
-            if (directory == null) throw new ArgumentNullException(nameof(directory));
-            if (string.IsNullOrWhiteSpace(geomId))
-                throw new ArgumentException(@$"'{nameof(geomId)}' cannot be null or whitespace.", nameof(geomId));
-            if (string.IsNullOrWhiteSpace(textureName))
-                throw new ArgumentException(@$"'{nameof(textureName)}' cannot be null or whitespace.", nameof(textureName));
+        File.Copy(filepath, targetFileName);
+    }
 
-            var texturePath = Path.Combine(directory, geomId, textureName);
+    private void ThrowWhenModelIsInvalid(IModel3D model3D)
+    {
+        if (model3D == null) throw new ArgumentNullException(nameof(model3D));
 
-            return File.ReadAllBytes(texturePath);
-        }
+        if (string.IsNullOrWhiteSpace(model3D.FilePath))
+            throw new ArgumentException("The given model has no valid AbsolutePath");
 
-        public IContainerDirectory CreateContainerDirectory()
-        {
-            return new ContainerDirectory();
-        }
+        if (model3D.ReferencedMaterialLibraryFiles.Any(string.IsNullOrWhiteSpace))
+            throw new ArgumentException("The given model has null or empty material library paths");
 
-        public void CopyModelFiles(IModel3D model3D, string targetDirectory)
-        {
-            ThrowWhenModelIsInvalid(model3D);
-
-            if (string.IsNullOrWhiteSpace(targetDirectory))
-                throw new ArgumentException(@"Value cannot be null or whitespace.", nameof(targetDirectory));
-
-            if (Directory.Exists(targetDirectory))
-                throw new ArgumentException($"The given directory already exists: {targetDirectory}");
-
-            Directory.CreateDirectory(targetDirectory);
-
-            CopyFile(model3D.FilePath, targetDirectory);
-
-            foreach (var materialLibraryFilename in model3D.ReferencedMaterialLibraryFiles)
-            {
-                CopyFile(materialLibraryFilename, targetDirectory);
-            }
-
-            foreach (var textureFilename in model3D.ReferencedTextureFiles)
-            {
-                CopyFile(textureFilename, targetDirectory);
-            }
-        }
-
-        private void CopyFile(string filepath, string targetDirectory)
-        {
-            var fileName = Path.GetFileName(filepath);
-            var targetFileName = Path.Combine(targetDirectory, fileName);
-
-            File.Copy(filepath, targetFileName);
-        }
-
-        private void ThrowWhenModelIsInvalid(IModel3D model3D)
-        {
-            if (model3D == null) throw new ArgumentNullException(nameof(model3D));
-
-            if (string.IsNullOrWhiteSpace(model3D.FilePath))
-                throw new ArgumentException("The given model has no valid AbsolutePath");
-
-            if (model3D.ReferencedMaterialLibraryFiles.Any(string.IsNullOrWhiteSpace))
-                throw new ArgumentException("The given model has null or empty material library paths");
-
-            if (model3D.ReferencedTextureFiles.Any(string.IsNullOrWhiteSpace))
-                throw new ArgumentException("The given model has null or empty texture paths");
-        }
+        if (model3D.ReferencedTextureFiles.Any(string.IsNullOrWhiteSpace))
+            throw new ArgumentException("The given model has null or empty texture paths");
     }
 }
