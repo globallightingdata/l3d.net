@@ -1,5 +1,4 @@
 ﻿using System;
-using L3D.Net.Data;
 
 namespace L3D.Net.Internal.Abstract
 {
