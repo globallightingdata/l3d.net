@@ -60,9 +60,9 @@ namespace L3D.Net.Tests
         private IModel3D CreateFakeModel3DWithMaterialLibFiles()
         {
             var model3D = CreateFakeModel3D();
-            List<string> materialFiles = new List<string>();
+            var materialFiles = new List<string>();
 
-            for (int i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
             {
                 var materialFile = Path.GetTempFileName();
                 _filesToDelete.Add(materialFile);
@@ -77,9 +77,9 @@ namespace L3D.Net.Tests
         private IModel3D CreateFakeModel3DWithTextureFiles()
         {
             var model3D = CreateFakeModel3D();
-            List<string> textureFiles = new List<string>();
+            var textureFiles = new List<string>();
 
-            for (int i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
             {
                 var materialFile = Path.GetTempFileName();
                 _filesToDelete.Add(materialFile);
@@ -178,7 +178,7 @@ namespace L3D.Net.Tests
         {
             var fileHandler = new FileHandler();
             
-            Action action = () => fileHandler.CopyModelFiles(null, Guid.NewGuid().ToString());
+            var action = () => fileHandler.CopyModelFiles(null, Guid.NewGuid().ToString());
 
             action.Should().Throw<ArgumentNullException>();
         }
@@ -188,7 +188,7 @@ namespace L3D.Net.Tests
         {
             var fileHandler = new FileHandler();
             
-            Action action = () => fileHandler.CopyModelFiles(Substitute.For<IModel3D>(), Guid.NewGuid().ToString());
+            var action = () => fileHandler.CopyModelFiles(Substitute.For<IModel3D>(), Guid.NewGuid().ToString());
 
             action.Should().Throw<ArgumentException>();
         }
@@ -199,7 +199,7 @@ namespace L3D.Net.Tests
         {
             var fileHandler = new FileHandler();
             
-            Action action = () => fileHandler.CopyModelFiles(CreateFakeModel3D(), targetPath);
+            var action = () => fileHandler.CopyModelFiles(CreateFakeModel3D(), targetPath);
 
             action.Should().Throw<ArgumentException>();
         }
@@ -228,7 +228,7 @@ namespace L3D.Net.Tests
 
             var fileHandler = new FileHandler();
 
-            Action action = () => fileHandler.CopyModelFiles(CreateFakeModel3D(), targetTestDirectory);
+            var action = () => fileHandler.CopyModelFiles(CreateFakeModel3D(), targetTestDirectory);
 
             action.Should().Throw<ArgumentException>();
         }
@@ -297,7 +297,7 @@ namespace L3D.Net.Tests
             model3D.ReferencedMaterialLibraryFiles.Returns(new []{path});
 
             var fileHandler = new FileHandler();
-            Action action = () => fileHandler.CopyModelFiles(model3D, targetTestDirectory);
+            var action = () => fileHandler.CopyModelFiles(model3D, targetTestDirectory);
 
             action.Should().Throw<ArgumentException>().WithMessage("The given model has null or empty material library paths");
         }
@@ -313,7 +313,7 @@ namespace L3D.Net.Tests
             model3D.ReferencedTextureFiles.Returns(new []{path});
 
             var fileHandler = new FileHandler();
-            Action action = () => fileHandler.CopyModelFiles(model3D, targetTestDirectory);
+            var action = () => fileHandler.CopyModelFiles(model3D, targetTestDirectory);
 
             action.Should().Throw<ArgumentException>().WithMessage("The given model has null or empty texture paths");
         }

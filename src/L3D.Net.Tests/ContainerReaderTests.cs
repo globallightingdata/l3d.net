@@ -143,7 +143,7 @@ namespace L3D.Net.Tests
         }
 
         [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
-        public void Read_ShouldCallFileHandlerCreateTemporaryDirectoryScope_ContainerPath(ContainerTypeToTest containerTypeToTest)
+        public void Read_ShouldCallFileHandlerCreateTemporaryDirectoryScope(ContainerTypeToTest containerTypeToTest)
         {
             var context = CreateContext();
 
@@ -190,7 +190,7 @@ namespace L3D.Net.Tests
         }
 
         [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
-        public void Read_ShouldCallL3dXmlReaderRead_WithCorrectXmlFilePath_ContainerPath(ContainerTypeToTest containerTypeToTest)
+        public void Read_ShouldCallL3dXmlReaderRead_WithCorrectXmlFilePath(ContainerTypeToTest containerTypeToTest)
         {
             string workingDirectory = null;
             var context = CreateContext(options =>
@@ -292,7 +292,7 @@ namespace L3D.Net.Tests
 
         [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
         public void
-            Read_ShouldCallContainerDirectoryCleanUp_AndNotCatch_WhenFileHandlerExtractContainerToDirectoryThrows_ContainerPath(ContainerTypeToTest containerTypeToTest)
+            Read_ShouldCallContainerDirectoryCleanUp_AndNotCatch_WhenFileHandlerExtractContainerToDirectoryThrows(ContainerTypeToTest containerTypeToTest)
         {
             IContainerDirectory scope = null;
             var context = CreateContext(options => options

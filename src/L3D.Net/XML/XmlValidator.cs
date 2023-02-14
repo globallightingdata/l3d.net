@@ -71,8 +71,7 @@ namespace L3D.Net.XML
         private L3dXmlVersion GetVersion(XElement root)
         {
             var schemeAttribute = root.Attributes().FirstOrDefault(attribute =>
-                attribute.Name.NamespaceName == @"http://www.w3.org/2001/XMLSchema-instance" &&
-                attribute.Name.LocalName == @"noNamespaceSchemaLocation");
+                attribute.Name is { NamespaceName: @"http://www.w3.org/2001/XMLSchema-instance", LocalName: @"noNamespaceSchemaLocation" });
 
             if (schemeAttribute == null)
                 throw new Exception(
