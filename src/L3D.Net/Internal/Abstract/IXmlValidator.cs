@@ -5,6 +5,6 @@ namespace L3D.Net.Internal.Abstract
 {
     interface IXmlValidator
     {
-        bool ValidateFile(string xmlFilename, out L3dXmlVersion validatedVersion, ILogger logger);
+        bool ValidateFile(string xmlFilename, ILogger logger);
     }
 }

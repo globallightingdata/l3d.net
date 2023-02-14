@@ -19,12 +19,12 @@ namespace L3D.Net
             return CreateContainerReader(logger).Read(containerBytes);
         }
 
-        private ContainerReader CreateContainerReader(ILogger logger)
+        private IContainerReader CreateContainerReader(ILogger logger)
         {
             var fileHandler = new FileHandler();
 
             return new ContainerReader(fileHandler,
-                                       new L3dXmlReader(new XmlValidator(), logger),
+                                       new L3dXmlReader(logger),
                                        new ApiDtoConverter(fileHandler));
         }
     }

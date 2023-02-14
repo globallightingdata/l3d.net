@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -14,18 +13,12 @@ namespace L3D.Net.XML
 {
     public class XmlValidator : IXmlValidator
     {
-        private static readonly Dictionary<string, L3dXmlVersion> SchemeVersions = new()
+        public bool ValidateFile(string xmlFilename, ILogger validationLogger)
         {
-            { Constants.CurrentSchemeUri, L3dXmlVersion.V0_9_2 }
-        };
-
-        public bool ValidateFile(string xmlFilename, out L3dXmlVersion validatedVersion, ILogger validationLogger)
-        {
-            XDocument xmlDocument = XDocument.Load(xmlFilename);
+            var xmlDocument = XDocument.Load(xmlFilename);
             var root = xmlDocument.Root ?? throw new Exception($"Unable to read XML content of {xmlFilename}!");
 
-            validatedVersion = GetVersion(root);
-            var scheme = LoadXsd(validatedVersion);
+            var scheme = LoadXsd(GetVersion(root));
             var schemeSet = CreateSchemaSet(scheme);
             
             return Validate(xmlDocument, schemeSet, validationLogger);
@@ -33,7 +26,7 @@ namespace L3D.Net.XML
 
         private bool Validate(XDocument xmlDocument, XmlSchemaSet schemeSet, ILogger validationLogger)
         {
-            bool isValid = true;
+            var isValid = true;
 
             try
             {
@@ -77,7 +70,7 @@ namespace L3D.Net.XML
                 throw new Exception(
                     "XML document does not reference a valid XSD scheme in namespace (http://www.w3.org/2001/XMLSchema-instance)!");
 
-            if (!SchemeVersions.TryGetValue(schemeAttribute.Value, out var version))
+            if (!GlobalXmlDefinitions.SchemeVersions.TryGetValue(schemeAttribute.Value, out var version))
                 throw new Exception(
                     $"The scheme ({schemeAttribute.Value}) is not known! Try update the L3D.Net component and try again.");
 

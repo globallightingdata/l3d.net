@@ -27,7 +27,7 @@ namespace L3D.Net.Tests
         {
             var xmlValidator = new XmlValidator();
 
-            Action action = () => xmlValidator.ValidateFile(testFile, out _, null);
+            Action action = () => xmlValidator.ValidateFile(testFile, null);
 
             action.Should().Throw<Exception>().WithMessage("Root element is missing.");
         }
@@ -40,7 +40,7 @@ namespace L3D.Net.Tests
         {
             var xmlValidator = new XmlValidator();
 
-            Action action = () => xmlValidator.ValidateFile(testFile, out _, null);
+            Action action = () => xmlValidator.ValidateFile(testFile, null);
 
             action.Should().Throw<Exception>()
                 .WithMessage(
@@ -55,7 +55,7 @@ namespace L3D.Net.Tests
         {
             var xmlValidator = new XmlValidator();
 
-            Action action = () => xmlValidator.ValidateFile(testFile, out _, null);
+            Action action = () => xmlValidator.ValidateFile(testFile, null);
 
             action.Should().Throw<Exception>()
                 .WithMessage("The scheme (*) is not known! Try update the L3D.Net component and try again.");
@@ -69,7 +69,7 @@ namespace L3D.Net.Tests
         {
             var xmlValidator = new XmlValidator();
 
-            var result = xmlValidator.ValidateFile(testFile, out _, null);
+            var result = xmlValidator.ValidateFile(testFile, null);
 
             result.Should().BeFalse();
         }
@@ -80,7 +80,7 @@ namespace L3D.Net.Tests
         {
             var xmlValidator = new XmlValidator();
             var logger = LoggerSubstitute.Create();
-            xmlValidator.ValidateFile(testFile, out _, logger);
+            xmlValidator.ValidateFile(testFile, logger);
 
             logger.Received(1).LogError(Arg.Any<string>());
         }
@@ -93,7 +93,7 @@ namespace L3D.Net.Tests
         {
             var xmlValidator = new XmlValidator();
 
-            var result = xmlValidator.ValidateFile(testFile, out _, null);
+            var result = xmlValidator.ValidateFile(testFile, null);
 
             result.Should().BeTrue();
         }
