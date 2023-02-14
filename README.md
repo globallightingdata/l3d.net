@@ -74,7 +74,8 @@ foreach (var geometryPartDto in container.Parts)
 Read an L3D container already read from disk in byte array (byte[]) format:
 ```CSharp
 var reader = new Reader();
-var container = reader.ReadContainer("path/to/container.l3d");
+byte[] l3dContainer = // Get a byte[] representation of an L3D container;
+var container = reader.ReadContainer(l3dContainer);
 
 foreach (var geometryPartDto in container.Parts)
 {
