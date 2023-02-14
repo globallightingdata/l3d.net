@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using L3D.Net.Abstract;
 using L3D.Net.Internal;
 using L3D.Net.XML;
@@ -18,13 +16,13 @@ class Validator : IValidator
     {
         return CreateContainerValidator(logger).Validate(containerBytes);
     }
-    
+
     private IContainerValidator CreateContainerValidator(ILogger logger)
     {
         var fileHandler = new FileHandler();
 
         return new ContainerValidator(fileHandler,
-                                      new XmlValidator(),
-                                      logger);
+            new XmlValidator(),
+            logger);
     }
 }

@@ -1,11 +1,8 @@
-﻿using L3D.Net.API.Dto;
+﻿namespace L3D.Net.Abstract;
 
-namespace L3D.Net.Abstract
+public interface IContainerValidator
 {
-    public interface IContainerValidator
-    {
-        bool Validate(string containerPath);
+    bool Validate(string containerPath);
 
-        bool Validate(byte[] containerBytes);
-    }
+    bool Validate(byte[] containerBytes);
 }
