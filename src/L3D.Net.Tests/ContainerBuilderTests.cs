@@ -35,7 +35,7 @@ namespace L3D.Net.Tests
                 Converter = Substitute.For<IXmlDtoConverter>();
                 Serializer = Substitute.For<IXmlDtoSerializer>();
                 Validator = Substitute.For<IXmlValidator>();
-                Validator.ValidateFile(Arg.Any<string>(), out Arg.Any<L3dXmlVersion>(), Arg.Any<ILogger>()).Returns(true);
+                Validator.ValidateFile(Arg.Any<string>(), Arg.Any<ILogger>()).Returns(true);
                 Logger = LoggerSubstitute.Create();
                 Builder = new ContainerBuilder(FileHandler, Converter, Serializer, Validator, Logger);
             }
@@ -233,7 +233,7 @@ namespace L3D.Net.Tests
 
             context.Builder.CreateContainer(luminaire, Guid.NewGuid().ToString());
 
-            context.Validator.Received(1).ValidateFile(Arg.Is(expectedPath), out Arg.Any<L3dXmlVersion>(), Arg.Any<ILogger>());
+            context.Validator.Received(1).ValidateFile(Arg.Is(expectedPath), Arg.Any<ILogger>());
         }
 
         [Test]
@@ -241,7 +241,7 @@ namespace L3D.Net.Tests
         {
             var message = Guid.NewGuid().ToString();
             var context = CreateContext();
-            context.Validator.When(v => v.ValidateFile(Arg.Any<string>(), out Arg.Any<L3dXmlVersion>(), Arg.Any<ILogger>()))
+            context.Validator.When(v => v.ValidateFile(Arg.Any<string>(), Arg.Any<ILogger>()))
                 .Do(_ => throw new Exception(message));
 
             Action action = () => context.Builder.CreateContainer(CreateComplexLuminaire(), Guid.NewGuid().ToString());

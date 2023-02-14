@@ -51,7 +51,7 @@ namespace L3D.Net.Internal
             var xmlFilename = Path.Combine(targetDirectory, Constants.L3dXmlFilename);
             _serializer.Serialize(dto, xmlFilename);
 
-            if (!_validator.ValidateFile(xmlFilename, out _, _logger))
+            if (!_validator.ValidateFile(xmlFilename, _logger))
                 throw new Exception("Failed to validate created xml file: " + xmlFilename);
         }
     }

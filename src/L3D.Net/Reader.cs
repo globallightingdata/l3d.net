@@ -12,14 +12,14 @@ public class Reader : IReader
     public LuminaireDto ReadContainer(string containerPath, ILogger logger = null) =>
         CreateContainerReader(logger).Read(containerPath);
 
-    public LuminaireDto ReadContainer(byte[] containerBytes, ILogger logger = null) =>
+    public LuminaireDto ReadContainer(byte[] containerBytes, ILogger logger = null) => 
         CreateContainerReader(logger).Read(containerBytes);
 
-    private static ContainerReader CreateContainerReader(ILogger logger)
+    private static IContainerReader CreateContainerReader(ILogger logger)
     {
         var fileHandler = new FileHandler();
         return new ContainerReader(fileHandler,
-            new L3dXmlReader(new XmlValidator(), logger),
+            new L3dXmlReader(logger),
             new ApiDtoConverter(fileHandler));
     }
 }
