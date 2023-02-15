@@ -17,12 +17,12 @@ class Validator : IValidator
         return CreateContainerValidator(logger).Validate(containerBytes);
     }
 
-    private IContainerValidator CreateContainerValidator(ILogger logger)
+    private static IContainerValidator CreateContainerValidator(ILogger logger)
     {
         var fileHandler = new FileHandler();
 
         return new ContainerValidator(fileHandler,
-            new XmlValidator(),
-            logger);
+                                      new XmlValidator(),
+                                      logger);
     }
 }
