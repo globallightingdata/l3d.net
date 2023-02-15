@@ -1,16 +1,15 @@
 ﻿using System;
 
-namespace L3D.Net.Data
+namespace L3D.Net.Data;
+
+internal abstract class FaceAssignment
 {
-    internal abstract class FaceAssignment
+    public FaceAssignment(int groupIndex)
     {
-        public FaceAssignment(int groupIndex)
-        {
-            if (groupIndex < 0) throw new ArgumentOutOfRangeException(nameof(groupIndex));
+        if (groupIndex < 0) throw new ArgumentOutOfRangeException(nameof(groupIndex));
 
-            GroupIndex = groupIndex;
-        }
-
-        public int GroupIndex { get; }
+        GroupIndex = groupIndex;
     }
+
+    public int GroupIndex { get; }
 }

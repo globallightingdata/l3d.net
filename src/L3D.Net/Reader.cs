@@ -5,19 +5,21 @@ using L3D.Net.Internal;
 using L3D.Net.XML;
 using Microsoft.Extensions.Logging;
 
-namespace L3D.Net
-{
-    public class Reader : IReader
-    {
-        public LuminaireDto ReadContainer(string containerPath, ILogger logger = null)
-        {
-            var fileHandler = new FileHandler();
+namespace L3D.Net;
 
-            return new ContainerReader(
-                    fileHandler,
-                    new L3dXmlReader(new XmlValidator(), logger),
-                    new ApiDtoConverter(fileHandler))
-                .Read(containerPath);
-        }
+public class Reader : IReader
+{
+    public LuminaireDto ReadContainer(string containerPath, ILogger logger = null) =>
+        CreateContainerReader(logger).Read(containerPath);
+
+    public LuminaireDto ReadContainer(byte[] containerBytes, ILogger logger = null) => 
+        CreateContainerReader(logger).Read(containerBytes);
+
+    private static IContainerReader CreateContainerReader(ILogger logger)
+    {
+        var fileHandler = new FileHandler();
+        return new ContainerReader(fileHandler,
+            new L3dXmlReader(logger),
+            new ApiDtoConverter(fileHandler));
     }
 }

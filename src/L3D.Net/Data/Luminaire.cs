@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 
-namespace L3D.Net.Data
+namespace L3D.Net.Data;
+
+internal class Luminaire
 {
-    internal class Luminaire
-    {
-        public Header Header { get; } = new Header();
+    public Header Header { get; } = new Header();
 
-        public List<GeometryDefinition> GeometryDefinitions { get; } = new List<GeometryDefinition>();
+    public List<GeometryDefinition> GeometryDefinitions { get; } = new List<GeometryDefinition>();
 
-        public List<GeometryPart> Parts { get; } = new List<GeometryPart>();
-    }
+    public List<GeometryPart> Parts { get; } = new List<GeometryPart>();
 }

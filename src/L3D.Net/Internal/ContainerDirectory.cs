@@ -1,32 +1,32 @@
-﻿using System;
-using L3D.Net.Internal.Abstract;
+﻿using L3D.Net.Internal.Abstract;
+using System;
+using System.IO;
 
-namespace L3D.Net.Internal
+namespace L3D.Net.Internal;
+
+internal class ContainerDirectory : IContainerDirectory
 {
-    internal class ContainerDirectory : IContainerDirectory
+    public string Path { get; }
+
+    public ContainerDirectory()
     {
-        public ContainerDirectory()
+        while (Path == null || Directory.Exists(Path))
         {
-            while (Path == null || System.IO.Directory.Exists(Path))
-            {
-                Path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), Constants.TempWorkingSubDirectory, Guid.NewGuid().ToString());
-            }
-
-            System.IO.Directory.CreateDirectory(Path);
+            Path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), Constants.TempWorkingSubDirectory, Guid.NewGuid().ToString());
         }
 
-        public void CleanUp()
-        {
-            try
-            {
-                System.IO.Directory.Delete(Path, true);
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-        }
+        Directory.CreateDirectory(Path);
+    }
 
-        public string Path { get; }
+    public void CleanUp()
+    {
+        try
+        {
+            Directory.Delete(Path, true);
+        }
+        catch (Exception)
+        {
+            // ignored
+        }
     }
 }

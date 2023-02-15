@@ -1,7 +1,6 @@
-﻿namespace L3D.Net.API.Dto
+﻿namespace L3D.Net.API.Dto;
+
+public class BaseAssignmentDto
 {
-    public class BaseAssignmentDto
-    {
-        public int GroupIndex { get; set; }
-    }
+    public int GroupIndex { get; set; }
 }

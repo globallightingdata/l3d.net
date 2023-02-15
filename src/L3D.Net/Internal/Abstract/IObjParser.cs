@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace L3D.Net.Internal.Abstract
+namespace L3D.Net.Internal.Abstract;
+
+interface IObjParser
 {
-    interface IObjParser
-    {
-        IModel3D Parse(string filePath, ILogger logger);
-    }
+    IModel3D Parse(string filePath, ILogger logger);
 }

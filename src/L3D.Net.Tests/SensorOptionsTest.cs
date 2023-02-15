@@ -9,28 +9,27 @@ using NUnit.Framework;
 
 // ReSharper disable ObjectCreationAsStatement
 
-namespace L3D.Net.Tests
+namespace L3D.Net.Tests;
+
+[TestFixture]
+public class SensorOptionsTest
 {
-    [TestFixture]
-    public class SensorOptionsTest
+
+    [Test]
+    public void Constructor_ShouldThrowArgumentNullException_WhenBuilderIsNull()
     {
+        Action action = () =>
+            new SensorOptions(null, new SensorPart(Guid.NewGuid().ToString()), Substitute.For<ILogger>());
 
-        [Test]
-        public void Constructor_ShouldThrowArgumentNullException_WhenBuilderIsNull()
-        {
-            Action action = () =>
-                new SensorOptions(null, new SensorPart(Guid.NewGuid().ToString()), Substitute.For<ILogger>());
+        action.Should().Throw<ArgumentNullException>();
+    }
 
-            action.Should().Throw<ArgumentNullException>();
-        }
+    [Test]
+    public void Constructor_ShouldThrowArgumentNullException_WhenSensorPartIsNull()
+    {
+        Action action = () =>
+            new SensorOptions(Substitute.For<ILuminaireBuilder>(), null, Substitute.For<ILogger>());
 
-        [Test]
-        public void Constructor_ShouldThrowArgumentNullException_WhenSensorPartIsNull()
-        {
-            Action action = () =>
-                new SensorOptions(Substitute.For<ILuminaireBuilder>(), null, Substitute.For<ILogger>());
-
-            action.Should().Throw<ArgumentNullException>();
-        }
+        action.Should().Throw<ArgumentNullException>();
     }
 }

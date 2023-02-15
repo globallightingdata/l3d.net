@@ -1,15 +1,14 @@
 ﻿using System.Xml.Serialization;
 
-namespace L3D.Net.XML.V0_9_2.Dto
-{
-    public class GeometryFileDefinitionDto : GeometryDefinitionDto
-    {
-        /// <remarks/>
-        [XmlAttribute("filename")]
-        public string Filename { get; set; }
+namespace L3D.Net.XML.V0_9_2.Dto;
 
-        /// <remarks/>
-        [XmlAttribute("units")]
-        public GeometryNodeUnits Units { get; set; }
-    }
+public class GeometryFileDefinitionDto : GeometryDefinitionDto
+{
+    /// <remarks/>
+    [XmlAttribute("filename")]
+    public string Filename { get; set; }
+
+    /// <remarks/>
+    [XmlAttribute("units")]
+    public GeometryNodeUnits Units { get; set; }
 }

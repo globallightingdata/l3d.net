@@ -8,134 +8,133 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace L3D.Net.Tests
+namespace L3D.Net.Tests;
+
+class TransformableOptionsTests
 {
-    class TransformableOptionsTests
+    private class SimpleTransformable : TransformablePart
     {
-        private class SimpleTransformable : TransformablePart
+        public SimpleTransformable(string name) : base(name)
         {
-            public SimpleTransformable(string name) : base(name)
-            {
-            }
         }
+    }
 
-        private class SimpleTransformableOptions : TransformableOptions
+    private class SimpleTransformableOptions : TransformableOptions
+    {
+        internal SimpleTransformableOptions(ILuminaireBuilder builder, TransformablePart data) : base(builder, data, Substitute.For<ILogger>())
         {
-            internal SimpleTransformableOptions(ILuminaireBuilder builder, TransformablePart data) : base(builder, data, Substitute.For<ILogger>())
-            {
-            }
         }
+    }
 
-        private class Context
-        {
-            public ILuminaireBuilder LuminaireBuilder { get; }
-            public SimpleTransformable Part { get; }
-            public SimpleTransformableOptions Options { get; }
+    private class Context
+    {
+        public ILuminaireBuilder LuminaireBuilder { get; }
+        public SimpleTransformable Part { get; }
+        public SimpleTransformableOptions Options { get; }
             
 
-            public Context()
-            {
-                LuminaireBuilder = Substitute.For<ILuminaireBuilder>();
-                Part = new SimpleTransformable(Guid.NewGuid().ToString());
-                Options = new SimpleTransformableOptions(LuminaireBuilder, Part);
-            }
-        }
-
-        private Context CreateContext()
+        public Context()
         {
-            var context = new Context();
-
-            return context;
+            LuminaireBuilder = Substitute.For<ILuminaireBuilder>();
+            Part = new SimpleTransformable(Guid.NewGuid().ToString());
+            Options = new SimpleTransformableOptions(LuminaireBuilder, Part);
         }
+    }
 
-        [Test]
-        public void TransformableOptions_ShouldSetPosition_Vector()
-        {
-            var context = CreateContext();
+    private Context CreateContext()
+    {
+        var context = new Context();
 
-            Random random = new Random(0);
+        return context;
+    }
 
-            var vector0 = new Vector3((float) random.NextDouble(), (float) random.NextDouble(),
-                (float) random.NextDouble());
+    [Test]
+    public void TransformableOptions_ShouldSetPosition_Vector()
+    {
+        var context = CreateContext();
 
-            context.Options.WithPosition(vector0);
+        Random random = new Random(0);
 
-            context.Part.Position.Should().Be(vector0);
-        }
+        var vector0 = new Vector3((float) random.NextDouble(), (float) random.NextDouble(),
+            (float) random.NextDouble());
 
-        [Test]
-        public void TransformableOptions_ShouldSetPosition_Double()
-        {
-            var context = CreateContext();
+        context.Options.WithPosition(vector0);
 
-            Random random = new Random(0);
+        context.Part.Position.Should().Be(vector0);
+    }
 
-            var vector0 = new Vector3((float) random.NextDouble(), (float) random.NextDouble(),
-                (float) random.NextDouble());
+    [Test]
+    public void TransformableOptions_ShouldSetPosition_Double()
+    {
+        var context = CreateContext();
 
-            context.Options.WithPosition((double) vector0.X, vector0.Y, vector0.Z);
+        Random random = new Random(0);
 
-            context.Part.Position.Should().Be(vector0);
-        }
+        var vector0 = new Vector3((float) random.NextDouble(), (float) random.NextDouble(),
+            (float) random.NextDouble());
 
-        [Test]
-        public void TransformableOptions_ShouldSetPosition_Float()
-        {
-            var context = CreateContext();
+        context.Options.WithPosition((double) vector0.X, vector0.Y, vector0.Z);
 
-            Random random = new Random(0);
+        context.Part.Position.Should().Be(vector0);
+    }
 
-            var vector0 = new Vector3((float) random.NextDouble(), (float) random.NextDouble(),
-                (float) random.NextDouble());
+    [Test]
+    public void TransformableOptions_ShouldSetPosition_Float()
+    {
+        var context = CreateContext();
 
-            context.Options.WithPosition(vector0.X, vector0.Y, vector0.Z);
+        Random random = new Random(0);
 
-            context.Part.Position.Should().Be(vector0);
-        }
+        var vector0 = new Vector3((float) random.NextDouble(), (float) random.NextDouble(),
+            (float) random.NextDouble());
 
-        [Test]
-        public void TransformableOptions_ShouldSetRotation_Vector()
-        {
-            var context = CreateContext();
+        context.Options.WithPosition(vector0.X, vector0.Y, vector0.Z);
 
-            Random random = new Random(0);
+        context.Part.Position.Should().Be(vector0);
+    }
 
-            var vector0 = new Vector3((float) random.NextDouble(), (float) random.NextDouble(),
-                (float) random.NextDouble());
+    [Test]
+    public void TransformableOptions_ShouldSetRotation_Vector()
+    {
+        var context = CreateContext();
 
-            context.Options.WithRotation(vector0);
+        Random random = new Random(0);
 
-            context.Part.Rotation.Should().Be(vector0);
-        }
+        var vector0 = new Vector3((float) random.NextDouble(), (float) random.NextDouble(),
+            (float) random.NextDouble());
 
-        [Test]
-        public void TransformableOptions_ShouldSetRotation_Double()
-        {
-            var context = CreateContext();
+        context.Options.WithRotation(vector0);
 
-            Random random = new Random(0);
+        context.Part.Rotation.Should().Be(vector0);
+    }
 
-            var vector0 = new Vector3((float) random.NextDouble(), (float) random.NextDouble(),
-                (float) random.NextDouble());
+    [Test]
+    public void TransformableOptions_ShouldSetRotation_Double()
+    {
+        var context = CreateContext();
 
-            context.Options.WithRotation((double) vector0.X, vector0.Y, vector0.Z);
+        Random random = new Random(0);
 
-            context.Part.Rotation.Should().Be(vector0);
-        }
+        var vector0 = new Vector3((float) random.NextDouble(), (float) random.NextDouble(),
+            (float) random.NextDouble());
 
-        [Test]
-        public void TransformableOptions_ShouldSetRotation_Float()
-        {
-            var context = CreateContext();
+        context.Options.WithRotation((double) vector0.X, vector0.Y, vector0.Z);
 
-            Random random = new Random(0);
+        context.Part.Rotation.Should().Be(vector0);
+    }
 
-            var vector0 = new Vector3((float) random.NextDouble(), (float) random.NextDouble(),
-                (float) random.NextDouble());
+    [Test]
+    public void TransformableOptions_ShouldSetRotation_Float()
+    {
+        var context = CreateContext();
 
-            context.Options.WithRotation(vector0.X, vector0.Y, vector0.Z);
+        Random random = new Random(0);
 
-            context.Part.Rotation.Should().Be(vector0);
-        }
+        var vector0 = new Vector3((float) random.NextDouble(), (float) random.NextDouble(),
+            (float) random.NextDouble());
+
+        context.Options.WithRotation(vector0.X, vector0.Y, vector0.Z);
+
+        context.Part.Rotation.Should().Be(vector0);
     }
 }

@@ -46,6 +46,7 @@ Builder.NewLuminaire()
 
 ### Reading a L3D container
 
+Read an L3D container from disk:
 ```CSharp
 var reader = new Reader();
 var container = reader.ReadContainer("path/to/container.l3d");
@@ -70,8 +71,47 @@ foreach (var geometryPartDto in container.Parts)
 }
 ```
 
+Read an L3D container already read from disk in byte array (byte[]) format:
+```CSharp
+var reader = new Reader();
+byte[] l3dContainer = // Get a byte[] representation of an L3D container;
+var container = reader.ReadContainer(l3dContainer);
+
+foreach (var geometryPartDto in container.Parts)
+{
+    // From here on out everything is identical to the reading an L3D container from disk example,
+    // see the code sample above.
+}
+```
+
+### Validating a L3D container
+
+Validation of an L3D container from disk:
+```CSharp
+var validator = new Validator();
+var validationResult = validator.ValidateContainer("path/to/container.l3d");
+
+if (validationResult)
+    // Container validation successful
+else
+    // Container validation unsuccessful
+```
+
+Validation of an L3D container already read from disk in byte array (byte[]) format:
+```CSharp
+var validator = new Validator();
+byte[] l3dContainer = // Get a byte[] representation of an L3D container;
+var validationResult = validator.ValidateContainer(l3dContainer);
+
+if (validationResult)
+    // Container validation successful
+else
+    // Container validation unsuccessful
+```
+
 ---
 
 ## Questions, Issues & Contribution
 
 Please use the discussion section for questions or create issues, when something seems to be wrong. PRs are welcome.
+

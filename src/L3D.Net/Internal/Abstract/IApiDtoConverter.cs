@@ -1,10 +1,9 @@
 ﻿using L3D.Net.API.Dto;
 using L3D.Net.Data;
 
-namespace L3D.Net.Internal.Abstract
+namespace L3D.Net.Internal.Abstract;
+
+interface IApiDtoConverter
 {
-    interface IApiDtoConverter
-    {
-        LuminaireDto Convert(Luminaire luminaire, string directory);
-    }
+    LuminaireDto Convert(Luminaire luminaire, string directory);
 }

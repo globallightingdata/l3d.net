@@ -5,76 +5,75 @@ using FluentAssertions;
 using L3D.Net.Internal;
 using NUnit.Framework;
 
-namespace L3D.Net.Tests
+namespace L3D.Net.Tests;
+
+[TestFixture]
+public class ContainerDirectoryTests
 {
-    [TestFixture]
-    public class ContainerDirectoryTests
+    [Test]
+    public void Constructor_ShouldCreateInstanceWithNewDirectoryPath()
     {
-        [Test]
-        public void Constructor_ShouldCreateInstanceWithNewDirectoryPath()
-        {
-            List<string> directories = new List<string>();
+        List<string> directories = new List<string>();
 
-            for (int i = 0; i < 100; i++)
-            {
-                var directory = new ContainerDirectory();
-                try
-                {
-                    directories.Should().NotContain(directory.Path);
-                    directories.Add(directory.Path);
-                }
-                finally
-                {
-                    directory.CleanUp();
-                }
-            }
-        }
-
-        [Test]
-        public void Constructor_ShouldCreateDirectory()
+        for (int i = 0; i < 100; i++)
         {
             var directory = new ContainerDirectory();
             try
             {
-                Directory.Exists(directory.Path).Should().BeTrue();
+                directories.Should().NotContain(directory.Path);
+                directories.Add(directory.Path);
             }
             finally
             {
                 directory.CleanUp();
             }
         }
+    }
 
-        [Test]
-        public void CleanUp_ShouldDeleteDirectory()
+    [Test]
+    public void Constructor_ShouldCreateDirectory()
+    {
+        var directory = new ContainerDirectory();
+        try
         {
-            var directory = new ContainerDirectory();
-            var path = directory.Path;
-            directory.CleanUp();
-            Directory.Exists(path).Should().BeFalse();
+            Directory.Exists(directory.Path).Should().BeTrue();
         }
-
-        [Test]
-        public void CleanUp_ShouldNotThrow_WhenDirectoryCanNotBeDeleted()
+        finally
         {
-            var scope = new ContainerDirectory();
-            var directory = scope.Path;
+            directory.CleanUp();
+        }
+    }
 
-            var openFile = File.OpenWrite(Path.Combine(directory, Guid.NewGuid().ToString()));
+    [Test]
+    public void CleanUp_ShouldDeleteDirectory()
+    {
+        var directory = new ContainerDirectory();
+        var path = directory.Path;
+        directory.CleanUp();
+        Directory.Exists(path).Should().BeFalse();
+    }
 
-            Action action = () => scope.CleanUp();
-            action.Should().NotThrow();
+    [Test]
+    public void CleanUp_ShouldNotThrow_WhenDirectoryCanNotBeDeleted()
+    {
+        var scope = new ContainerDirectory();
+        var directory = scope.Path;
 
-            openFile.Close();
-            openFile.Dispose();
+        var openFile = File.OpenWrite(Path.Combine(directory, Guid.NewGuid().ToString()));
 
-            try
-            {
-                Directory.Delete(directory, true);
-            }
-            catch
-            {
-                // ignored
-            }
+        Action action = () => scope.CleanUp();
+        action.Should().NotThrow();
+
+        openFile.Close();
+        openFile.Dispose();
+
+        try
+        {
+            Directory.Delete(directory, true);
+        }
+        catch
+        {
+            // ignored
         }
     }
 }
