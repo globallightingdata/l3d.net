@@ -58,7 +58,7 @@ class BuilderTests
 
         public string CreatePartName()
         {
-            return "PN" + Guid.NewGuid();
+            return "PN." + Guid.NewGuid();
         }
 
     }
