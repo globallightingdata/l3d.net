@@ -16,9 +16,20 @@ public class XmlValidator : IXmlValidator
     public bool ValidateFile(string xmlFilename, ILogger validationLogger)
     {
         var xmlDocument = XDocument.Load(xmlFilename);
-        var root = xmlDocument.Root ?? throw new Exception($"Unable to read XML content of {xmlFilename}!");
+        var root = xmlDocument.Root;
 
-        var scheme = LoadXsd(GetVersion(root));
+        if (root == null)
+        {
+            validationLogger?.LogError("Unable to read XML content of {XmlFilename}!", xmlFilename);
+            return false;
+        }
+
+        if (!TryGetVersion(root, validationLogger, out var version))
+            return false;
+
+        if (!TryLoadXsd(version, validationLogger, out var scheme))
+            return false;
+        
         var schemeSet = CreateSchemaSet(scheme);
             
         return Validate(xmlDocument, schemeSet, validationLogger);
@@ -35,7 +46,7 @@ public class XmlValidator : IXmlValidator
                 if (ev.Severity == XmlSeverityType.Error)
                 {
                     isValid = false;
-                    validationLogger?.Log(LogLevel.Error ,ev.Message);
+                    validationLogger?.Log(LogLevel.Error, ev.Message);
                 }
                 else
                 {
@@ -61,36 +72,49 @@ public class XmlValidator : IXmlValidator
         return schemaSet;
     }
 
-    private L3dXmlVersion GetVersion(XElement root)
+    private bool TryGetVersion(XElement root, ILogger validationLogger, out Version version)
     {
+        version = null;
+
         var schemeAttribute = root.Attributes().FirstOrDefault(attribute =>
             attribute.Name is { NamespaceName: @"http://www.w3.org/2001/XMLSchema-instance", LocalName: @"noNamespaceSchemaLocation" });
 
         if (schemeAttribute == null)
-            throw new Exception(
-                "XML document does not reference a valid XSD scheme in namespace (http://www.w3.org/2001/XMLSchema-instance)!");
+        {
+            validationLogger?.LogError("XML document does not reference a valid XSD scheme in namespace (http://www.w3.org/2001/XMLSchema-instance)!");
+            return false;
+        }
 
-        if (!GlobalXmlDefinitions.SchemeVersions.TryGetValue(schemeAttribute.Value, out var version))
-            throw new Exception(
-                $"The scheme ({schemeAttribute.Value}) is not known! Try update the L3D.Net component and try again.");
+        var match = GlobalXmlDefinitions.VersionRegex.Match(schemeAttribute.Value);
 
-        return version;
+        if (!match.Success || !Version.TryParse(match.Groups[1].Value, out version) ||
+            !GlobalXmlDefinitions.IsParseable(version))
+        {
+            validationLogger?.LogError("The scheme ({SchemeAttribute}) is not known! Try update the L3D.Net component and try again", schemeAttribute.Value); //ToDo:
+            return false;
+        }
+
+        version = GlobalXmlDefinitions.GetNextMatchingVersion(version);
+
+        return true;
     }
 
-    private string LoadXsd(L3dXmlVersion version)
+    private bool TryLoadXsd(Version version, ILogger validationLogger, out string content)
     {
         try
         {
-            var xsdResourceName = $"L3D.Net.XSD.{version.ToString()}.xsd";
+            var xsdResourceName = $"L3D.Net.XSD.V{version.Major}_{version.Minor}_{version.Build}.xsd";
             var currentAssembly = Assembly.GetAssembly(typeof(XmlValidator));
             using var xsdResource = currentAssembly.GetManifestResourceStream(xsdResourceName);
             using var reader = new StreamReader(xsdResource!, Encoding.UTF8);
-            return reader.ReadToEnd();
+            content = reader.ReadToEnd();
+            return true;
         }
         catch (Exception e)
         {
-            var errorMessage = $"Failed to get embedded XSD for version {version}!";
-            throw new Exception(errorMessage, e);
+            validationLogger?.LogError(e, "Failed to get embedded XSD for version {Version}!", version);
+            content = null;
+            return false;
         }
     }
 }

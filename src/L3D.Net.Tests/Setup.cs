@@ -12,14 +12,17 @@ namespace L3D.Net.Tests;
 public class Setup
 {
     private static bool _isInitialized;
-    private static readonly Mutex Mutex = new Mutex();
+    private static readonly Mutex Mutex = new();
         
     public static string TestDataDirectory { get; private set; }
     public static string ExamplesDirectory { get; private set; }
-
+    public static string ValidVersionsDirectory { get; private set; }
+    public static string InvalidVersionsDirectory { get; private set; }
 
     public static IEnumerable<string> ExampleXmlFiles { get; private set; }
     public static IEnumerable<string> ExampleObjFiles { get; private set; }
+    public static IEnumerable<string> ValidVersionXmlFiles { get; private set; }
+    public static IEnumerable<string> InvalidVersionXmlFiles { get; private set; }
 
     [OneTimeSetUp]
     public static void Initialize()
@@ -34,8 +37,13 @@ public class Setup
             TestDataDirectory = Path.Combine(testBinDirectory, "TestData");
 
             ExamplesDirectory = Path.Combine(TestDataDirectory, "xml", "v0.9.2");
+            ValidVersionsDirectory = Path.Combine(TestDataDirectory, "xml", "validation", "valid_versions");
+            InvalidVersionsDirectory = Path.Combine(TestDataDirectory, "xml", "validation", "invalid_versions");
+
             ExampleXmlFiles = Directory.EnumerateFiles(ExamplesDirectory, "*.xml", SearchOption.AllDirectories).ToList();
             ExampleObjFiles = Directory.EnumerateFiles(ExamplesDirectory, "*.obj", SearchOption.AllDirectories).ToList();
+            ValidVersionXmlFiles = Directory.EnumerateFiles(ValidVersionsDirectory, "*.xml", SearchOption.AllDirectories).ToList();
+            InvalidVersionXmlFiles = Directory.EnumerateFiles(InvalidVersionsDirectory, "*.xml", SearchOption.AllDirectories).ToList();
 
             _isInitialized = true;
         }

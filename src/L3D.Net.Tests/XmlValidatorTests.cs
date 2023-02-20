@@ -40,11 +40,9 @@ public class XmlValidatorTests
     {
         var xmlValidator = new XmlValidator();
 
-        Action action = () => xmlValidator.ValidateFile(testFile, null);
+        var result = xmlValidator.ValidateFile(testFile, null);
 
-        action.Should().Throw<Exception>()
-            .WithMessage(
-                @"XML document does not reference a valid XSD scheme in namespace (http://www.w3.org/2001/XMLSchema-instance)!");
+        result.Should().BeFalse();
     }
 
     static IEnumerable<string> GetUnknownSchemeTestFiles() => GetXmlFiles("unknown_scheme");
@@ -55,13 +53,12 @@ public class XmlValidatorTests
     {
         var xmlValidator = new XmlValidator();
 
-        Action action = () => xmlValidator.ValidateFile(testFile, null);
+        var result = xmlValidator.ValidateFile(testFile, null);
 
-        action.Should().Throw<Exception>()
-            .WithMessage("The scheme (*) is not known! Try update the L3D.Net component and try again.");
+        result.Should().BeFalse();
     }
 
-    static IEnumerable<string> GetInvalidTestFiles() => GetXmlFiles("invalid");
+    static IEnumerable<string> GetInvalidTestFiles() => GetXmlFiles("invalid").Union(Setup.InvalidVersionXmlFiles);
 
     [Test]
     [TestCaseSource(nameof(GetInvalidTestFiles))]
@@ -85,7 +82,7 @@ public class XmlValidatorTests
         logger.Received(1).LogError(Arg.Any<string>());
     }
 
-    static IEnumerable<string> GetValidTestFiles() => Setup.ExampleXmlFiles;
+    static IEnumerable<string> GetValidTestFiles() => Setup.ExampleXmlFiles.Union(Setup.ValidVersionXmlFiles);
 
     [Test]
     [TestCaseSource(nameof(GetValidTestFiles))]
