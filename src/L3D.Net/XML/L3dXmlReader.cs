@@ -43,7 +43,7 @@ internal class L3dXmlReader : IL3dXmlReader
 
         if (!match.Success || !Version.TryParse(match.Groups[1].Value, out var version) || !GlobalXmlDefinitions.IsParseable(version))
             throw new Exception(
-                $"The scheme ({schemeAttribute.Value}) is not known! Try update the L3D.Net component and try again."); //ToDo:
+                $"The scheme ({schemeAttribute.Value}) is not known!");
 
         version = GlobalXmlDefinitions.GetNextMatchingVersion(version);
 

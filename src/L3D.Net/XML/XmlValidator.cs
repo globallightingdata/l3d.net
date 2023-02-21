@@ -90,7 +90,7 @@ public class XmlValidator : IXmlValidator
         if (!match.Success || !Version.TryParse(match.Groups[1].Value, out version) ||
             !GlobalXmlDefinitions.IsParseable(version))
         {
-            validationLogger?.LogError("The scheme ({SchemeAttribute}) is not known! Try update the L3D.Net component and try again", schemeAttribute.Value); //ToDo:
+            validationLogger?.LogError("The scheme ({SchemeAttribute}) is not known!", schemeAttribute.Value);
             return false;
         }
 
