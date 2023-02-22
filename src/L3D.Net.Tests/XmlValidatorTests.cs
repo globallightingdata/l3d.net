@@ -58,7 +58,11 @@ public class XmlValidatorTests
         result.Should().BeFalse();
     }
 
-    static IEnumerable<string> GetInvalidTestFiles() => GetXmlFiles("invalid").Union(Setup.InvalidVersionXmlFiles);
+    static IEnumerable<string> GetInvalidTestFiles()
+    {
+        Setup.Initialize();
+        return GetXmlFiles("invalid").Union(Setup.InvalidVersionXmlFiles);
+    }
 
     [Test]
     [TestCaseSource(nameof(GetInvalidTestFiles))]
@@ -82,7 +86,11 @@ public class XmlValidatorTests
         logger.Received(1).LogError(Arg.Any<string>());
     }
 
-    static IEnumerable<string> GetValidTestFiles() => Setup.ExampleXmlFiles.Union(Setup.ValidVersionXmlFiles);
+    static IEnumerable<string> GetValidTestFiles()
+    {
+        Setup.Initialize();
+        return Setup.ExampleXmlFiles.Union(Setup.ValidVersionXmlFiles);
+    }
 
     [Test]
     [TestCaseSource(nameof(GetValidTestFiles))]
