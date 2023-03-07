@@ -145,8 +145,8 @@ public class LuminaireBuilder : ILuminaireBuilder
         if (string.IsNullOrWhiteSpace(partName))
             throw new ArgumentException(@"The part name must not be null or empty!", nameof(partName));
 
-        if (!Regex.IsMatch(partName, @"^[a-z_][\w-]*$", RegexOptions.IgnoreCase))
-            throw new ArgumentException("partName has to match the pattern \"^[a-z_][\\w-]*$\"");
+        if (!Regex.IsMatch(partName, @"^[A-Za-z][\w\.\-]{2,}$"))
+            throw new ArgumentException("partName has to match the pattern \"^[A-Za-z][\\w\\.\\-]{2,}$\"");
 
         if (TryGetPartByName(partName, out _))
             throw new ArgumentException($@"The model name {partName} is already availbale!", nameof(partName));

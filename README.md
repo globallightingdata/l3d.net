@@ -109,6 +109,23 @@ else
     // Container validation unsuccessful
 ```
 
+### Compatibility
+
+L3D.NET is able to read old and new unknown versions, with the exception of a new major version.
+
+When a new minor version is read, it is possible that optional information is not read.
+If the L3D is saved again, this information is not written either and the version is set to the latest version of the L3D.NET component.
+
+The following table explains this behaviour summarized:
+
+File version | L3D.NET version | Can read | Can write | Read and write changes the file
+------------ | --------------- | -------- | --------- | ----------------------------
+1.0.0.0      | 0.9.0.0         | no       | no        | N/A
+0.9.0.0      | 1.0.0.0         | yes      | yes*      | yes - the version is updated and the content accordingly too
+1.0.0.0      | 1.0.0.0         | yes      | yes       | no
+0.9.2.0      | 0.9.0.0         | yes*     | yes*      | yes - some optional information may not be read or written
+0.9.0.0      | 0.9.2.0         | yes      | yes*      | yes - the version is updated and the content accordingly too
+
 ---
 
 ## Questions, Issues & Contribution
