@@ -5,7 +5,7 @@ namespace L3D.Net.XML.V0_9_2.Dto;
 
 /// <remarks/>
 [Serializable]
-public class FaceRangeAssignmentDto : FaceAssignmentBaseDto
+public class FaceRangeAssignmentDto : FaceAssignmentDto
 {
     /// <remarks/>
     [XmlAttribute("faceIndexBegin")]

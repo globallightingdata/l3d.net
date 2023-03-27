@@ -1,13 +1,14 @@
-﻿using System;
-using System.IO;
-using L3D.Net.Data;
+﻿using L3D.Net.Data;
+using L3D.Net.Exceptions;
 using L3D.Net.Internal.Abstract;
 using L3D.Net.XML.V0_9_2;
 using Microsoft.Extensions.Logging;
+using System;
+using System.IO;
 
 namespace L3D.Net.Internal;
 
-internal class ContainerBuilder : IContainerBuilder
+public class ContainerBuilder : IContainerBuilder
 {
     private readonly IFileHandler _fileHandler;
     private readonly IXmlDtoConverter _converter;
@@ -24,7 +25,27 @@ internal class ContainerBuilder : IContainerBuilder
         _logger = logger;
     }
 
-    public void CreateContainer(Luminaire luminaire, string containerPath)
+    public byte[] CreateContainerByteArray(Luminaire luminaire)
+    {
+        if (luminaire == null) throw new ArgumentNullException(nameof(luminaire));
+
+        using var scope = new ContainerDirectoryScope(_fileHandler.CreateContainerDirectory());
+        var directory = scope.Directory;
+        PrepareFiles(luminaire, directory);
+        return _fileHandler.CreateContainerByteArray(directory);
+    }
+
+    public void AppendContainerToStream(Luminaire luminaire, Stream stream)
+    {
+        if (luminaire == null) throw new ArgumentNullException(nameof(luminaire));
+
+        using var scope = new ContainerDirectoryScope(_fileHandler.CreateContainerDirectory());
+        var directory = scope.Directory;
+        PrepareFiles(luminaire, directory);
+        _fileHandler.AppendContainerToStream(directory, stream);
+    }
+
+    public void CreateContainerFile(Luminaire luminaire, string containerPath)
     {
         if (luminaire == null) throw new ArgumentNullException(nameof(luminaire));
 
@@ -34,14 +55,14 @@ internal class ContainerBuilder : IContainerBuilder
         using var scope = new ContainerDirectoryScope(_fileHandler.CreateContainerDirectory());
         var directory = scope.Directory;
         PrepareFiles(luminaire, directory);
-        _fileHandler.CreateContainerFromDirectory(directory, containerPath);
+        _fileHandler.CreateContainerFile(directory, containerPath);
     }
-        
-    internal void PrepareFiles(Luminaire luminaire, string targetDirectory)
+
+    private void PrepareFiles(Luminaire luminaire, string targetDirectory)
     {
         foreach (var geometryDefinition in luminaire.GeometryDefinitions)
         {
-            var modelTargetDirectory = Path.Combine(targetDirectory, geometryDefinition.Id);
+            var modelTargetDirectory = Path.Combine(targetDirectory, geometryDefinition.GeometryId);
 
             _fileHandler.CopyModelFiles(geometryDefinition.Model, modelTargetDirectory);
         }
@@ -52,6 +73,6 @@ internal class ContainerBuilder : IContainerBuilder
         _serializer.Serialize(dto, xmlFilename);
 
         if (!_validator.ValidateFile(xmlFilename, _logger))
-            throw new Exception("Failed to validate created xml file: " + xmlFilename);
+            throw new InvalidL3DException("Failed to validate created xml file: " + xmlFilename);
     }
 }

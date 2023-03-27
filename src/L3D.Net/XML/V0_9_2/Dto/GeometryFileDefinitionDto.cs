@@ -6,9 +6,9 @@ public class GeometryFileDefinitionDto : GeometryDefinitionDto
 {
     /// <remarks/>
     [XmlAttribute("filename")]
-    public string Filename { get; set; }
+    public string FileName { get; set; }
 
     /// <remarks/>
     [XmlAttribute("units")]
-    public GeometryNodeUnits Units { get; set; }
+    public GeometricUnitsDto Units { get; set; }
 }

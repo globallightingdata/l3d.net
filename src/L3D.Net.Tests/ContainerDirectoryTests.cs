@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using FluentAssertions;
+﻿using FluentAssertions;
 using L3D.Net.Internal;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace L3D.Net.Tests;
 
@@ -13,9 +13,9 @@ public class ContainerDirectoryTests
     [Test]
     public void Constructor_ShouldCreateInstanceWithNewDirectoryPath()
     {
-        List<string> directories = new List<string>();
+        List<string> directories = new();
 
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             var directory = new ContainerDirectory();
             try

@@ -1,19 +1,19 @@
-﻿using System;
+﻿using L3D.Net.Data;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
-using NUnit.Framework;
 
 namespace L3D.Net.Tests;
 
 [SetUpFixture]
-public class Setup
+public static class Setup
 {
     private static bool _isInitialized;
-    private static readonly Mutex Mutex = new();
-        
+    private static readonly object Lock = new();
+
     public static string TestDataDirectory { get; private set; }
     public static string ExamplesDirectory { get; private set; }
     public static string ValidVersionsDirectory { get; private set; }
@@ -27,7 +27,7 @@ public class Setup
     [OneTimeSetUp]
     public static void Initialize()
     {
-        lock (Mutex)
+        lock (Lock)
         {
             if (_isInitialized)
                 return;
@@ -48,7 +48,7 @@ public class Setup
             _isInitialized = true;
         }
     }
-        
+
     public static List<string> EmptyStringValues()
     {
         return new List<string>
@@ -62,7 +62,7 @@ public class Setup
             Environment.NewLine
         };
     }
-        
+
     public static List<byte[]> EmptyByteArrayValues()
     {
         return new List<byte[]>
@@ -72,17 +72,17 @@ public class Setup
         };
     }
 
-    public static readonly Dictionary<string, Func<LuminaireBuilder, LuminaireBuilder>> ExampleBuilderMapping =
-        new Dictionary<string, Func<LuminaireBuilder, LuminaireBuilder>>
+    public static readonly Dictionary<string, Func<Luminaire, Luminaire>> ExampleBuilderMapping =
+        new()
         {
-            {"example_000", builder => builder.BuildExample000()},
-            {"example_001", builder => builder.BuildExample001()},
-            {"example_002", builder => builder.BuildExample002()},
-            {"example_003", builder => builder.BuildExample003()},
-            {"example_004", builder => builder.BuildExample004()},
-            {"example_005", builder => builder.BuildExample005()},
-            {"example_006", builder => builder.BuildExample006()},
-            {"example_007", builder => builder.BuildExample007()},
-            {"example_008", builder => builder.BuildExample008()},
+            {"example_000", luminaire => luminaire.BuildExample000()},
+            {"example_001", luminaire => luminaire.BuildExample001()},
+            {"example_002", luminaire => luminaire.BuildExample002()},
+            {"example_003", luminaire => luminaire.BuildExample003()},
+            {"example_004", luminaire => luminaire.BuildExample004()},
+            {"example_005", luminaire => luminaire.BuildExample005()},
+            {"example_006", luminaire => luminaire.BuildExample006()},
+            {"example_007", luminaire => luminaire.BuildExample007()},
+            {"example_008", luminaire => luminaire.BuildExample008()}
         };
 }

@@ -3,19 +3,11 @@ using System.Collections.Generic;
 
 namespace L3D.Net.Data;
 
-internal class LightEmittingSurfacePart : Part
+public class LightEmittingSurfacePart : Part
 {
-    private readonly Dictionary<string, double> _lightEmittingPartIntensityMapping = new();
-    private readonly List<FaceAssignment> _faceAssignments = new();
+    public Dictionary<string, double> LightEmittingPartIntensityMapping { get; set; } = new();
 
-    public LightEmittingSurfacePart(string partName) : base(partName)
-    {
-    }
-
-    public IReadOnlyDictionary<string, double> LightEmittingPartIntensityMapping =>
-        _lightEmittingPartIntensityMapping;
-
-    public IEnumerable<FaceAssignment> FaceAssignments => _faceAssignments;
+    public List<FaceAssignment> FaceAssignments { get; set; } = new();
 
     public void AddLightEmittingObject(string leoPartName, double intensity = 1.0)
     {
@@ -25,7 +17,7 @@ internal class LightEmittingSurfacePart : Part
         if (intensity < 0) throw new ArgumentOutOfRangeException(nameof(intensity));
         if (intensity > 1) throw new ArgumentOutOfRangeException(nameof(intensity));
 
-        _lightEmittingPartIntensityMapping[leoPartName] = intensity;
+        LightEmittingPartIntensityMapping[leoPartName] = intensity;
     }
 
     public void AddFaceAssignment(int groupIndex, int faceIndex)
@@ -33,7 +25,11 @@ internal class LightEmittingSurfacePart : Part
         if (groupIndex < 0) throw new ArgumentOutOfRangeException(nameof(groupIndex));
         if (faceIndex < 0) throw new ArgumentOutOfRangeException(nameof(faceIndex));
 
-        _faceAssignments.Add(new SingleFaceAssignment(groupIndex, faceIndex));
+        FaceAssignments.Add(new SingleFaceAssignment
+        {
+            FaceIndex = faceIndex,
+            GroupIndex = groupIndex
+        });
     }
 
     public void AddFaceAssignment(int groupIndex, int faceIndexBegin, int faceIndexEnd)
@@ -46,6 +42,11 @@ internal class LightEmittingSurfacePart : Part
         if (faceIndexBegin == faceIndexEnd)
             AddFaceAssignment(groupIndex, faceIndexBegin);
         else
-            _faceAssignments.Add(new FaceRangeAssignment(groupIndex, faceIndexBegin, faceIndexEnd));
+            FaceAssignments.Add(new FaceRangeAssignment
+            {
+                GroupIndex = groupIndex,
+                FaceIndexBegin = faceIndexBegin,
+                FaceIndexEnd = faceIndexEnd
+            });
     }
 }

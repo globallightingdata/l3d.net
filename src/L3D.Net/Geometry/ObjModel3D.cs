@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using L3D.Net.Data;
+﻿using L3D.Net.Data;
 using L3D.Net.Internal.Abstract;
+using System.Collections.Generic;
 
 namespace L3D.Net.Geometry;
 
-internal class ObjModel3D : IModel3D
+public class ObjModel3D : IModel3D
 {
     public string FilePath { get; set; }
 

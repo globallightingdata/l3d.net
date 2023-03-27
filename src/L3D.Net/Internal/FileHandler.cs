@@ -1,16 +1,42 @@
-﻿using System;
+﻿using L3D.Net.Internal.Abstract;
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using L3D.Net.Internal.Abstract;
 
 namespace L3D.Net.Internal;
 
-internal class FileHandler : IFileHandler
+public class FileHandler : IFileHandler
 {
-    public void CreateContainerFromDirectory(string directory, string containerPath)
+    public static readonly FileHandler Instance = new();
+
+    public void CreateContainerFile(string directory, string containerPath)
     {
         ZipFile.CreateFromDirectory(directory, containerPath);
+    }
+
+    public byte[] CreateContainerByteArray(string directory)
+    {
+        var tmpPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        ZipFile.CreateFromDirectory(directory, tmpPath);
+
+        var bytes = File.ReadAllBytes(tmpPath);
+        if (File.Exists(tmpPath))
+            File.Delete(tmpPath);
+
+        return bytes;
+    }
+
+    public void AppendContainerToStream(string directory, Stream stream)
+    {
+        var tmpPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        ZipFile.CreateFromDirectory(directory, tmpPath);
+
+        var bytes = File.ReadAllBytes(tmpPath);
+        if (File.Exists(tmpPath))
+            File.Delete(tmpPath);
+
+        stream.Write(bytes, 0, bytes.Length);
     }
 
     public void ExtractContainerToDirectory(string containerPath, string directory)
@@ -22,6 +48,12 @@ internal class FileHandler : IFileHandler
     {
         using var archiveMemoryStream = new MemoryStream(containerBytes);
         using var archive = new ZipArchive(archiveMemoryStream);
+        archive.ExtractToDirectory(directory);
+    }
+
+    public void ExtractContainerToDirectory(Stream containerStream, string directory)
+    {
+        using var archive = new ZipArchive(containerStream);
         archive.ExtractToDirectory(directory);
     }
 
@@ -68,7 +100,7 @@ internal class FileHandler : IFileHandler
         }
     }
 
-    private void CopyFile(string filepath, string targetDirectory)
+    private static void CopyFile(string filepath, string targetDirectory)
     {
         var fileName = Path.GetFileName(filepath);
         var targetFileName = Path.Combine(targetDirectory, fileName);
@@ -76,7 +108,7 @@ internal class FileHandler : IFileHandler
         File.Copy(filepath, targetFileName);
     }
 
-    private void ThrowWhenModelIsInvalid(IModel3D model3D)
+    private static void ThrowWhenModelIsInvalid(IModel3D model3D)
     {
         if (model3D == null) throw new ArgumentNullException(nameof(model3D));
 

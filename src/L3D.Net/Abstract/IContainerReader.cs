@@ -1,10 +1,13 @@
-﻿using L3D.Net.API.Dto;
+﻿using L3D.Net.Data;
+using System.IO;
 
 namespace L3D.Net.Abstract;
 
 public interface IContainerReader
 {
-    LuminaireDto Read(string containerPath);
+    Luminaire Read(string containerPath);
 
-    LuminaireDto Read(byte[] containerBytes);
+    Luminaire Read(byte[] containerBytes);
+
+    Luminaire Read(Stream containerStream);
 }

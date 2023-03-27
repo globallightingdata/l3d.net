@@ -1,10 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Numerics;
-using L3D.Net.API.Dto;
-using L3D.Net.Data;
+﻿using L3D.Net.Data;
 using L3D.Net.Internal.Abstract;
 using L3D.Net.XML.V0_9_2.Dto;
+using System;
+using System.Linq;
+using System.Numerics;
 using CircleDto = L3D.Net.XML.V0_9_2.Dto.CircleDto;
 using GeometryDefinitionDto = L3D.Net.XML.V0_9_2.Dto.GeometryDefinitionDto;
 using HeaderDto = L3D.Net.XML.V0_9_2.Dto.HeaderDto;
@@ -15,7 +14,7 @@ using ShapeDto = L3D.Net.XML.V0_9_2.Dto.ShapeDto;
 
 namespace L3D.Net.XML.V0_9_2;
 
-internal class XmlDtoConverter : IXmlDtoConverter
+public class XmlDtoConverter : IXmlDtoConverter
 {
     public LuminaireDto Convert(Luminaire luminaire)
     {
@@ -30,7 +29,7 @@ internal class XmlDtoConverter : IXmlDtoConverter
         };
     }
 
-    internal HeaderDto Convert(Header metaData)
+    public HeaderDto Convert(Header metaData)
     {
         if (metaData == null)
             return null;
@@ -44,46 +43,43 @@ internal class XmlDtoConverter : IXmlDtoConverter
         };
     }
 
-    internal GeometryNodeUnits Convert(GeometricUnits units)
+    public GeometricUnitsDto Convert(GeometricUnits units)
     {
-        switch (units)
+        return units switch
         {
-            case GeometricUnits.m:
-                return GeometryNodeUnits.m;
-            case GeometricUnits.mm:
-                return GeometryNodeUnits.mm;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(units), units, null);
-        }
+            GeometricUnits.m => GeometricUnitsDto.m,
+            GeometricUnits.mm => GeometricUnitsDto.mm,
+            _ => throw new ArgumentOutOfRangeException(nameof(units), units, null)
+        };
     }
 
-    internal GeometryDefinitionDto Convert(GeometryDefinition geometryDefinition)
+    public GeometryDefinitionDto Convert(GeometrySource geometrySource)
     {
-        if (geometryDefinition == null)
+        if (geometrySource == null)
             return null;
 
         return new GeometryFileDefinitionDto
         {
-            Id = geometryDefinition.Id,
-            Filename = geometryDefinition.FileName,
-            Units = Convert(geometryDefinition.Units)
+            Id = geometrySource.GeometryId,
+            FileName = geometrySource.FileName,
+            Units = Convert(geometrySource.Units)
         };
     }
 
-    internal GeometryNodeDto Convert(GeometryPart geometry)
+    public GeometryPartDto Convert(GeometryPart geometry)
     {
         if (geometry == null)
             return null;
 
-        return new GeometryNodeDto
+        return new GeometryPartDto
         {
-            PartName = geometry.Name,
+            Name = geometry.Name,
             Position = Convert(geometry.Position),
             Rotation = Convert(geometry.Rotation),
-            GeometrySource = new GeometryReferenceDto { GeometryId = geometry.GeometryDefinition.Id },
+            GeometrySource = new GeometryReferenceDto { GeometryId = geometry.GeometrySource.GeometryId },
             Joints = geometry.Joints.Select(Convert).ToList(),
             LightEmittingObjects = geometry.LightEmittingObjects.Select(Convert).ToList(),
-            SensorObjects = geometry.Sensors.Select(Convert).ToList(),
+            Sensors = geometry.Sensors.Select(Convert).ToList(),
             LightEmittingSurfaces = geometry.LightEmittingSurfaces.Select(Convert).ToList(),
             ElectricalConnectors = geometry.ElectricalConnectors.Select(Convert).ToList(),
             PendulumConnectors = geometry.PendulumConnectors.Select(Convert).ToList(),
@@ -91,14 +87,14 @@ internal class XmlDtoConverter : IXmlDtoConverter
         };
     }
 
-    internal LightEmittingNodeDto Convert(LightEmittingPart lightEmittingPart)
+    public LightEmittingPartDto Convert(LightEmittingPart lightEmittingPart)
     {
         if (lightEmittingPart == null)
             return null;
 
-        return new LightEmittingNodeDto
+        return new LightEmittingPartDto
         {
-            PartName = lightEmittingPart.Name,
+            Name = lightEmittingPart.Name,
             Position = Convert(lightEmittingPart.Position),
             Rotation = Convert(lightEmittingPart.Rotation),
             Shape = Convert(lightEmittingPart.Shape),
@@ -106,7 +102,7 @@ internal class XmlDtoConverter : IXmlDtoConverter
         };
     }
 
-    internal LuminousHeightsDto Convert(LuminousHeights luminousHeights)
+    public LuminousHeightsDto Convert(LuminousHeights luminousHeights)
     {
         if (luminousHeights == null)
             return null;
@@ -120,7 +116,7 @@ internal class XmlDtoConverter : IXmlDtoConverter
         };
     }
 
-    internal Vector3Dto Convert(Vector3 vector)
+    public Vector3Dto Convert(Vector3 vector)
     {
         return new Vector3Dto
         {
@@ -130,14 +126,14 @@ internal class XmlDtoConverter : IXmlDtoConverter
         };
     }
 
-    internal JointNodeDto Convert(JointPart joint)
+    public JointPartDto Convert(JointPart joint)
     {
         if (joint == null)
             return null;
 
-        return new JointNodeDto
+        return new JointPartDto
         {
-            PartName = joint.Name,
+            Name = joint.Name,
             Position = Convert(joint.Position),
             Rotation = Convert(joint.Rotation),
             XAxis = Convert(joint.XAxis),
@@ -148,7 +144,7 @@ internal class XmlDtoConverter : IXmlDtoConverter
         };
     }
 
-    internal Vector3Dto Convert(Vector3? vector)
+    public Vector3Dto Convert(Vector3? vector)
     {
         if (vector == null)
             return null;
@@ -161,12 +157,12 @@ internal class XmlDtoConverter : IXmlDtoConverter
         };
     }
 
-    internal AxisRotationTypeDto Convert(AxisRotation axisRotation)
+    public AxisRotationDto Convert(AxisRotation axisRotation)
     {
         if (axisRotation == null)
             return null;
 
-        return new AxisRotationTypeDto
+        return new AxisRotationDto
         {
             Min = axisRotation.Min,
             Max = axisRotation.Max,
@@ -174,20 +170,20 @@ internal class XmlDtoConverter : IXmlDtoConverter
         };
     }
 
-    internal SensorObjectDto Convert(SensorPart sensor)
+    public SensorDto Convert(SensorPart sensor)
     {
         if (sensor == null)
             return null;
 
-        return new SensorObjectDto
+        return new SensorDto
         {
-            PartName = sensor.Name,
+            Name = sensor.Name,
             Position = Convert(sensor.Position),
             Rotation = Convert(sensor.Rotation)
         };
     }
 
-    internal ShapeDto Convert(Shape shape)
+    public ShapeDto Convert(Shape shape)
     {
         if (shape == null)
             return null;
@@ -212,42 +208,35 @@ internal class XmlDtoConverter : IXmlDtoConverter
         throw new ArgumentOutOfRangeException($"Unknown shape type: {shape.GetType().FullName}");
     }
 
-    internal FaceAssignmentBaseDto Convert(FaceAssignment assignment)
+    public FaceAssignmentDto Convert(FaceAssignment assignment)
     {
-        if (assignment == null)
-            return null;
-
-        if (assignment is SingleFaceAssignment single)
+        return assignment switch
         {
-            return new FaceAssignmentDto
+            null => null,
+            SingleFaceAssignment single => new SingleFaceAssignmentDto
             {
                 GroupIndex = single.GroupIndex,
                 FaceIndex = single.FaceIndex
-            };
-        }
-
-        if (assignment is FaceRangeAssignment range)
-        {
-            return new FaceRangeAssignmentDto
+            },
+            FaceRangeAssignment range => new FaceRangeAssignmentDto
             {
                 GroupIndex = range.GroupIndex,
                 FaceIndexBegin = range.FaceIndexBegin,
                 FaceIndexEnd = range.FaceIndexEnd
-            };
-        }
-
-        throw new ArgumentOutOfRangeException($"Unknown assignment type {assignment.GetType().FullName}");
+            },
+            _ => throw new ArgumentOutOfRangeException($"Unknown assignment type {assignment.GetType().FullName}")
+        };
     }
 
-    internal LightEmittingSurfaceDto Convert(LightEmittingSurfacePart les)
+    public LightEmittingSurfaceDto Convert(LightEmittingSurfacePart les)
     {
         if (les == null)
             return null;
 
         return new LightEmittingSurfaceDto
         {
-            PartName = les.Name,
-            LightEmittingObjectReference = les.LightEmittingPartIntensityMapping.Select(entry =>
+            Name = les.Name,
+            LightEmittingPartIntensityMapping = les.LightEmittingPartIntensityMapping.Select(entry =>
                 new LightEmittingObjectReferenceDto
                 {
                     LightEmittingPartName = entry.Key,

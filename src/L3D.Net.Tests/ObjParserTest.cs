@@ -1,11 +1,11 @@
-﻿using System.IO;
-using System.Linq;
-using System.Numerics;
-using FluentAssertions;
+﻿using FluentAssertions;
 using L3D.Net.Geometry;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
+using System.IO;
+using System.Linq;
+using System.Numerics;
 
 namespace L3D.Net.Tests;
 
@@ -53,7 +53,7 @@ public class ObjParserTest
             }
         }
     }
-        
+
     [Test]
     public void Parse_ShouldParseMaterialCorrectly()
     {

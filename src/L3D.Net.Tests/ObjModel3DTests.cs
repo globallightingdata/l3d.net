@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using FluentAssertions;
+﻿using FluentAssertions;
 using L3D.Net.Data;
 using L3D.Net.Geometry;
 using NUnit.Framework;
+using System;
 
 namespace L3D.Net.Tests;
 
@@ -27,13 +24,14 @@ public class ObjModel3DTests
     {
         var model3D = new ObjModel3D
         {
-            Data = new ModelData(
-                Enumerable.Empty<Vector3>(),
-                Enumerable.Empty<Vector3>(),
-                Enumerable.Empty<Vector2>(),
-                Enumerable.Empty<ModelFaceGroup>(),
-                Enumerable.Empty<ModelMaterial>()
-            )
+            Data = new ModelData
+            {
+                Normals = new(),
+                FaceGroups = new(),
+                Materials = new(),
+                TextureCoordinates = new(),
+                Vertices = new()
+            }
         };
 
         var valid = model3D.IsFaceIndexValid(0, 0);
@@ -46,13 +44,21 @@ public class ObjModel3DTests
     {
         var model3D = new ObjModel3D
         {
-            Data = new ModelData(
-                Enumerable.Empty<Vector3>(),
-                Enumerable.Empty<Vector3>(),
-                Enumerable.Empty<Vector2>(),
-                new List<ModelFaceGroup> {new(Guid.NewGuid().ToString(), Enumerable.Empty<ModelFace>())},
-                Enumerable.Empty<ModelMaterial>()
-            )
+            Data = new ModelData
+            {
+                FaceGroups = new()
+                {
+                    new()
+                    {
+                        Name = Guid.NewGuid().ToString(),
+                        Faces = new()
+                    }
+                },
+                Materials = new(),
+                Normals = new(),
+                TextureCoordinates = new(),
+                Vertices = new()
+            }
         };
 
         var valid = model3D.IsFaceIndexValid(0, 0);

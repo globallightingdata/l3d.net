@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using L3D.Net.Data;
+﻿using L3D.Net.Data;
+using System.Collections.Generic;
 
 namespace L3D.Net.Internal.Abstract;
 
-interface IModel3D
+public interface IModel3D
 {
     string FilePath { get; }
     IEnumerable<string> ReferencedMaterialLibraryFiles { get; }

@@ -3,15 +3,11 @@ using System.Numerics;
 
 namespace L3D.Net.Data;
 
-internal class JointPart : TransformablePart
+public class JointPart : TransformablePart
 {
-    public JointPart(string name) : base(name)
-    {
-    }
-
-    public List<GeometryPart> Geometries { get; } = new List<GeometryPart>();
+    public List<GeometryPart> Geometries { get; set; } = new();
     public Vector3? DefaultRotation { get; set; }
-    public AxisRotation XAxis { get; set; }
-    public AxisRotation YAxis { get; set; }
-    public AxisRotation ZAxis { get; set; }
+    public AxisRotation XAxis { get; set; } = new();
+    public AxisRotation YAxis { get; set; } = new();
+    public AxisRotation ZAxis { get; set; } = new();
 }

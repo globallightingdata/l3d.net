@@ -1,9 +1,9 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using L3D.Net.Internal;
 using L3D.Net.Internal.Abstract;
 using NSubstitute;
 using NUnit.Framework;
+using System;
 
 // ReSharper disable ObjectCreationAsStatement
 
@@ -36,7 +36,7 @@ public class ContainerDirectoryScopeTests
     {
         var directory = Substitute.For<IContainerDirectory>();
         var scope = new ContainerDirectoryScope(directory);
-            
+
         scope.Dispose();
         directory.Received(1).CleanUp();
     }

@@ -1,6 +1,6 @@
-﻿using System;
-using L3D.Net.Internal.Abstract;
+﻿using L3D.Net.Internal.Abstract;
 using NSubstitute;
+using System;
 
 namespace L3D.Net.Tests.Context;
 
@@ -16,7 +16,7 @@ internal interface IContextOptionsWithFileHandler
 
 internal static class ContextWithFileHandlerExtensions
 {
-        
+
     public static TOptions WithTemporaryDirectoryScope<TOptions>(this TOptions options, out IContainerDirectory containerDirectory, out string path) where TOptions : IContextOptionsWithFileHandler
     {
         containerDirectory = Substitute.For<IContainerDirectory>();

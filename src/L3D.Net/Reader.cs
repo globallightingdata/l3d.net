@@ -1,25 +1,26 @@
 ﻿using L3D.Net.Abstract;
-using L3D.Net.API;
-using L3D.Net.API.Dto;
+using L3D.Net.Data;
 using L3D.Net.Internal;
 using L3D.Net.XML;
-using Microsoft.Extensions.Logging;
+using System.IO;
 
 namespace L3D.Net;
 
 public class Reader : IReader
 {
-    public LuminaireDto ReadContainer(string containerPath, ILogger logger = null) =>
-        CreateContainerReader(logger).Read(containerPath);
+    public Luminaire ReadContainer(string containerPath) =>
+        CreateContainerReader().Read(containerPath);
 
-    public LuminaireDto ReadContainer(byte[] containerBytes, ILogger logger = null) => 
-        CreateContainerReader(logger).Read(containerBytes);
+    public Luminaire ReadContainer(byte[] containerBytes) =>
+        CreateContainerReader().Read(containerBytes);
 
-    private static IContainerReader CreateContainerReader(ILogger logger)
+    public Luminaire ReadContainer(Stream containerStream) =>
+        CreateContainerReader().Read(containerStream);
+
+    private static IContainerReader CreateContainerReader()
     {
         var fileHandler = new FileHandler();
         return new ContainerReader(fileHandler,
-            new L3dXmlReader(logger),
-            new ApiDtoConverter(fileHandler));
+            new L3DXmlReader());
     }
 }

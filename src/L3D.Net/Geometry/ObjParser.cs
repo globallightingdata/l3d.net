@@ -1,21 +1,23 @@
-﻿using System;
+﻿using JeremyAnsel.Media.WavefrontObj;
+using L3D.Net.Data;
+using L3D.Net.Internal.Abstract;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using JeremyAnsel.Media.WavefrontObj;
-using L3D.Net.Data;
-using L3D.Net.Internal.Abstract;
-using Microsoft.Extensions.Logging;
 
 namespace L3D.Net.Geometry;
 
-internal class ObjParser : IObjParser
+public class ObjParser : IObjParser
 {
+    public static readonly IObjParser Instance = new ObjParser();
+
     public IModel3D Parse(string filePath, ILogger logger)
     {
         var directory = Path.GetDirectoryName(filePath) ??
-                        throw new Exception($"The file directory of '{filePath}' could not be determined!");
+                        throw new ArgumentException($"The file directory of '{filePath}' could not be determined!");
 
         var objFile = ObjFile.FromFile(filePath);
 
@@ -44,7 +46,7 @@ internal class ObjParser : IObjParser
             }
             catch (Exception e)
             {
-                logger?.Log(LogLevel.Warning, e.Message);
+                logger?.LogWarning(e, "Material could not be loaded");
                 return null;
             }
         }).Where(mtl => mtl != null).ToList();
@@ -98,38 +100,66 @@ internal class ObjParser : IObjParser
             ? objFile.Groups.Select(group => ConvertGroup(group, materials)).ToList()
             : new List<ModelFaceGroup> { CreateDefaultFaceGroup(objFile, materials) };
 
-        return new ModelData(vertices, normals, texCoords, faceGroups, materials);
+        return new ModelData
+        {
+            Vertices = vertices,
+            Normals = normals,
+            TextureCoordinates = texCoords,
+            FaceGroups = faceGroups,
+            Materials = materials
+        };
     }
 
-    private ModelFaceGroup CreateDefaultFaceGroup(ObjFile objFile, List<ModelMaterial> materials)
+    private static ModelFaceGroup CreateDefaultFaceGroup(ObjFile objFile, List<ModelMaterial> materials)
     {
         var faces = objFile.Faces.Select(face => ConvertFace(face, materials));
-        return new ModelFaceGroup("Default", faces);
+        return new ModelFaceGroup
+        {
+            Name = "Default",
+            Faces = faces.ToList()
+        };
     }
 
-    private ModelFaceGroup ConvertGroup(ObjGroup faceGroup, List<ModelMaterial> materials)
+    private static ModelFaceGroup ConvertGroup(ObjGroup faceGroup, List<ModelMaterial> materials)
     {
         var faces = faceGroup.Faces.Select(face => ConvertFace(face, materials)).ToList();
-        return new ModelFaceGroup(faceGroup.Name, faces);
+        return new ModelFaceGroup
+        {
+            Name = faceGroup.Name,
+            Faces = faces.ToList()
+        };
     }
 
-    private ModelFace ConvertFace(ObjFace face, List<ModelMaterial> materials)
+    private static ModelFace ConvertFace(ObjFace face, List<ModelMaterial> materials)
     {
-        List<ModelFaceVertex> vertices = new List<ModelFaceVertex>();
+        List<ModelFaceVertex> vertices = new();
         var materialIndex = materials.FindIndex(material => material.Name == face.MaterialName);
 
         foreach (var vertex in face.Vertices)
         {
-            vertices.Add(new ModelFaceVertex(vertex.Vertex, vertex.Normal, vertex.Texture));
+            vertices.Add(new ModelFaceVertex
+            {
+                VertexIndex = vertex.Vertex,
+                NormalIndex = vertex.Normal,
+                TextureCoordinateIndex = vertex.Texture
+            });
         }
 
-        return new ModelFace(vertices, materialIndex);
+        return new ModelFace
+        {
+            MaterialIndex = materialIndex,
+            Vertices = vertices
+        };
     }
 
-    private ModelMaterial Convert(ObjMaterial objMaterial)
+    private static ModelMaterial Convert(ObjMaterial objMaterial)
     {
         var color = objMaterial.DiffuseColor;
-        return new ModelMaterial(objMaterial.Name, new Vector3(color.Color.X, color.Color.Y, color.Color.Z),
-            objMaterial.DiffuseMap?.FileName);
+        return new ModelMaterial
+        {
+            Color = new Vector3(color.Color.X, color.Color.Y, color.Color.Z),
+            Name = objMaterial.Name,
+            TextureName = objMaterial.DiffuseMap?.FileName
+        };
     }
 }

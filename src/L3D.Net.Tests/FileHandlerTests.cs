@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using FluentAssertions;
+﻿using FluentAssertions;
 using L3D.Net.Internal;
 using L3D.Net.Internal.Abstract;
 using NSubstitute;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
 
 namespace L3D.Net.Tests;
 
@@ -109,7 +109,7 @@ public class FileHandlerTests
         _filesToDelete.Add(targetZipPath);
         _directoriesToDelete.Add(testDirectory);
 
-        new FileHandler().CreateContainerFromDirectory(sourceDirectory, targetZipPath);
+        new FileHandler().CreateContainerFile(sourceDirectory, targetZipPath);
 
         File.Exists(targetZipPath).Should().BeTrue();
 
@@ -177,7 +177,7 @@ public class FileHandlerTests
     public void CopyModelFiles_ShouldThrowArgumentNullException_WhenModel3DIsNull()
     {
         var fileHandler = new FileHandler();
-            
+
         var action = () => fileHandler.CopyModelFiles(null, Guid.NewGuid().ToString());
 
         action.Should().Throw<ArgumentNullException>();
@@ -187,7 +187,7 @@ public class FileHandlerTests
     public void CopyModelFiles_ShouldThrowArgumentNullException_WhenModel3DHasNoAbsolutePath()
     {
         var fileHandler = new FileHandler();
-            
+
         var action = () => fileHandler.CopyModelFiles(Substitute.For<IModel3D>(), Guid.NewGuid().ToString());
 
         action.Should().Throw<ArgumentException>();
@@ -198,7 +198,7 @@ public class FileHandlerTests
     public void CopyModelFiles_ShouldThrowArgumentException_WhenTargetPathIsNullOrEmpty(string targetPath)
     {
         var fileHandler = new FileHandler();
-            
+
         var action = () => fileHandler.CopyModelFiles(CreateFakeModel3D(), targetPath);
 
         action.Should().Throw<ArgumentException>();
@@ -293,8 +293,8 @@ public class FileHandlerTests
         var targetTestDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         _directoriesToDelete.Add(targetTestDirectory);
         var model3D = CreateFakeModel3D();
-            
-        model3D.ReferencedMaterialLibraryFiles.Returns(new []{path});
+
+        model3D.ReferencedMaterialLibraryFiles.Returns(new[] { path });
 
         var fileHandler = new FileHandler();
         var action = () => fileHandler.CopyModelFiles(model3D, targetTestDirectory);
@@ -309,8 +309,8 @@ public class FileHandlerTests
         var targetTestDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         _directoriesToDelete.Add(targetTestDirectory);
         var model3D = CreateFakeModel3D();
-            
-        model3D.ReferencedTextureFiles.Returns(new []{path});
+
+        model3D.ReferencedTextureFiles.Returns(new[] { path });
 
         var fileHandler = new FileHandler();
         var action = () => fileHandler.CopyModelFiles(model3D, targetTestDirectory);

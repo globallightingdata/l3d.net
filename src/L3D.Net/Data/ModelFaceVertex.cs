@@ -2,14 +2,7 @@
 
 public class ModelFaceVertex
 {
-    public ModelFaceVertex(int vertexIndex, int normalIndex, int textureCoordinateIndex)
-    {
-        VertexIndex = vertexIndex;
-        NormalIndex = normalIndex;
-        TextureCoordinateIndex = textureCoordinateIndex;
-    }
-
-    public int VertexIndex { get; }
-    public int NormalIndex { get; }
-    public int TextureCoordinateIndex { get; }
+    public int VertexIndex { get; set; }
+    public int NormalIndex { get; set; }
+    public int TextureCoordinateIndex { get; set; }
 }

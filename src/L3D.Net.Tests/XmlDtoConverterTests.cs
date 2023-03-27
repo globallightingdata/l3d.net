@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using FluentAssertions;
+﻿using FluentAssertions;
 using FluentAssertions.Equivalency;
-using L3D.Net.API.Dto;
 using L3D.Net.Data;
 using L3D.Net.Internal.Abstract;
 using L3D.Net.XML.V0_9_2;
 using L3D.Net.XML.V0_9_2.Dto;
 using NSubstitute;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
 using CircleDto = L3D.Net.XML.V0_9_2.Dto.CircleDto;
 using HeaderDto = L3D.Net.XML.V0_9_2.Dto.HeaderDto;
 using LuminaireDto = L3D.Net.XML.V0_9_2.Dto.LuminaireDto;
@@ -24,7 +23,7 @@ namespace L3D.Net.Tests;
 [TestFixture]
 public class XmlDtoConverterTests
 {
-    private readonly Random _random = new Random();
+    private readonly Random _random = new();
 
     private Vector3 NextVector3()
     {
@@ -36,7 +35,7 @@ public class XmlDtoConverterTests
         return 1 + _random.Next(10000);
     }
 
-    private EquivalencyAssertionOptions<T> Config<T>(EquivalencyAssertionOptions<T> options)
+    private static EquivalencyAssertionOptions<T> Config<T>(EquivalencyAssertionOptions<T> options)
     {
         return options
             .IncludingAllRuntimeProperties()
@@ -88,7 +87,7 @@ public class XmlDtoConverterTests
             Z = z
         };
 
-        Vector3 vector = new Vector3(x, y, z);
+        var vector = new Vector3(x, y, z);
 
         var converted = new XmlDtoConverter().Convert(vector);
 
@@ -112,14 +111,19 @@ public class XmlDtoConverterTests
         var max = min + _random.NextDouble();
         var step = 0.01 + _random.NextDouble();
 
-        var expectedDto = new AxisRotationTypeDto()
+        var expectedDto = new AxisRotationDto()
         {
             Min = min,
             Max = max,
             Step = step
         };
 
-        AxisRotation vector = new AxisRotation(min, max, step);
+        var vector = new AxisRotation
+        {
+            Min = min,
+            Max = max,
+            Step = step
+        };
 
         var converted = new XmlDtoConverter().Convert(vector);
 
@@ -140,8 +144,11 @@ public class XmlDtoConverterTests
     public void Convert_Shape_ShouldReturnCircleDto_WhenShapeIsCircle()
     {
         var diameter = 0.001 + _random.NextDouble();
-        Shape shape = new Circle(diameter);
-        var expectedDto = new CircleDto()
+        Shape shape = new Circle
+        {
+            Diameter = diameter
+        };
+        var expectedDto = new CircleDto
         {
             Diameter = diameter
         };
@@ -156,7 +163,11 @@ public class XmlDtoConverterTests
     {
         var sizeX = 0.001 + _random.NextDouble();
         var sizeY = 0.001 + _random.NextDouble();
-        Shape shape = new Rectangle(sizeX, sizeY);
+        Shape shape = new Rectangle
+        {
+            SizeX = sizeX,
+            SizeY = sizeY
+        };
         var expectedDto = new RectangleDto
         {
             SizeX = sizeX,
@@ -207,7 +218,13 @@ public class XmlDtoConverterTests
             C270 = c270
         };
 
-        var luminousHeights = new LuminousHeights(c0, c90, c180, c270);
+        var luminousHeights = new LuminousHeights
+        {
+            C0 = c0,
+            C90 = c90,
+            C180 = c180,
+            C270 = c270
+        };
 
         var converted = new XmlDtoConverter().Convert(luminousHeights);
 
@@ -231,9 +248,9 @@ public class XmlDtoConverterTests
         var position = NextVector3();
         var rotation = NextVector3();
 
-        var expectedDto = new SensorObjectDto
+        var expectedDto = new SensorDto
         {
-            PartName = partName,
+            Name = partName,
             Position = new Vector3Dto
             {
                 X = position.X,
@@ -248,8 +265,9 @@ public class XmlDtoConverterTests
             }
         };
 
-        var converted = new XmlDtoConverter().Convert(new SensorPart(partName)
+        var converted = new XmlDtoConverter().Convert(new SensorPart
         {
+            Name = partName,
             Position = position,
             Rotation = rotation
         });
@@ -272,8 +290,12 @@ public class XmlDtoConverterTests
     {
         var groupIndex = NextPositiveInt();
         var faceIndex = NextPositiveInt();
-        var assignment = new SingleFaceAssignment(groupIndex, faceIndex);
-        var expectedDto = new FaceAssignmentDto
+        var assignment = new SingleFaceAssignment
+        {
+            GroupIndex = groupIndex,
+            FaceIndex = faceIndex
+        };
+        var expectedDto = new SingleFaceAssignmentDto
         {
             GroupIndex = groupIndex,
             FaceIndex = faceIndex
@@ -290,7 +312,12 @@ public class XmlDtoConverterTests
         var groupIndex = NextPositiveInt();
         var faceIndexBegin = NextPositiveInt();
         var faceIndexEnd = faceIndexBegin + NextPositiveInt();
-        var assignment = new FaceRangeAssignment(groupIndex, faceIndexBegin, faceIndexEnd);
+        var assignment = new FaceRangeAssignment
+        {
+            GroupIndex = groupIndex,
+            FaceIndexBegin = faceIndexBegin,
+            FaceIndexEnd = faceIndexEnd
+        };
         var expectedDto = new FaceRangeAssignmentDto
         {
             GroupIndex = groupIndex,
@@ -305,8 +332,9 @@ public class XmlDtoConverterTests
 
     class UnknownAssignement : FaceAssignment
     {
-        public UnknownAssignement(int groupIndex) : base(groupIndex)
+        public UnknownAssignement(int groupIndex)
         {
+            GroupIndex = groupIndex;
         }
     }
 
@@ -338,7 +366,12 @@ public class XmlDtoConverterTests
         var max = min + _random.NextDouble();
         var step = 0.01 + _random.NextDouble();
 
-        return new AxisRotation(min, max, step);
+        return new AxisRotation
+        {
+            Min = min,
+            Max = max,
+            Step = step
+        };
     }
 
     [Test]
@@ -354,11 +387,24 @@ public class XmlDtoConverterTests
         var yAxis = NextAxisRotation();
         var zAxis = NextAxisRotation();
 
-        var jointPart = new JointPart(jointPartName)
+        var jointPart = new JointPart
         {
+            Name = jointPartName,
             Position = position,
             Rotation = rotation,
-            Geometries = { new GeometryPart(geomPartName, new GeometryDefinition(geomDefId, Substitute.For<IModel3D>(), GeometricUnits.m)) },
+            Geometries =
+            {
+                new GeometryPart
+                {
+                    Name = geomPartName,
+                    GeometrySource = new GeometrySource
+                    {
+                        GeometryId = geomDefId,
+                        Model = Substitute.For<IModel3D>(),
+                        Units = GeometricUnits.m
+                    }
+                }
+            },
             DefaultRotation = defaultRotation,
             XAxis = xAxis,
             YAxis = yAxis,
@@ -367,9 +413,9 @@ public class XmlDtoConverterTests
 
         var converter = new XmlDtoConverter();
 
-        var expectedDto = new JointNodeDto
+        var expectedDto = new JointPartDto
         {
-            PartName = jointPartName,
+            Name = jointPartName,
             Position = new Vector3Dto
             {
                 X = position.X,
@@ -389,19 +435,19 @@ public class XmlDtoConverterTests
                 Y = defaultRotation.Y,
                 Z = defaultRotation.Z
             },
-            XAxis = new AxisRotationTypeDto
+            XAxis = new AxisRotationDto
             {
                 Min = xAxis.Min,
                 Max = xAxis.Max,
                 Step = xAxis.Step
             },
-            YAxis = new AxisRotationTypeDto
+            YAxis = new AxisRotationDto
             {
                 Min = yAxis.Min,
                 Max = yAxis.Max,
                 Step = yAxis.Step
             },
-            ZAxis = new AxisRotationTypeDto
+            ZAxis = new AxisRotationDto
             {
                 Min = zAxis.Min,
                 Max = zAxis.Max,
@@ -421,15 +467,16 @@ public class XmlDtoConverterTests
         var position = NextVector3();
         var rotation = NextVector3();
 
-        var jointPart = new JointPart(jointPartName)
+        var jointPart = new JointPart
         {
+            Name = jointPartName,
             Position = position,
             Rotation = rotation
         };
 
-        var expectedDto = new JointNodeDto
+        var expectedDto = new JointPartDto
         {
-            PartName = jointPartName,
+            Name = jointPartName,
             Position = new Vector3Dto
             {
                 X = position.X,
@@ -442,7 +489,10 @@ public class XmlDtoConverterTests
                 Y = rotation.Y,
                 Z = rotation.Z
             },
-            Geometries = new List<GeometryNodeDto>()
+            XAxis = new(),
+            YAxis = new(),
+            ZAxis = new(),
+            Geometries = new List<GeometryPartDto>()
         };
 
         var converted = new XmlDtoConverter().Convert(jointPart);
@@ -464,19 +514,30 @@ public class XmlDtoConverterTests
     public void Convert_LightEmittingPart_ShouldReturnCorrectFullDto()
     {
         var partName = Guid.NewGuid().ToString();
-        var shape = new Circle(0.0001 + _random.NextDouble());
+        var shape = new Circle
+        {
+            Diameter = 0.0001 + _random.NextDouble()
+        };
         var position = NextVector3();
         var rotation = NextVector3();
-        var luminousHeights = new LuminousHeights(_random.NextDouble(), _random.NextDouble(), _random.NextDouble(), _random.NextDouble());
-        var lightEmittingPart = new LightEmittingPart(partName, shape)
+        var luminousHeights = new LuminousHeights
         {
+            C0 = _random.NextDouble(),
+            C90 = _random.NextDouble(),
+            C180 = _random.NextDouble(),
+            C270 = _random.NextDouble()
+        };
+        var lightEmittingPart = new LightEmittingPart
+        {
+            Name = partName,
+            Shape = shape,
             Position = position,
             Rotation = rotation,
             LuminousHeights = luminousHeights
         };
-        var expectedDto = new LightEmittingNodeDto
+        var expectedDto = new LightEmittingPartDto
         {
-            PartName = partName,
+            Name = partName,
             Position = new Vector3Dto
             {
                 X = position.X,
@@ -511,11 +572,19 @@ public class XmlDtoConverterTests
     public void Convert_LightEmittingPart_ShouldReturnCorrectSimpleDto()
     {
         var partName = Guid.NewGuid().ToString();
-        var shape = new Rectangle(0.0001 + _random.NextDouble(), 0.0001 + _random.NextDouble());
-        var lightEmittingPart = new LightEmittingPart(partName, shape);
-        var expectedDto = new LightEmittingNodeDto
+        var shape = new Rectangle
         {
-            PartName = partName,
+            SizeX = 0.0001 + _random.NextDouble(),
+            SizeY = 0.0001 + _random.NextDouble()
+        };
+        var lightEmittingPart = new LightEmittingPart
+        {
+            Name = partName,
+            Shape = shape
+        };
+        var expectedDto = new LightEmittingPartDto
+        {
+            Name = partName,
             Position = new Vector3Dto
             {
                 X = 0,
@@ -533,6 +602,7 @@ public class XmlDtoConverterTests
                 SizeX = shape.SizeX,
                 SizeY = shape.SizeY,
             },
+            LuminousHeights = new()
         };
 
         var converted = new XmlDtoConverter().Convert(lightEmittingPart);
@@ -555,17 +625,40 @@ public class XmlDtoConverterTests
     {
         var partName = Guid.NewGuid().ToString();
         var geomDefId = Guid.NewGuid().ToString();
-        var geometryDefinition = new GeometryDefinition(geomDefId, Substitute.For<IModel3D>(), GeometricUnits.m);
+        var geometryDefinition = new GeometrySource
+        {
+            GeometryId = geomDefId,
+            Model = Substitute.For<IModel3D>(),
+            Units = GeometricUnits.m
+        };
         var position = NextVector3();
         var rotation = NextVector3();
-        var jointPart = new JointPart(Guid.NewGuid().ToString());
-        var leoPart = new LightEmittingPart(Guid.NewGuid().ToString(), new Circle(0.0001 + _random.NextDouble()));
-        var sensorPart = new SensorPart(Guid.NewGuid().ToString());
+        var jointPart = new JointPart
+        {
+            Name = Guid.NewGuid().ToString()
+        };
+        var leoPart = new LightEmittingPart
+        {
+            Name = Guid.NewGuid().ToString(),
+            Shape = new Circle
+            {
+                Diameter = 0.0001 + _random.NextDouble()
+            }
+        };
+        var sensorPart = new SensorPart
+        {
+            Name = Guid.NewGuid().ToString()
+        };
         var electricalConnector = NextVector3();
         var pendulumConnector = NextVector3();
-        var lightEmittingSurface = new LightEmittingSurfacePart(Guid.NewGuid().ToString());
-        var geometryPart = new GeometryPart(partName, geometryDefinition)
+        var lightEmittingSurface = new LightEmittingSurfacePart
         {
+            Name = Guid.NewGuid().ToString()
+        };
+        var geometryPart = new GeometryPart
+        {
+            Name = partName,
+            GeometrySource = geometryDefinition,
             Position = position,
             Rotation = rotation,
             IncludedInMeasurement = true,
@@ -579,9 +672,9 @@ public class XmlDtoConverterTests
 
         var converter = new XmlDtoConverter();
 
-        var expectedDto = new GeometryNodeDto
+        var expectedDto = new GeometryPartDto
         {
-            PartName = partName,
+            Name = partName,
             Position = new Vector3Dto
             {
                 X = position.X,
@@ -598,7 +691,7 @@ public class XmlDtoConverterTests
             GeometrySource = new GeometryReferenceDto { GeometryId = geomDefId },
             Joints = geometryPart.Joints.Select(part => converter.Convert(part)).ToList(),
             LightEmittingObjects = geometryPart.LightEmittingObjects.Select(part => converter.Convert(part)).ToList(),
-            SensorObjects = geometryPart.Sensors.Select(part => converter.Convert(part)).ToList(),
+            Sensors = geometryPart.Sensors.Select(part => converter.Convert(part)).ToList(),
             LightEmittingSurfaces = geometryPart.LightEmittingSurfaces.Select(faceAssignment => converter.Convert(faceAssignment)).ToList(),
             PendulumConnectors = geometryPart.PendulumConnectors.Select(v => converter.Convert(v)).ToList(),
             ElectricalConnectors = geometryPart.ElectricalConnectors.Select(v => converter.Convert(v)).ToList(),
@@ -614,21 +707,30 @@ public class XmlDtoConverterTests
     {
         var partName = Guid.NewGuid().ToString();
         var geomDefId = Guid.NewGuid().ToString();
-        var geometryDefinition = new GeometryDefinition(geomDefId, Substitute.For<IModel3D>(), GeometricUnits.m);
-        var geometryPart = new GeometryPart(partName, geometryDefinition);
+        var geometryDefinition = new GeometrySource
+        {
+            GeometryId = geomDefId,
+            Model = Substitute.For<IModel3D>(),
+            Units = GeometricUnits.m
+        };
+        var geometryPart = new GeometryPart
+        {
+            Name = partName,
+            GeometrySource = geometryDefinition
+        };
 
         var converter = new XmlDtoConverter();
 
-        var expectedDto = new GeometryNodeDto
+        var expectedDto = new GeometryPartDto
         {
-            PartName = partName,
+            Name = partName,
             Position = new Vector3Dto(),
             Rotation = new Vector3Dto(),
             IncludedInMeasurement = true,
             GeometrySource = new GeometryReferenceDto { GeometryId = geomDefId },
-            Joints = new List<JointNodeDto>(),
-            LightEmittingObjects = new List<LightEmittingNodeDto>(),
-            SensorObjects = new List<SensorObjectDto>(),
+            Joints = new List<JointPartDto>(),
+            LightEmittingObjects = new List<LightEmittingPartDto>(),
+            Sensors = new List<SensorDto>(),
             LightEmittingSurfaces = new List<LightEmittingSurfaceDto>(),
             PendulumConnectors = new List<Vector3Dto>(),
             ElectricalConnectors = new List<Vector3Dto>(),
@@ -642,9 +744,9 @@ public class XmlDtoConverterTests
     [Test]
     public void Convert_GeometryDefinition_ShouldReturnNull_WhenArgumentIsNull()
     {
-        GeometryDefinition geometryDefinition = null;
+        GeometrySource geometrySource = null;
 
-        var converted = new XmlDtoConverter().Convert(geometryDefinition);
+        var converted = new XmlDtoConverter().Convert(geometrySource);
 
         converted.Should().BeNull();
     }
@@ -654,14 +756,17 @@ public class XmlDtoConverterTests
     {
         var id = Guid.NewGuid().ToString();
         var modelPath = Guid.NewGuid().ToString();
-        var model = Substitute.For<IModel3D>();
-        model.FilePath.Returns(modelPath);
-        var geometryDefinition = new GeometryDefinition(id, model, GeometricUnits.m);
+        var geometryDefinition = new GeometrySource
+        {
+            GeometryId = id,
+            FileName = modelPath,
+            Units = GeometricUnits.m
+        };
         var expectedDto = new GeometryFileDefinitionDto
         {
             Id = id,
-            Filename = modelPath,
-            Units = GeometryNodeUnits.m
+            FileName = modelPath,
+            Units = GeometricUnitsDto.m
         };
 
         var converted = new XmlDtoConverter().Convert(geometryDefinition);
@@ -710,7 +815,10 @@ public class XmlDtoConverterTests
 
         var expectedDto = new HeaderDto
         {
-            CreationTimeCode = metaData.CreationTimeCode
+            CreationTimeCode = metaData.CreationTimeCode,
+            CreatedWithApplication = string.Empty,
+            Description = string.Empty,
+            Name = string.Empty
         };
 
         var converted = new XmlDtoConverter().Convert(metaData);
@@ -731,11 +839,23 @@ public class XmlDtoConverterTests
     [Test]
     public void Convert_Luminaire_ShouldReturnCorrectDto()
     {
-        var geometryDefinition = new GeometryDefinition(Guid.NewGuid().ToString(), Substitute.For<IModel3D>(), GeometricUnits.mm);
+        var geometryDefinition = new GeometrySource
+        {
+            GeometryId = Guid.NewGuid().ToString(),
+            Model = Substitute.For<IModel3D>(),
+            Units = GeometricUnits.mm
+        };
         var luminaire = new Luminaire()
         {
             GeometryDefinitions = { geometryDefinition },
-            Parts = { new GeometryPart(Guid.NewGuid().ToString(), geometryDefinition) },
+            Parts =
+            {
+                new GeometryPart
+                {
+                    Name = Guid.NewGuid().ToString(),
+                    GeometrySource = geometryDefinition
+                }
+            }
         };
         var converter = new XmlDtoConverter();
         var expectedDto = new LuminaireDto

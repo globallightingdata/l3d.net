@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Extensions.Logging.NSubstitute;
+﻿using Extensions.Logging.NSubstitute;
 using FluentAssertions;
 using L3D.Net.Internal.Abstract;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable UnusedMethodReturnValue.Local
@@ -32,7 +32,7 @@ class ContainerValidatorTests
             ContainerValidator = new ContainerValidator(FileHandler, XmlValidator, Logger);
         }
     }
-        
+
     class ContextOptions
     {
         private readonly Context _context;
@@ -53,15 +53,15 @@ class ContainerValidatorTests
         }
     }
 
-    private Context CreateContext(Action<ContextOptions> options = null)
+    private static Context CreateContext(Action<ContextOptions> options = null)
     {
         var context = new Context();
-            
+
         options?.Invoke(new ContextOptions(context));
 
         return context;
     }
-        
+
     public enum ContainerTypeToTest
     {
         Path,
@@ -73,7 +73,7 @@ class ContainerValidatorTests
     [Test]
     public void Constructor_ShouldThrowArgumentNullException_WhenFileHandlerIsNull()
     {
-        Action action = () => new ContainerValidator(null,
+        var action = () => _ = new ContainerValidator(null,
             Substitute.For<IXmlValidator>(),
             Substitute.For<ILogger>()
         );
@@ -84,7 +84,7 @@ class ContainerValidatorTests
     [Test]
     public void Constructor_ShouldThrowArgumentNullException_WhenXmlValidatorIsNull()
     {
-        Action action = () => new ContainerValidator(Substitute.For<IFileHandler>(),
+        var action = () => _ = new ContainerValidator(Substitute.For<IFileHandler>(),
             null,
             Substitute.For<ILogger>()
         );
@@ -95,14 +95,14 @@ class ContainerValidatorTests
     [Test]
     public void Constructor_ShouldNotThrowArgumentNullException_WhenLoggerIsNull()
     {
-        Action action = () => new ContainerValidator(Substitute.For<IFileHandler>(),
+        var action = () => _ = new ContainerValidator(Substitute.For<IFileHandler>(),
             Substitute.For<IXmlValidator>(),
             null
         );
 
         action.Should().NotThrow();
     }
-        
+
     [Test, TestCaseSource(typeof(Setup), nameof(Setup.EmptyStringValues))]
     public void Validate_ShouldThrowArgumentException_WhenContainerPathIsNullOrEmpty(string containerPath)
     {
@@ -122,7 +122,7 @@ class ContainerValidatorTests
 
         action.Should().Throw<ArgumentException>();
     }
-        
+
     [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
     public void Validate_ShouldCallFileHandlerCreateTemporaryDirectoryScope(ContainerTypeToTest containerTypeToTest)
     {
@@ -191,7 +191,7 @@ class ContainerValidatorTests
 
         context.XmlValidator.Received(1).ValidateFile(xmlPath, context.Logger);
     }
-        
+
     [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
     public void Validate_ShouldCallContainerDirectoryCleanUp_WhenNoErrorOccured(ContainerTypeToTest containerTypeToTest)
     {
@@ -212,7 +212,7 @@ class ContainerValidatorTests
 
         scope.Received(1).CleanUp();
     }
-        
+
     [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
     public void
         Validate_ShouldCallContainerDirectoryCleanUp_AndNotCatch_WhenFileHandlerExtractContainerToDirectoryThrows(ContainerTypeToTest containerTypeToTest)
@@ -245,7 +245,7 @@ class ContainerValidatorTests
         action.Should().Throw<Exception>().WithMessage(message);
         scope.Received(1).CleanUp();
     }
-        
+
     [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
     public void Validate_ShouldCallContainerDirectoryCleanUp_AndNotCatch_WhenXmlValidatorValidateFileThrows(ContainerTypeToTest containerTypeToTest)
     {

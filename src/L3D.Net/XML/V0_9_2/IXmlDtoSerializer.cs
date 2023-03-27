@@ -2,7 +2,7 @@
 
 namespace L3D.Net.XML.V0_9_2;
 
-interface IXmlDtoSerializer
+public interface IXmlDtoSerializer
 {
     void Serialize(LuminaireDto dto, string filename);
     LuminaireDto Deserialize(string filename);

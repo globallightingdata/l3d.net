@@ -1,9 +1,11 @@
-﻿using System;
+﻿using FluentAssertions;
+using L3D.Net.Abstract;
+using L3D.Net.Data;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using FluentAssertions;
-using NUnit.Framework;
 
 namespace L3D.Net.Tests;
 
@@ -11,6 +13,7 @@ namespace L3D.Net.Tests;
 public class ReaderExampleTests
 {
     private readonly List<string> _tempDirectories = new();
+    private readonly IWriter _writer = new Writer();
 
     static List<string> ExampleDirectories()
     {
@@ -42,7 +45,7 @@ public class ReaderExampleTests
             }
         }
     }
-        
+
     public enum ContainerTypeToTest
     {
         Path,
@@ -62,12 +65,12 @@ public class ReaderExampleTests
 
         var containerTempDirectory = GetTempDirectory();
 
-        var builder = Builder.NewLuminaire();
+        var luminaire = new Luminaire();
 
-        builder = buildFunc(builder);
+        luminaire = buildFunc(luminaire);
 
         var containerPath = Path.Combine(containerTempDirectory, "luminaire" + Constants.L3dExtension);
-        builder.Build(containerPath);
+        _writer.WriteToFile(luminaire, containerPath);
 
         Action action = containerTypeToTest switch
         {
@@ -76,7 +79,8 @@ public class ReaderExampleTests
             {
                 var containerBytes = File.ReadAllBytes(containerPath);
                 new Reader().ReadContainer(containerBytes);
-            },
+            }
+            ,
             _ => throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null)
         };
 

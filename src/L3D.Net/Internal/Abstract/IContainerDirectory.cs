@@ -1,6 +1,6 @@
 ﻿namespace L3D.Net.Internal.Abstract;
 
-interface IContainerDirectory
+public interface IContainerDirectory
 {
     string Path { get; }
 

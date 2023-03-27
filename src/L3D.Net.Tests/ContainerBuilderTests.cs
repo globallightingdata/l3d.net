@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Extensions.Logging.NSubstitute;
+﻿using Extensions.Logging.NSubstitute;
 using FluentAssertions;
 using L3D.Net.Data;
 using L3D.Net.Internal;
@@ -11,6 +9,8 @@ using L3D.Net.XML.V0_9_2.Dto;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
+using System;
+using System.IO;
 
 // ReSharper disable ObjectCreationAsStatement
 
@@ -61,16 +61,16 @@ public class ContainerBuilderTests
 
     Luminaire CreateSimpleLuminaire()
     {
-        var builder = Builder.NewLuminaire();
-        builder.BuildExample000();
-        return builder.Luminaire;
+        var luminaire = new Luminaire();
+        luminaire.BuildExample000();
+        return luminaire;
     }
 
     Luminaire CreateComplexLuminaire()
     {
-        var builder = Builder.NewLuminaire();
-        builder.BuildExample002();
-        return builder.Luminaire;
+        var luminaire = new Luminaire();
+        luminaire.BuildExample002();
+        return luminaire;
     }
 
     [Test]
@@ -134,7 +134,7 @@ public class ContainerBuilderTests
     {
         var context = CreateContext();
 
-        Action action = () => context.Builder.CreateContainer(null, Guid.NewGuid().ToString());
+        Action action = () => context.Builder.CreateContainerFile(null, Guid.NewGuid().ToString());
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -145,7 +145,7 @@ public class ContainerBuilderTests
     {
         var context = CreateContext();
 
-        Action action = () => context.Builder.CreateContainer(CreateSimpleLuminaire(), path);
+        Action action = () => context.Builder.CreateContainerFile(CreateSimpleLuminaire(), path);
 
         action.Should().Throw<ArgumentException>();
     }
@@ -155,7 +155,7 @@ public class ContainerBuilderTests
     {
         var context = CreateContext();
 
-        context.Builder.CreateContainer(CreateSimpleLuminaire(), Guid.NewGuid().ToString());
+        context.Builder.CreateContainerFile(CreateSimpleLuminaire(), Guid.NewGuid().ToString());
 
         context.FileHandler.Received(1).CreateContainerDirectory();
     }
@@ -168,7 +168,7 @@ public class ContainerBuilderTests
 
         context.FileHandler.CreateContainerDirectory().Returns(scope);
 
-        context.Builder.CreateContainer(CreateSimpleLuminaire(), Guid.NewGuid().ToString());
+        context.Builder.CreateContainerFile(CreateSimpleLuminaire(), Guid.NewGuid().ToString());
 
         scope.Received(1).CleanUp();
     }
@@ -180,11 +180,11 @@ public class ContainerBuilderTests
         var context = CreateContext(options => options.WithTemporaryDirectoryScope(out _, out tempPath));
         var luminaire = CreateComplexLuminaire();
 
-        context.Builder.CreateContainer(luminaire, Guid.NewGuid().ToString());
+        context.Builder.CreateContainerFile(luminaire, Guid.NewGuid().ToString());
 
         foreach (var geometryDefinition in luminaire.GeometryDefinitions)
         {
-            var expectedPath = Path.Combine(tempPath, geometryDefinition.Id);
+            var expectedPath = Path.Combine(tempPath, geometryDefinition.GeometryId);
             var expectedModel = geometryDefinition.Model;
 
             context.FileHandler.Received(1).CopyModelFiles(Arg.Is(expectedModel), Arg.Is(expectedPath));
@@ -201,7 +201,7 @@ public class ContainerBuilderTests
         var context = CreateContext();
         var luminaire = CreateComplexLuminaire();
 
-        context.Builder.CreateContainer(luminaire, Guid.NewGuid().ToString());
+        context.Builder.CreateContainerFile(luminaire, Guid.NewGuid().ToString());
 
         context.Converter.Received(1).Convert(Arg.Is(luminaire));
     }
@@ -217,7 +217,7 @@ public class ContainerBuilderTests
 
         context.Converter.Convert(Arg.Is(luminaire)).Returns(expectedDto);
 
-        context.Builder.CreateContainer(luminaire, Guid.NewGuid().ToString());
+        context.Builder.CreateContainerFile(luminaire, Guid.NewGuid().ToString());
 
         context.Serializer.Received(1).Serialize(Arg.Is(expectedDto), Arg.Is(expectedPath));
     }
@@ -230,7 +230,7 @@ public class ContainerBuilderTests
         var luminaire = CreateComplexLuminaire();
         var expectedPath = Path.Combine(tempPath, Constants.L3dXmlFilename);
 
-        context.Builder.CreateContainer(luminaire, Guid.NewGuid().ToString());
+        context.Builder.CreateContainerFile(luminaire, Guid.NewGuid().ToString());
 
         context.Validator.Received(1).ValidateFile(Arg.Is(expectedPath), Arg.Any<ILogger>());
     }
@@ -243,7 +243,7 @@ public class ContainerBuilderTests
         context.Validator.When(v => v.ValidateFile(Arg.Any<string>(), Arg.Any<ILogger>()))
             .Do(_ => throw new Exception(message));
 
-        Action action = () => context.Builder.CreateContainer(CreateComplexLuminaire(), Guid.NewGuid().ToString());
+        Action action = () => context.Builder.CreateContainerFile(CreateComplexLuminaire(), Guid.NewGuid().ToString());
 
         action.Should().Throw<Exception>().WithMessage(message);
     }
@@ -256,8 +256,8 @@ public class ContainerBuilderTests
         var luminaire = CreateComplexLuminaire();
         var containerPath = Guid.NewGuid().ToString();
 
-        context.Builder.CreateContainer(luminaire, containerPath);
+        context.Builder.CreateContainerFile(luminaire, containerPath);
 
-        context.FileHandler.Received(1).CreateContainerFromDirectory(Arg.Is(tempPath), Arg.Is(containerPath));
+        context.FileHandler.Received(1).CreateContainerFile(Arg.Is(tempPath), Arg.Is(containerPath));
     }
 }

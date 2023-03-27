@@ -1,4 +1,6 @@
-﻿using System;
+﻿using L3D.Net.Internal.Abstract;
+using Microsoft.Extensions.Logging;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -6,36 +8,34 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
-using L3D.Net.Internal.Abstract;
-using Microsoft.Extensions.Logging;
 
 namespace L3D.Net.XML;
 
 public class XmlValidator : IXmlValidator
 {
-    public bool ValidateFile(string xmlFilename, ILogger validationLogger)
+    public bool ValidateFile(string xmlFilename, ILogger logger = null)
     {
         var xmlDocument = XDocument.Load(xmlFilename);
         var root = xmlDocument.Root;
 
         if (root == null)
         {
-            validationLogger?.LogError("Unable to read XML content of {XmlFilename}!", xmlFilename);
+            logger?.LogError("Unable to read XML content of {XmlFilename}!", xmlFilename);
             return false;
         }
 
-        if (!TryGetVersion(root, validationLogger, out var version))
+        if (!TryGetVersion(root, logger, out var version))
             return false;
 
-        if (!TryLoadXsd(version, validationLogger, out var scheme))
+        if (!TryLoadXsd(version, logger, out var scheme))
             return false;
-        
+
         var schemeSet = CreateSchemaSet(scheme);
-            
-        return Validate(xmlDocument, schemeSet, validationLogger);
+
+        return Validate(xmlDocument, schemeSet, logger);
     }
 
-    private bool Validate(XDocument xmlDocument, XmlSchemaSet schemeSet, ILogger validationLogger)
+    private static bool Validate(XDocument xmlDocument, XmlSchemaSet schemeSet, ILogger validationLogger)
     {
         var isValid = true;
 
@@ -46,24 +46,24 @@ public class XmlValidator : IXmlValidator
                 if (ev.Severity == XmlSeverityType.Error)
                 {
                     isValid = false;
-                    validationLogger?.Log(LogLevel.Error, ev.Message);
+                    validationLogger?.LogError(ev.Message);
                 }
                 else
                 {
-                    validationLogger?.Log(LogLevel.Warning, ev.Message);
+                    validationLogger?.LogWarning(ev.Message);
                 }
             });
         }
         catch (Exception e)
         {
             isValid = false;
-            validationLogger?.Log(LogLevel.Error, e.Message);
+            validationLogger?.LogError(e, "Could not validate");
         }
 
         return isValid;
     }
 
-    private XmlSchemaSet CreateSchemaSet(string xsdText)
+    private static XmlSchemaSet CreateSchemaSet(string xsdText)
     {
         using var xsdStringReader = new StringReader(xsdText);
         using var schemaDoc = XmlReader.Create(xsdStringReader);
@@ -72,7 +72,7 @@ public class XmlValidator : IXmlValidator
         return schemaSet;
     }
 
-    private bool TryGetVersion(XElement root, ILogger validationLogger, out Version version)
+    private static bool TryGetVersion(XElement root, ILogger logger, out Version version)
     {
         version = null;
 
@@ -81,7 +81,7 @@ public class XmlValidator : IXmlValidator
 
         if (schemeAttribute == null)
         {
-            validationLogger?.LogError("XML document does not reference a valid XSD scheme in namespace (http://www.w3.org/2001/XMLSchema-instance)!");
+            logger?.LogError("XML document does not reference a valid XSD scheme in namespace (http://www.w3.org/2001/XMLSchema-instance)!");
             return false;
         }
 
@@ -90,7 +90,7 @@ public class XmlValidator : IXmlValidator
         if (!match.Success || !Version.TryParse(match.Groups[1].Value, out version) ||
             !GlobalXmlDefinitions.IsParseable(version))
         {
-            validationLogger?.LogError("The scheme ({SchemeAttribute}) is not known!", schemeAttribute.Value);
+            logger?.LogError("The scheme ({SchemeAttribute}) is not known!", schemeAttribute.Value);
             return false;
         }
 
@@ -99,7 +99,7 @@ public class XmlValidator : IXmlValidator
         return true;
     }
 
-    private bool TryLoadXsd(Version version, ILogger validationLogger, out string content)
+    private bool TryLoadXsd(Version version, ILogger logger, out string content)
     {
         try
         {
@@ -112,7 +112,7 @@ public class XmlValidator : IXmlValidator
         }
         catch (Exception e)
         {
-            validationLogger?.LogError(e, "Failed to get embedded XSD for version {Version}!", version);
+            logger?.LogError(e, "Failed to get embedded XSD for version {Version}!", version);
             content = null;
             return false;
         }

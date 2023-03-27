@@ -4,7 +4,7 @@ using System.IO;
 
 namespace L3D.Net.Internal;
 
-internal class ContainerDirectory : IContainerDirectory
+public class ContainerDirectory : IContainerDirectory
 {
     public string Path { get; }
 
@@ -24,7 +24,7 @@ internal class ContainerDirectory : IContainerDirectory
         {
             Directory.Delete(Path, true);
         }
-        catch (Exception)
+        catch
         {
             // ignored
         }

@@ -5,14 +5,14 @@ using Microsoft.Extensions.Logging;
 
 namespace L3D.Net;
 
-class Validator : IValidator
+public class Validator : IValidator
 {
-    public bool ValidateContainer(string containerPath, ILogger logger)
+    public bool ValidateContainer(string containerPath, ILogger logger = null)
     {
         return CreateContainerValidator(logger).Validate(containerPath);
     }
 
-    public bool ValidateContainer(byte[] containerBytes, ILogger logger)
+    public bool ValidateContainer(byte[] containerBytes, ILogger logger = null)
     {
         return CreateContainerValidator(logger).Validate(containerBytes);
     }
@@ -21,8 +21,6 @@ class Validator : IValidator
     {
         var fileHandler = new FileHandler();
 
-        return new ContainerValidator(fileHandler,
-                                      new XmlValidator(),
-                                      logger);
+        return new ContainerValidator(fileHandler, new XmlValidator(), logger);
     }
 }

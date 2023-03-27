@@ -1,16 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using L3D.Net.Geometry;
+﻿using L3D.Net.Geometry;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions;
 
 namespace L3D.Net.Tests;
 
 [TestFixture]
 public class ReadObjExamplesTest
 {
-    static List<string> ExampleFiles()
+    private static List<string> ExampleFiles()
     {
         Setup.Initialize();
         return Setup.ExampleObjFiles.ToList();
@@ -21,6 +22,7 @@ public class ReadObjExamplesTest
     public void ObjParser_ShouldBeAbleToReadAllExamples(string filename)
     {
         var parser = new ObjParser();
-        parser.Parse(filename, Substitute.For<ILogger>());
+        var act = () => parser.Parse(filename, Substitute.For<ILogger>());
+        act.Should().NotThrow();
     }
 }

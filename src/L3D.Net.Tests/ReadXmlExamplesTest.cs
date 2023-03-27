@@ -1,8 +1,8 @@
+using L3D.Net.XML.V0_9_2;
+using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using L3D.Net.XML.V0_9_2;
-using NUnit.Framework;
 
 namespace L3D.Net.Tests;
 

@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Extensions.Logging.NSubstitute;
+﻿using Extensions.Logging.NSubstitute;
 using FluentAssertions;
 using L3D.Net.XML;
 using NSubstitute;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace L3D.Net.Tests;
 
@@ -27,7 +27,7 @@ public class XmlValidatorTests
     {
         var xmlValidator = new XmlValidator();
 
-        Action action = () => xmlValidator.ValidateFile(testFile, null);
+        Action action = () => xmlValidator.ValidateFile(testFile);
 
         action.Should().Throw<Exception>().WithMessage("Root element is missing.");
     }
@@ -40,7 +40,7 @@ public class XmlValidatorTests
     {
         var xmlValidator = new XmlValidator();
 
-        var result = xmlValidator.ValidateFile(testFile, null);
+        var result = xmlValidator.ValidateFile(testFile);
 
         result.Should().BeFalse();
     }
@@ -53,7 +53,7 @@ public class XmlValidatorTests
     {
         var xmlValidator = new XmlValidator();
 
-        var result = xmlValidator.ValidateFile(testFile, null);
+        var result = xmlValidator.ValidateFile(testFile);
 
         result.Should().BeFalse();
     }
@@ -70,7 +70,7 @@ public class XmlValidatorTests
     {
         var xmlValidator = new XmlValidator();
 
-        var result = xmlValidator.ValidateFile(testFile, null);
+        var result = xmlValidator.ValidateFile(testFile);
 
         result.Should().BeFalse();
     }

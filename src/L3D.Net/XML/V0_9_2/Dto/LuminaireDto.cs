@@ -20,5 +20,5 @@ public class LuminaireDto
     /// <remarks/>
     [XmlArray("Structure")]
     [XmlArrayItem("Geometry")]
-    public List<GeometryNodeDto> Parts { get; set; }
+    public List<GeometryPartDto> Parts { get; set; }
 }
