@@ -2,5 +2,5 @@
 
 public abstract class Part
 {
-    public string Name { get; set; } = string.Empty;
+    public string? Name { get; set; }
 }

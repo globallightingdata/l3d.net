@@ -27,7 +27,7 @@ public class XmlValidatorTests
     {
         var xmlValidator = new XmlValidator();
 
-        Action action = () => xmlValidator.ValidateFile(testFile);
+        var action = () => xmlValidator.ValidateFile(testFile);
 
         action.Should().Throw<Exception>().WithMessage("Root element is missing.");
     }
@@ -86,7 +86,7 @@ public class XmlValidatorTests
         logger.Received(1).LogError(Arg.Any<string>());
     }
 
-    static IEnumerable<string> GetValidTestFiles()
+    private static IEnumerable<string> GetValidTestFiles()
     {
         Setup.Initialize();
         return Setup.ExampleXmlFiles.Union(Setup.ValidVersionXmlFiles);
@@ -98,7 +98,7 @@ public class XmlValidatorTests
     {
         var xmlValidator = new XmlValidator();
 
-        var result = xmlValidator.ValidateFile(testFile, null);
+        var result = xmlValidator.ValidateFile(testFile);
 
         result.Should().BeTrue();
     }

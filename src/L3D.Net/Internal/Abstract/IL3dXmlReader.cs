@@ -2,7 +2,7 @@
 
 namespace L3D.Net.Internal.Abstract;
 
-public interface IL3DXmlReader
+internal interface IL3DXmlReader
 {
     Luminaire Read(string filename, string workingDirectory);
 }

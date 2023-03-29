@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
-using L3D.Net.XML.V0_9_2;
-using L3D.Net.XML.V0_9_2.Dto;
+using L3D.Net.XML.V0_11_0;
+using L3D.Net.XML.V0_11_0.Dto;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ namespace L3D.Net.Tests;
 [TestFixture]
 public class XmlDtoSerializerTests
 {
-    private string _tempDirectory;
+    private string _tempDirectory = null!;
 
     [SetUp]
     public void Init()
@@ -30,7 +30,7 @@ public class XmlDtoSerializerTests
         Directory.Delete(_tempDirectory, true);
     }
 
-    static IEnumerable<string> ExampleFiles()
+    private static IEnumerable<string> ExampleFiles()
     {
         Setup.Initialize();
         return Setup.ExampleXmlFiles;
@@ -41,7 +41,7 @@ public class XmlDtoSerializerTests
     {
         var serializer = new XmlDtoSerializer();
 
-        Action action = () => serializer.Serialize(null, Guid.NewGuid().ToString());
+        var action = () => serializer.Serialize(null!, Guid.NewGuid().ToString());
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -52,7 +52,7 @@ public class XmlDtoSerializerTests
     {
         var serializer = new XmlDtoSerializer();
 
-        Action action = () => serializer.Serialize(new LuminaireDto(), filename);
+        var action = () => serializer.Serialize(new LuminaireDto(), filename);
 
         action.Should().Throw<ArgumentException>();
     }

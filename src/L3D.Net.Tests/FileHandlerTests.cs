@@ -14,8 +14,8 @@ namespace L3D.Net.Tests;
 [TestFixture]
 public class FileHandlerTests
 {
-    private readonly List<string> _filesToDelete = new List<string>();
-    private readonly List<string> _directoriesToDelete = new List<string>();
+    private readonly List<string> _filesToDelete = new();
+    private readonly List<string> _directoriesToDelete = new();
 
     [TearDown]
     public void Deinit()
@@ -178,7 +178,7 @@ public class FileHandlerTests
     {
         var fileHandler = new FileHandler();
 
-        var action = () => fileHandler.CopyModelFiles(null, Guid.NewGuid().ToString());
+        var action = () => fileHandler.CopyModelFiles(null!, Guid.NewGuid().ToString());
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -322,8 +322,8 @@ public class FileHandlerTests
     public void GetTextureBytes_ShouldThrowArgumentNullException_WhenDirectoryScopeIsNull()
     {
         var fileHandler = new FileHandler();
-        Action action = () =>
-            fileHandler.GetTextureBytes(null, Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+        var action = () =>
+            fileHandler.GetTextureBytes(null!, Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -333,7 +333,7 @@ public class FileHandlerTests
     public void GetTextureBytes_ShouldThrowArgumentException_WhenGeomIdIsNullOrEmpty(string geomId)
     {
         var fileHandler = new FileHandler();
-        Action action = () =>
+        var action = () =>
             fileHandler.GetTextureBytes(Guid.NewGuid().ToString(), geomId, Guid.NewGuid().ToString());
 
         action.Should().Throw<ArgumentException>();
@@ -344,7 +344,7 @@ public class FileHandlerTests
     public void GetTextureBytes_ShouldThrowArgumentException_WhenTextureNameIsNullOrEmpty(string textureName)
     {
         var fileHandler = new FileHandler();
-        Action action = () =>
+        var action = () =>
             fileHandler.GetTextureBytes(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), textureName);
 
         action.Should().Throw<ArgumentException>();

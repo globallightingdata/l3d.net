@@ -34,14 +34,66 @@ dotnet add package L3D.Net
 Simple builder exmaple.
 
 ```CSharp
-Builder.NewLuminaire()
-    .WithTool("Example-Tool")
-    .AddGeometry("luminairePartName", "path/to/model.obj", GeometricUnits.m, geomOptions => geomOptions
-        .AddRectangularLightEmittingObject("lightEmittingPartName", 0.5, 0.25, leoOptions => leoOptions
-            .WithLightEmittingSurfaceOnParent(3)
-        )
-    )
-    .Build("path/to/new/container.l3d");
+var luminaire = new Luminaire();
+luminaire.Header = new Header
+{
+    CreatedWithApplication = "Example-Tool"
+};
+
+var geometryDefinition = new GeometryFileDefinition
+{
+    GeometryId = "PN." + Guid.NewGuid(),
+    Units = GeometricUnits.m,
+    Model = ObjParser.Parse(cubeObjPath, NullLogger.Instance),
+    FileName = cubeObjPath
+};
+
+luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
+{
+    geometryDefinition
+};
+
+luminaire.Parts = new List<GeometryPart>
+{
+    new()
+    {
+        Name = "luminaire",
+        LightEmittingObjects = new List<LightEmittingPart>
+        {
+            new()
+            {
+                Name = "leo",
+                Shape = new Rectangle
+                {
+                    SizeX = 0.5,
+                    SizeY = 0.25
+                }
+            }
+        },
+        LightEmittingSurfaces = new List<LightEmittingSurfacePart>
+        {
+            new()
+            {
+                Name = "les",
+                FaceAssignments = new List<FaceAssignment>
+                {
+                    new SingleFaceAssignment
+                    {
+                        FaceIndex = 3
+                    }
+                },
+                LightEmittingPartIntensityMapping = new Dictionary<string, double>
+                {
+                    ["leo"] = 1
+                }
+            }
+        },
+        GeometryReference = geometryDefinition
+    }
+};
+
+IWriter writer = new Writer();
+var bytes = writer.WriteToByteArray(luminaire);
 ```
 
 ### Reading a L3D container

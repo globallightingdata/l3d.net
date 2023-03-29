@@ -7,13 +7,13 @@ using System.IO;
 
 namespace L3D.Net;
 
-class ContainerValidator : IContainerValidator
+public class ContainerValidator : IContainerValidator
 {
     private readonly IFileHandler _fileHandler;
     private readonly IXmlValidator _xmlValidator;
-    private readonly ILogger _logger;
+    private readonly ILogger? _logger;
 
-    public ContainerValidator(IFileHandler fileHandler, IXmlValidator xmlValidator, ILogger logger)
+    public ContainerValidator(IFileHandler fileHandler, IXmlValidator xmlValidator, ILogger? logger)
     {
         _fileHandler = fileHandler ?? throw new ArgumentNullException(nameof(fileHandler));
         _xmlValidator = xmlValidator ?? throw new ArgumentNullException(nameof(xmlValidator));
@@ -38,6 +38,17 @@ class ContainerValidator : IContainerValidator
 
         using var directoryScope = new ContainerDirectoryScope(_fileHandler.CreateContainerDirectory());
         _fileHandler.ExtractContainerToDirectory(containerBytes, directoryScope.Directory);
+        var structurePath = Path.Combine(directoryScope.Directory, Constants.L3dXmlFilename);
+        return _xmlValidator.ValidateFile(structurePath, _logger);
+    }
+
+    public bool Validate(Stream containerStream)
+    {
+        if (containerStream == null || containerStream.Length == 0)
+            throw new ArgumentException(@"Value cannot be null or empty array.", nameof(containerStream));
+
+        using var directoryScope = new ContainerDirectoryScope(_fileHandler.CreateContainerDirectory());
+        _fileHandler.ExtractContainerToDirectory(containerStream, directoryScope.Directory);
         var structurePath = Path.Combine(directoryScope.Directory, Constants.L3dXmlFilename);
         return _xmlValidator.ValidateFile(structurePath, _logger);
     }

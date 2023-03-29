@@ -1,15 +1,15 @@
 ﻿using L3D.Net.Data;
 using L3D.Net.Exceptions;
 using L3D.Net.Internal.Abstract;
-using L3D.Net.Mapper.V0_9_2;
-using L3D.Net.XML.V0_9_2;
+using L3D.Net.Mapper.V0_11_0;
+using L3D.Net.XML.V0_11_0;
 using System;
 using System.Linq;
 using System.Xml.Linq;
 
 namespace L3D.Net.XML;
 
-public class L3DXmlReader : IL3DXmlReader
+internal class L3DXmlReader : IL3DXmlReader
 {
     private readonly XmlDtoSerializer _serializer;
 

@@ -49,7 +49,8 @@ public class ReaderExampleTests
     public enum ContainerTypeToTest
     {
         Path,
-        Bytes
+        Bytes,
+        Stream
     }
 
     public static IEnumerable<ContainerTypeToTest> ContainerTypeToTestEnumValues => Enum.GetValues<ContainerTypeToTest>();
@@ -70,7 +71,25 @@ public class ReaderExampleTests
         luminaire = buildFunc(luminaire);
 
         var containerPath = Path.Combine(containerTempDirectory, "luminaire" + Constants.L3dExtension);
-        _writer.WriteToFile(luminaire, containerPath);
+
+        switch (containerTypeToTest)
+        {
+            case ContainerTypeToTest.Stream:
+                using (var stream = File.OpenWrite(containerPath))
+                {
+                    _writer.WriteToStream(luminaire, stream);
+                }
+                break;
+            case ContainerTypeToTest.Path:
+                _writer.WriteToFile(luminaire, containerPath);
+                break;
+            case ContainerTypeToTest.Bytes:
+                var bytes = _writer.WriteToByteArray(luminaire);
+                File.WriteAllBytes(containerPath, bytes);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
+        }
 
         Action action = containerTypeToTest switch
         {
@@ -80,6 +99,13 @@ public class ReaderExampleTests
                 var containerBytes = File.ReadAllBytes(containerPath);
                 new Reader().ReadContainer(containerBytes);
             }
+            ,
+            ContainerTypeToTest.Stream => () =>
+            {
+                using var stream = File.OpenRead(containerPath);
+                new Reader().ReadContainer(stream);
+            }
+
             ,
             _ => throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null)
         };

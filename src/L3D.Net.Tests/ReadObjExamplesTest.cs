@@ -1,10 +1,10 @@
-﻿using L3D.Net.Geometry;
+﻿using FluentAssertions;
+using L3D.Net.Geometry;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
-using FluentAssertions;
 
 namespace L3D.Net.Tests;
 

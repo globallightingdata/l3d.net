@@ -2,6 +2,6 @@
 
 public class LightEmittingPart : TransformablePart
 {
-    public Shape Shape { get; set; }
-    public LuminousHeights LuminousHeights { get; set; } = new();
+    public Shape? Shape { get; set; }
+    public LuminousHeights? LuminousHeights { get; set; }
 }

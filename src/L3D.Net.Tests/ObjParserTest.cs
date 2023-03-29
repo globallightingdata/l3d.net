@@ -18,7 +18,7 @@ public class ObjParserTest
         var objPath = Path.Combine(Setup.TestDataDirectory, "obj", "two_groups.obj");
         var mtlPath = Path.Combine(Setup.TestDataDirectory, "obj", "two_groups.mtl");
 
-        ObjParser parser = new ObjParser();
+        var parser = new ObjParser();
 
         var model = parser.Parse(objPath, Substitute.For<ILogger>());
 
@@ -26,7 +26,7 @@ public class ObjParserTest
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(1);
         model.ReferencedMaterialLibraryFiles.Should().Contain(mtlPath);
         model.ReferencedTextureFiles.Should().HaveCount(0);
-        model.Data.Vertices.Should().HaveCount(16);
+        model.Data!.Vertices.Should().HaveCount(16);
         model.Data.Normals.Should().HaveCount(12);
         model.Data.TextureCoordinates.Should().HaveCount(28);
         model.Data.FaceGroups.Should().HaveCount(2);
@@ -62,7 +62,7 @@ public class ObjParserTest
         var mtlPath = Path.Combine(examplePath, "cube", "textured_cube.mtl");
         var textureFile = Path.Combine(examplePath, "cube", "CubeTexture.png");
 
-        ObjParser parser = new ObjParser();
+        var parser = new ObjParser();
 
         var model = parser.Parse(objPath, Substitute.For<ILogger>());
 
@@ -71,7 +71,7 @@ public class ObjParserTest
         model.ReferencedMaterialLibraryFiles.Should().Contain(mtlPath);
         model.ReferencedTextureFiles.Should().HaveCount(1);
         model.ReferencedTextureFiles.First().Should().Be(textureFile);
-        model.Data.FaceGroups.Should().HaveCount(1);
+        model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(1);
         var modelMaterial = model.Data.Materials.First();
         modelMaterial.Color.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));

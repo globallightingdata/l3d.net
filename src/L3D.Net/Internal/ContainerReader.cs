@@ -6,12 +6,12 @@ using System.IO;
 
 namespace L3D.Net.Internal;
 
-public class ContainerReader : IContainerReader
+internal class ContainerReader : IContainerReader
 {
     private readonly IFileHandler _fileHandler;
     private readonly IL3DXmlReader _l3DXmlReader;
 
-    public ContainerReader(IFileHandler fileHandler, IL3DXmlReader il3DXmlReader)
+    internal ContainerReader(IFileHandler fileHandler, IL3DXmlReader il3DXmlReader)
     {
         _fileHandler = fileHandler ?? throw new ArgumentNullException(nameof(fileHandler));
         _l3DXmlReader = il3DXmlReader ?? throw new ArgumentNullException(nameof(il3DXmlReader));

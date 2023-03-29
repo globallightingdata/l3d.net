@@ -22,7 +22,7 @@ public static class ExamplesExtensions
             CreatedWithApplication = "Example-Tool"
         };
 
-        var geometryDefinition = new GeometrySource
+        var geometryDefinition = new GeometryFileDefinition
         {
             GeometryId = "PN." + Guid.NewGuid(),
             Units = GeometricUnits.m,
@@ -30,7 +30,7 @@ public static class ExamplesExtensions
             FileName = cubeObjPath
         };
 
-        luminaire.GeometryDefinitions = new List<GeometrySource>
+        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
         {
             geometryDefinition
         };
@@ -70,7 +70,7 @@ public static class ExamplesExtensions
                         }
                     }
                 },
-                GeometrySource = geometryDefinition
+                GeometryReference = geometryDefinition
             }
         };
 
@@ -87,7 +87,7 @@ public static class ExamplesExtensions
             CreatedWithApplication = "Example-Tool"
         };
 
-        var geometryDefinition = new GeometrySource
+        var geometryDefinition = new GeometryFileDefinition
         {
             GeometryId = "PN." + Guid.NewGuid(),
             Units = GeometricUnits.m,
@@ -95,7 +95,7 @@ public static class ExamplesExtensions
             FileName = cubeObjPath
         };
 
-        luminaire.GeometryDefinitions = new List<GeometrySource>
+        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
         {
             geometryDefinition
         };
@@ -147,7 +147,7 @@ public static class ExamplesExtensions
                     Y = -0.125f,
                     Z = 0.05f
                 },
-                GeometrySource = geometryDefinition
+                GeometryReference = geometryDefinition
             }
         };
 
@@ -170,35 +170,35 @@ public static class ExamplesExtensions
             Description = "First ever xml luminaire geometry description"
         };
 
-        var baseDefinition = new GeometrySource
+        var baseDefinition = new GeometryFileDefinition
         {
             GeometryId = "PN." + Guid.NewGuid(),
             Units = GeometricUnits.mm,
             Model = ObjParser.Parse(baseObjPath, NullLogger.Instance),
             FileName = baseObjPath
         };
-        var baseArmDefinition = new GeometrySource
+        var baseArmDefinition = new GeometryFileDefinition
         {
             GeometryId = "PN." + Guid.NewGuid(),
             Units = GeometricUnits.mm,
             Model = ObjParser.Parse(baseArmConObjPath, NullLogger.Instance),
             FileName = baseArmConObjPath
         };
-        var armDefinition = new GeometrySource
+        var armDefinition = new GeometryFileDefinition
         {
             GeometryId = "PN." + Guid.NewGuid(),
             Units = GeometricUnits.mm,
             Model = ObjParser.Parse(armObjPath, NullLogger.Instance),
             FileName = armObjPath
         };
-        var armHeadDefinition = new GeometrySource
+        var armHeadDefinition = new GeometryFileDefinition
         {
             GeometryId = "PN." + Guid.NewGuid(),
             Units = GeometricUnits.mm,
             Model = ObjParser.Parse(armHeadConObjPath, NullLogger.Instance),
             FileName = armHeadConObjPath
         };
-        var headDefinition = new GeometrySource
+        var headDefinition = new GeometryFileDefinition
         {
             GeometryId = "PN." + Guid.NewGuid(),
             Units = GeometricUnits.mm,
@@ -206,7 +206,7 @@ public static class ExamplesExtensions
             FileName = headObjPath
         };
 
-        luminaire.GeometryDefinitions = new List<GeometrySource>
+        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
         {
             baseDefinition,
             baseArmDefinition,
@@ -220,7 +220,7 @@ public static class ExamplesExtensions
             new()
             {
                 Name = "base",
-                GeometrySource = baseDefinition,
+                GeometryReference = baseDefinition,
                 Joints = new List<JointPart>
                 {
                     new()
@@ -249,7 +249,7 @@ public static class ExamplesExtensions
                                     Y = -0.05f,
                                     Z = -0.05f
                                 },
-                                GeometrySource = baseArmDefinition,
+                                GeometryReference = baseArmDefinition,
                                 Joints = new List<JointPart>
                                 {
                                     new()
@@ -278,7 +278,7 @@ public static class ExamplesExtensions
                                             new()
                                             {
                                                 Name = "arm",
-                                                GeometrySource = armDefinition,
+                                                GeometryReference = armDefinition,
                                                 Position = new Vector3
                                                 {
                                                     X = 0f,
@@ -325,7 +325,7 @@ public static class ExamplesExtensions
                                                                     Y = -0.05f,
                                                                     Z = -0.485f
                                                                 },
-                                                                GeometrySource = armHeadDefinition,
+                                                                GeometryReference = armHeadDefinition,
                                                                 Joints = new List<JointPart>
                                                                 {
                                                                     new()
@@ -348,7 +348,7 @@ public static class ExamplesExtensions
                                                                             new()
                                                                             {
                                                                                 Name = "head",
-                                                                                GeometrySource = headDefinition,
+                                                                                GeometryReference = headDefinition,
                                                                                 Position = new Vector3
                                                                                 {
                                                                                     X = 0f,
@@ -431,7 +431,7 @@ public static class ExamplesExtensions
             CreatedWithApplication = "Keyboard-v1.0"
         };
 
-        var bodyDefinition = new GeometrySource
+        var bodyDefinition = new GeometryFileDefinition
         {
             GeometryId = "PN." + Guid.NewGuid(),
             Units = GeometricUnits.mm,
@@ -439,7 +439,7 @@ public static class ExamplesExtensions
             FileName = objPath
         };
 
-        luminaire.GeometryDefinitions = new List<GeometrySource>
+        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
         {
             bodyDefinition
         };
@@ -449,7 +449,7 @@ public static class ExamplesExtensions
             new()
             {
                 Name = "luminaire",
-                GeometrySource = bodyDefinition,
+                GeometryReference = bodyDefinition,
                 LightEmittingObjects = new List<LightEmittingPart>
                 {
                     new()
@@ -496,7 +496,7 @@ public static class ExamplesExtensions
             CreatedWithApplication = "Keyboard-v1.0"
         };
 
-        var bodyDefinition = new GeometrySource
+        var bodyDefinition = new GeometryFileDefinition
         {
             GeometryId = "PN." + Guid.NewGuid(),
             Units = GeometricUnits.mm,
@@ -504,7 +504,7 @@ public static class ExamplesExtensions
             FileName = objPath
         };
 
-        luminaire.GeometryDefinitions = new List<GeometrySource>
+        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
         {
             bodyDefinition
         };
@@ -514,7 +514,7 @@ public static class ExamplesExtensions
             new()
             {
                 Name = "luminaire",
-                GeometrySource = bodyDefinition,
+                GeometryReference = bodyDefinition,
                 Position = new Vector3
                 {
                     X = 0f,
@@ -644,14 +644,14 @@ public static class ExamplesExtensions
             Description = "Example luminaire 4"
         };
 
-        var baseDefinition = new GeometrySource
+        var baseDefinition = new GeometryFileDefinition
         {
             GeometryId = "PN." + Guid.NewGuid(),
             Units = GeometricUnits.mm,
             Model = ObjParser.Parse(baseObjPath, NullLogger.Instance),
             FileName = baseObjPath
         };
-        var headDefinition = new GeometrySource
+        var headDefinition = new GeometryFileDefinition
         {
             GeometryId = "PN." + Guid.NewGuid(),
             Units = GeometricUnits.mm,
@@ -659,7 +659,7 @@ public static class ExamplesExtensions
             FileName = headObjPath
         };
 
-        luminaire.GeometryDefinitions = new List<GeometrySource>
+        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
         {
             baseDefinition,
             headDefinition
@@ -670,7 +670,7 @@ public static class ExamplesExtensions
             new()
             {
                 Name = "base",
-                GeometrySource = baseDefinition,
+                GeometryReference = baseDefinition,
                 Joints = new List<JointPart>
                 {
                     new()
@@ -699,7 +699,7 @@ public static class ExamplesExtensions
                             new()
                             {
                                 Name = "head",
-                                GeometrySource = headDefinition,
+                                GeometryReference = headDefinition,
                                 Position = new Vector3
                                 {
                                     X = 0f,
@@ -778,21 +778,21 @@ public static class ExamplesExtensions
             CreatedWithApplication = "Experimental"
         };
 
-        var baseDefinition = new GeometrySource
+        var baseDefinition = new GeometryFileDefinition
         {
             GeometryId = "PN." + Guid.NewGuid(),
             Units = GeometricUnits.m,
             Model = ObjParser.Parse(baseObjPath, NullLogger.Instance),
             FileName = baseObjPath
         };
-        var baseHeadConnectionDefinition = new GeometrySource
+        var baseHeadConnectionDefinition = new GeometryFileDefinition
         {
             GeometryId = "PN." + Guid.NewGuid(),
             Units = GeometricUnits.m,
             Model = ObjParser.Parse(baseHeadConeObjPath, NullLogger.Instance),
             FileName = baseHeadConeObjPath
         };
-        var headDefinition = new GeometrySource
+        var headDefinition = new GeometryFileDefinition
         {
             GeometryId = "PN." + Guid.NewGuid(),
             Units = GeometricUnits.m,
@@ -800,7 +800,7 @@ public static class ExamplesExtensions
             FileName = headObjPath
         };
 
-        luminaire.GeometryDefinitions = new List<GeometrySource>
+        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
         {
             baseDefinition,
             baseHeadConnectionDefinition,
@@ -810,7 +810,7 @@ public static class ExamplesExtensions
         GeometryPart CreatePart(int index, float yPosition) => new()
         {
             Name = $"part-{index}",
-            GeometrySource = baseHeadConnectionDefinition,
+            GeometryReference = baseHeadConnectionDefinition,
             Joints = new List<JointPart>
             {
                 new()
@@ -833,7 +833,7 @@ public static class ExamplesExtensions
                         new()
                         {
                             Name = $"head-{index}",
-                            GeometrySource = headDefinition,
+                            GeometryReference = headDefinition,
                             LightEmittingObjects = new List<LightEmittingPart>
                             {
                                 new()
@@ -887,7 +887,7 @@ public static class ExamplesExtensions
             new()
             {
                 Name = "base",
-                GeometrySource = baseDefinition,
+                GeometryReference = baseDefinition,
                 Joints = new List<JointPart>
                 {
                     new()
@@ -932,21 +932,21 @@ public static class ExamplesExtensions
             CreatedWithApplication = "Experimental"
         };
 
-        var baseDefinition = new GeometrySource
+        var baseDefinition = new GeometryFileDefinition
         {
             GeometryId = "PN." + Guid.NewGuid(),
             Units = GeometricUnits.mm,
             Model = ObjParser.Parse(baseObjPath, NullLogger.Instance),
             FileName = baseObjPath
         };
-        var baseHeadConnectionDefinition = new GeometrySource
+        var baseHeadConnectionDefinition = new GeometryFileDefinition
         {
             GeometryId = "PN." + Guid.NewGuid(),
             Units = GeometricUnits.m,
             Model = ObjParser.Parse(baseHeadConeObjPath, NullLogger.Instance),
             FileName = baseHeadConeObjPath
         };
-        var headDefinition = new GeometrySource
+        var headDefinition = new GeometryFileDefinition
         {
             GeometryId = "PN." + Guid.NewGuid(),
             Units = GeometricUnits.mm,
@@ -954,7 +954,7 @@ public static class ExamplesExtensions
             FileName = headObjPath
         };
 
-        luminaire.GeometryDefinitions = new List<GeometrySource>
+        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
         {
             baseDefinition,
             baseHeadConnectionDefinition,
@@ -966,7 +966,7 @@ public static class ExamplesExtensions
             new()
             {
                 Name = "base",
-                GeometrySource = baseDefinition,
+                GeometryReference = baseDefinition,
                 Joints = new List<JointPart>
                 {
                     new()
@@ -995,7 +995,7 @@ public static class ExamplesExtensions
                             new()
                             {
                                 Name = "base-head-con-0",
-                                GeometrySource = baseHeadConnectionDefinition,
+                                GeometryReference = baseHeadConnectionDefinition,
                                 Joints = new List<JointPart>
                                 {
                                     new()
@@ -1024,7 +1024,7 @@ public static class ExamplesExtensions
                                             new()
                                             {
                                                 Name = "head-0",
-                                                GeometrySource = headDefinition,
+                                                GeometryReference = headDefinition,
                                                 Position = new Vector3
                                                 {
                                                     X = 0.4f,
@@ -1107,7 +1107,7 @@ public static class ExamplesExtensions
                             new()
                             {
                                 Name = "base-head-con-1",
-                                GeometrySource = baseHeadConnectionDefinition,
+                                GeometryReference = baseHeadConnectionDefinition,
                                 Joints = new List<JointPart>
                                 {
                                     new()
@@ -1136,7 +1136,7 @@ public static class ExamplesExtensions
                                             new()
                                             {
                                                 Name = "head-1",
-                                                GeometrySource = headDefinition,
+                                                GeometryReference = headDefinition,
                                                 Position = new Vector3
                                                 {
                                                     X = 0.4f,
@@ -1217,7 +1217,7 @@ public static class ExamplesExtensions
             CreatedWithApplication = "Example-Tool"
         };
 
-        var baseDefinition = new GeometrySource
+        var baseDefinition = new GeometryFileDefinition
         {
             GeometryId = "PN." + Guid.NewGuid(),
             Units = GeometricUnits.m,
@@ -1225,7 +1225,7 @@ public static class ExamplesExtensions
             FileName = cubeObjPath
         };
 
-        luminaire.GeometryDefinitions = new List<GeometrySource>
+        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
         {
             baseDefinition
         };
@@ -1235,7 +1235,7 @@ public static class ExamplesExtensions
             new()
             {
                 Name = "luminaire",
-                GeometrySource = baseDefinition,
+                GeometryReference = baseDefinition,
                 LightEmittingObjects = new List<LightEmittingPart>
                 {
                     new()

@@ -6,9 +6,10 @@ namespace L3D.Net.Geometry;
 
 public class ObjModel3D : IModel3D
 {
-    public string FilePath { get; set; }
+    public string FilePath { get; set; } = string.Empty;
 
     IEnumerable<string> IModel3D.ReferencedTextureFiles => ReferencedTextureFiles;
+
     public bool IsFaceIndexValid(int groupIndex, int faceIndex)
     {
         if (Data == null)
@@ -23,10 +24,10 @@ public class ObjModel3D : IModel3D
         return true;
     }
 
-    public ModelData Data { get; set; }
+    public ModelData? Data { get; set; }
 
     IEnumerable<string> IModel3D.ReferencedMaterialLibraryFiles => ReferencedMaterialLibraries;
 
-    public List<string> ReferencedMaterialLibraries { get; set; } = new List<string>();
-    public List<string> ReferencedTextureFiles { get; set; } = new List<string>();
+    public List<string> ReferencedMaterialLibraries { get; set; } = new();
+    public List<string> ReferencedTextureFiles { get; set; } = new();
 }

@@ -13,7 +13,7 @@ namespace L3D.Net.XML;
 
 public class XmlValidator : IXmlValidator
 {
-    public bool ValidateFile(string xmlFilename, ILogger logger = null)
+    public bool ValidateFile(string xmlFilename, ILogger? logger = null)
     {
         var xmlDocument = XDocument.Load(xmlFilename);
         var root = xmlDocument.Root;
@@ -27,15 +27,15 @@ public class XmlValidator : IXmlValidator
         if (!TryGetVersion(root, logger, out var version))
             return false;
 
-        if (!TryLoadXsd(version, logger, out var scheme))
+        if (!TryLoadXsd(version!, logger, out var scheme))
             return false;
 
-        var schemeSet = CreateSchemaSet(scheme);
+        var schemeSet = CreateSchemaSet(scheme!);
 
         return Validate(xmlDocument, schemeSet, logger);
     }
 
-    private static bool Validate(XDocument xmlDocument, XmlSchemaSet schemeSet, ILogger validationLogger)
+    private static bool Validate(XDocument xmlDocument, XmlSchemaSet schemeSet, ILogger? logger)
     {
         var isValid = true;
 
@@ -46,18 +46,18 @@ public class XmlValidator : IXmlValidator
                 if (ev.Severity == XmlSeverityType.Error)
                 {
                     isValid = false;
-                    validationLogger?.LogError(ev.Message);
+                    logger?.LogError(ev.Message);
                 }
                 else
                 {
-                    validationLogger?.LogWarning(ev.Message);
+                    logger?.LogWarning(ev.Message);
                 }
             });
         }
         catch (Exception e)
         {
             isValid = false;
-            validationLogger?.LogError(e, "Could not validate");
+            logger?.LogError(e, "Could not validate");
         }
 
         return isValid;
@@ -72,7 +72,7 @@ public class XmlValidator : IXmlValidator
         return schemaSet;
     }
 
-    private static bool TryGetVersion(XElement root, ILogger logger, out Version version)
+    private static bool TryGetVersion(XElement root, ILogger? logger, out Version? version)
     {
         version = null;
 
@@ -99,7 +99,7 @@ public class XmlValidator : IXmlValidator
         return true;
     }
 
-    private bool TryLoadXsd(Version version, ILogger logger, out string content)
+    private static bool TryLoadXsd(Version version, ILogger? logger, out string? content)
     {
         try
         {

@@ -3,7 +3,7 @@ using System.IO;
 
 namespace L3D.Net.Abstract;
 
-public interface IContainerReader
+internal interface IContainerReader
 {
     Luminaire Read(string containerPath);
 

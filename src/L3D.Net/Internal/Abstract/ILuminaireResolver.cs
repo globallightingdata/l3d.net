@@ -3,8 +3,8 @@ using Microsoft.Extensions.Logging;
 
 namespace L3D.Net.Internal.Abstract
 {
-    public interface ILuminaireResolver
+    internal interface ILuminaireResolver
     {
-        Luminaire Resolve(Luminaire luminaire, string workingDirectory, ILogger logger = null);
+        Luminaire Resolve(Luminaire luminaire, string workingDirectory, ILogger? logger = null);
     }
 }

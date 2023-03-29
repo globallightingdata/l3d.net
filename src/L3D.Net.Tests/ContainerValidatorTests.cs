@@ -15,9 +15,9 @@ using System.IO;
 namespace L3D.Net.Tests;
 
 [TestFixture]
-class ContainerValidatorTests
+public class ContainerValidatorTests
 {
-    class Context
+    private class Context
     {
         public IFileHandler FileHandler { get; }
         public IXmlValidator XmlValidator { get; }
@@ -33,7 +33,7 @@ class ContainerValidatorTests
         }
     }
 
-    class ContextOptions
+    private class ContextOptions
     {
         private readonly Context _context;
 
@@ -53,7 +53,7 @@ class ContainerValidatorTests
         }
     }
 
-    private static Context CreateContext(Action<ContextOptions> options = null)
+    private static Context CreateContext(Action<ContextOptions>? options = null)
     {
         var context = new Context();
 
@@ -65,7 +65,8 @@ class ContainerValidatorTests
     public enum ContainerTypeToTest
     {
         Path,
-        Bytes
+        Bytes,
+        Stream
     }
 
     public static IEnumerable<ContainerTypeToTest> ContainerTypeToTestEnumValues => Enum.GetValues<ContainerTypeToTest>();
@@ -73,7 +74,7 @@ class ContainerValidatorTests
     [Test]
     public void Constructor_ShouldThrowArgumentNullException_WhenFileHandlerIsNull()
     {
-        var action = () => _ = new ContainerValidator(null,
+        var action = () => _ = new ContainerValidator(null!,
             Substitute.For<IXmlValidator>(),
             Substitute.For<ILogger>()
         );
@@ -85,7 +86,7 @@ class ContainerValidatorTests
     public void Constructor_ShouldThrowArgumentNullException_WhenXmlValidatorIsNull()
     {
         var action = () => _ = new ContainerValidator(Substitute.For<IFileHandler>(),
-            null,
+            null!,
             Substitute.For<ILogger>()
         );
 
@@ -97,7 +98,7 @@ class ContainerValidatorTests
     {
         var action = () => _ = new ContainerValidator(Substitute.For<IFileHandler>(),
             Substitute.For<IXmlValidator>(),
-            null
+            null!
         );
 
         action.Should().NotThrow();
@@ -108,7 +109,7 @@ class ContainerValidatorTests
     {
         var context = CreateContext();
 
-        Action action = () => context.ContainerValidator.Validate(containerPath);
+        var action = () => context.ContainerValidator.Validate(containerPath);
 
         action.Should().Throw<ArgumentException>();
     }
@@ -118,7 +119,17 @@ class ContainerValidatorTests
     {
         var context = CreateContext();
 
-        Action action = () => context.ContainerValidator.Validate(containerBytes);
+        var action = () => context.ContainerValidator.Validate(containerBytes);
+
+        action.Should().Throw<ArgumentException>();
+    }
+
+    [Test, TestCaseSource(typeof(Setup), nameof(Setup.EmptyStreamValues))]
+    public void Validate_ShouldThrowArgumentException_WhenContainerBytesIsNullOrEmpty(Stream containerStream)
+    {
+        var context = CreateContext();
+
+        var action = () => context.ContainerValidator.Validate(containerStream);
 
         action.Should().Throw<ArgumentException>();
     }
@@ -136,6 +147,12 @@ class ContainerValidatorTests
             case ContainerTypeToTest.Bytes:
                 context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 });
                 break;
+            case ContainerTypeToTest.Stream:
+                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                {
+                    context.ContainerValidator.Validate(ms);
+                }
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
         }
@@ -146,7 +163,7 @@ class ContainerValidatorTests
     [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
     public void Validate_ShouldCallFileHandlerExtractContainerToDirectory_WithCorrectPath(ContainerTypeToTest containerTypeToTest)
     {
-        string workingDirectory = null;
+        string workingDirectory = null!;
         var context = CreateContext(options =>
             options.WithTemporaryScopeWorkingDirectory(out _, out workingDirectory));
         switch (containerTypeToTest)
@@ -165,6 +182,15 @@ class ContainerValidatorTests
                 context.FileHandler.Received(1)
                     .ExtractContainerToDirectory(Arg.Is(containerBytes), Arg.Is(workingDirectory));
                 break;
+            case ContainerTypeToTest.Stream:
+                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                {
+                    context.ContainerValidator.Validate(ms);
+
+                    context.FileHandler.Received(1)
+                        .ExtractContainerToDirectory(Arg.Is(ms), Arg.Is(workingDirectory));
+                }
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
         }
@@ -173,7 +199,7 @@ class ContainerValidatorTests
     [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
     public void Validate_ShouldCallXmlValidatorValidateFile_WithCorrectXmlFilePath(ContainerTypeToTest containerTypeToTest)
     {
-        string workingDirectory = null;
+        string workingDirectory = null!;
         var context = CreateContext(options =>
             options.WithTemporaryScopeWorkingDirectory(out _, out workingDirectory));
         var xmlPath = Path.Combine(workingDirectory, Constants.L3dXmlFilename);
@@ -185,6 +211,12 @@ class ContainerValidatorTests
             case ContainerTypeToTest.Bytes:
                 context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 });
                 break;
+            case ContainerTypeToTest.Stream:
+                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                {
+                    context.ContainerValidator.Validate(ms);
+                }
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
         }
@@ -195,7 +227,7 @@ class ContainerValidatorTests
     [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
     public void Validate_ShouldCallContainerDirectoryCleanUp_WhenNoErrorOccured(ContainerTypeToTest containerTypeToTest)
     {
-        IContainerDirectory scope = null;
+        IContainerDirectory scope = null!;
         var context = CreateContext(options => options.WithTemporaryScopeWorkingDirectory(out scope, out _));
 
         switch (containerTypeToTest)
@@ -205,6 +237,12 @@ class ContainerValidatorTests
                 break;
             case ContainerTypeToTest.Bytes:
                 context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 });
+                break;
+            case ContainerTypeToTest.Stream:
+                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                {
+                    context.ContainerValidator.Validate(ms);
+                }
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -217,7 +255,7 @@ class ContainerValidatorTests
     public void
         Validate_ShouldCallContainerDirectoryCleanUp_AndNotCatch_WhenFileHandlerExtractContainerToDirectoryThrows(ContainerTypeToTest containerTypeToTest)
     {
-        IContainerDirectory scope = null;
+        IContainerDirectory scope = null!;
         var context = CreateContext(options => options
             .WithTemporaryScopeWorkingDirectory(out scope, out _));
 
@@ -238,6 +276,16 @@ class ContainerValidatorTests
                     .Throw(new Exception(message));
                 action = () => context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 });
                 break;
+            case ContainerTypeToTest.Stream:
+                context.FileHandler
+                    .When(handler => handler.ExtractContainerToDirectory(Arg.Any<Stream>(), Arg.Any<string>()))
+                    .Throw(new Exception(message));
+                action = () =>
+                {
+                    using var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 });
+                    context.ContainerValidator.Validate(ms);
+                };
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
         }
@@ -249,7 +297,7 @@ class ContainerValidatorTests
     [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
     public void Validate_ShouldCallContainerDirectoryCleanUp_AndNotCatch_WhenXmlValidatorValidateFileThrows(ContainerTypeToTest containerTypeToTest)
     {
-        IContainerDirectory scope = null;
+        IContainerDirectory scope = null!;
         var context = CreateContext(options => options
             .WithTemporaryScopeWorkingDirectory(out scope, out _));
 
@@ -260,6 +308,12 @@ class ContainerValidatorTests
         {
             ContainerTypeToTest.Path => () => context.ContainerValidator.Validate(Guid.NewGuid().ToString()),
             ContainerTypeToTest.Bytes => () => context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }),
+            ContainerTypeToTest.Stream => () =>
+            {
+                using var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 });
+                context.ContainerValidator.Validate(ms);
+            }
+            ,
             _ => throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null)
         };
 

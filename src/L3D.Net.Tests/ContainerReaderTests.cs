@@ -13,9 +13,9 @@ namespace L3D.Net.Tests;
 [TestFixture]
 public class ContainerReaderTests
 {
-    private ContainerReader _reader;
-    private IFileHandler _fileHandler;
-    private IL3DXmlReader _l3DXmlReader;
+    private ContainerReader _reader = null!;
+    private IFileHandler _fileHandler = null!;
+    private IL3DXmlReader _l3DXmlReader = null!;
 
     [SetUp]
     public void SetUp()
@@ -38,7 +38,7 @@ public class ContainerReaderTests
     public void Constructor_ShouldThrowArgumentNullException_WhenFileHandlerIsNull()
     {
         var action = () => _ = new ContainerReader(
-            null,
+            null!,
             Substitute.For<IL3DXmlReader>()
         );
 
@@ -50,7 +50,7 @@ public class ContainerReaderTests
     {
         var action = () => _ = new ContainerReader(
             Substitute.For<IFileHandler>(),
-            null
+            null!
         );
 
         action.Should().Throw<ArgumentNullException>();

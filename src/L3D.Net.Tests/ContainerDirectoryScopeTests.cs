@@ -15,7 +15,7 @@ public class ContainerDirectoryScopeTests
     [Test]
     public void Constructor_ShouldThrowArgumentNullException_WhenDirectoryIsNull()
     {
-        Action action = () => new ContainerDirectoryScope(null);
+        var action = () => new ContainerDirectoryScope(null!);
 
         action.Should().Throw<ArgumentNullException>();
     }

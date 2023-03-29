@@ -61,7 +61,7 @@ public class ContainerDirectoryTests
 
         var openFile = File.OpenWrite(Path.Combine(directory, Guid.NewGuid().ToString()));
 
-        Action action = () => scope.CleanUp();
+        var action = () => scope.CleanUp();
         action.Should().NotThrow();
 
         openFile.Close();

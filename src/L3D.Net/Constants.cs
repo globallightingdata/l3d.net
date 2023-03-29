@@ -1,6 +1,6 @@
 ﻿namespace L3D.Net;
 
-public static class Constants
+internal static class Constants
 {
     public const string CurrentSchemeUri = @"https://gldf.io/xsd/l3d/0.9.2/l3d.xsd";
     public const string L3dExtension = ".l3d";

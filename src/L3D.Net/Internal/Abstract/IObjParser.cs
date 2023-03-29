@@ -4,5 +4,5 @@ namespace L3D.Net.Internal.Abstract;
 
 public interface IObjParser
 {
-    IModel3D Parse(string filePath, ILogger logger);
+    IModel3D Parse(string filePath, ILogger? logger = null);
 }

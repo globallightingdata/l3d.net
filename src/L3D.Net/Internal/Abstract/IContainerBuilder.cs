@@ -3,7 +3,7 @@ using System.IO;
 
 namespace L3D.Net.Internal.Abstract;
 
-public interface IContainerBuilder
+internal interface IContainerBuilder
 {
     void CreateContainerFile(Luminaire luminaire, string containerPath);
     byte[] CreateContainerByteArray(Luminaire luminaire);

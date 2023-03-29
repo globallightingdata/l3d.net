@@ -5,7 +5,7 @@ namespace L3D.Net.Data;
 
 public class GeometryPart : TransformablePart
 {
-    public GeometrySource GeometrySource { get; set; } = new();
+    public GeometryFileDefinition? GeometryReference { get; set; }
     public List<JointPart> Joints { get; set; } = new();
     public bool IncludedInMeasurement { get; set; } = true;
     public List<Vector3> ElectricalConnectors { get; set; } = new();

@@ -14,7 +14,7 @@ public class ObjParser : IObjParser
 {
     public static readonly IObjParser Instance = new ObjParser();
 
-    public IModel3D Parse(string filePath, ILogger logger)
+    public IModel3D Parse(string filePath, ILogger? logger = null)
     {
         var directory = Path.GetDirectoryName(filePath) ??
                         throw new ArgumentException($"The file directory of '{filePath}' could not be determined!");
@@ -34,7 +34,7 @@ public class ObjParser : IObjParser
         };
     }
 
-    private static List<Tuple<string, ObjMaterialFile>> CollectAvailableMaterialLibraries(ILogger logger,
+    private static List<Tuple<string, ObjMaterialFile>> CollectAvailableMaterialLibraries(ILogger? logger,
         ObjFile objFile, string directory)
     {
         var objMaterials = objFile.MaterialLibraries.Select(mtl =>
@@ -47,7 +47,7 @@ public class ObjParser : IObjParser
             catch (Exception e)
             {
                 logger?.LogWarning(e, "Material could not be loaded");
-                return null;
+                return null!;
             }
         }).Where(mtl => mtl != null).ToList();
         return objMaterials;
@@ -56,7 +56,7 @@ public class ObjParser : IObjParser
     private static List<string> CollectAvailableTextures(string directory,
         List<Tuple<string, ObjMaterialFile>> objMaterials)
     {
-        var textures = new List<string>();
+        var textures = new List<string?>();
 
         foreach (var materialFile in objMaterials)
         {
@@ -83,13 +83,13 @@ public class ObjParser : IObjParser
         textures = textures
             .Where(texture => texture != null)
             .Distinct()
-            .Select(fileName => Path.Combine(directory, fileName))
-            .ToList();
-        return textures;
+            .Select(fileName => Path.Combine(directory, fileName!))
+            .ToList()!;
+        return textures!;
     }
 
 
-    private ModelData ConvertGeometry(ObjFile objFile, IReadOnlyList<ObjMaterialFile> objMaterialFiles)
+    private static ModelData ConvertGeometry(ObjFile objFile, IReadOnlyList<ObjMaterialFile> objMaterialFiles)
     {
         var vertices = objFile.Vertices
             .Select(vertex => new Vector3(vertex.Position.X, vertex.Position.Y, vertex.Position.Z)).ToList();
@@ -159,7 +159,7 @@ public class ObjParser : IObjParser
         {
             Color = new Vector3(color.Color.X, color.Color.Y, color.Color.Z),
             Name = objMaterial.Name,
-            TextureName = objMaterial.DiffuseMap?.FileName
+            TextureName = objMaterial.DiffuseMap?.FileName ?? string.Empty
         };
     }
 }

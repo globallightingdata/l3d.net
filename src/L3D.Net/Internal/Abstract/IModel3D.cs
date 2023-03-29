@@ -9,5 +9,5 @@ public interface IModel3D
     IEnumerable<string> ReferencedMaterialLibraryFiles { get; }
     IEnumerable<string> ReferencedTextureFiles { get; }
     bool IsFaceIndexValid(int groupIndex, int faceIndex);
-    ModelData Data { get; }
+    ModelData? Data { get; }
 }

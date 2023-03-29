@@ -1,4 +1,4 @@
-using L3D.Net.XML.V0_9_2;
+using L3D.Net.XML.V0_11_0;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;

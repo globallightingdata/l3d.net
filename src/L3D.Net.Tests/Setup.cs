@@ -14,15 +14,17 @@ public static class Setup
     private static bool _isInitialized;
     private static readonly object Lock = new();
 
-    public static string TestDataDirectory { get; private set; }
-    public static string ExamplesDirectory { get; private set; }
-    public static string ValidVersionsDirectory { get; private set; }
-    public static string InvalidVersionsDirectory { get; private set; }
+    private static readonly MemoryStream Stream = new();
 
-    public static IEnumerable<string> ExampleXmlFiles { get; private set; }
-    public static IEnumerable<string> ExampleObjFiles { get; private set; }
-    public static IEnumerable<string> ValidVersionXmlFiles { get; private set; }
-    public static IEnumerable<string> InvalidVersionXmlFiles { get; private set; }
+    public static string TestDataDirectory { get; private set; } = null!;
+    public static string ExamplesDirectory { get; private set; } = null!;
+    public static string ValidVersionsDirectory { get; private set; } = null!;
+    public static string InvalidVersionsDirectory { get; private set; } = null!;
+
+    public static IEnumerable<string> ExampleXmlFiles { get; private set; } = Array.Empty<string>();
+    public static IEnumerable<string> ExampleObjFiles { get; private set; } = Array.Empty<string>();
+    public static IEnumerable<string> ValidVersionXmlFiles { get; private set; } = Array.Empty<string>();
+    public static IEnumerable<string> InvalidVersionXmlFiles { get; private set; } = Array.Empty<string>();
 
     [OneTimeSetUp]
     public static void Initialize()
@@ -32,7 +34,7 @@ public static class Setup
             if (_isInitialized)
                 return;
 
-            var testBinDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var testBinDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
 
             TestDataDirectory = Path.Combine(testBinDirectory, "TestData");
 
@@ -49,11 +51,17 @@ public static class Setup
         }
     }
 
+    [OneTimeTearDown]
+    public static void TearDown()
+    {
+        Stream.Dispose();
+    }
+
     public static List<string> EmptyStringValues()
     {
         return new List<string>
         {
-            null,
+            null!,
             "",
             " ",
             "\t",
@@ -67,8 +75,17 @@ public static class Setup
     {
         return new List<byte[]>
         {
-            null,
+            null!,
             Array.Empty<byte>()
+        };
+    }
+
+    public static List<Stream> EmptyStreamValues()
+    {
+        return new List<Stream>
+        {
+            null!,
+            Stream
         };
     }
 
