@@ -4,5 +4,5 @@ namespace L3D.Net.Internal.Abstract;
 
 internal interface IL3DXmlReader
 {
-    Luminaire Read(string filename, string workingDirectory);
+    Luminaire Read(ContainerCache cache);
 }

@@ -5,6 +5,6 @@ namespace L3D.Net.Internal.Abstract
 {
     internal interface ILuminaireResolver
     {
-        Luminaire Resolve(Luminaire luminaire, string workingDirectory, ILogger? logger = null);
+        Luminaire Resolve(Luminaire luminaire, ContainerCache cache, ILogger? logger = null);
     }
 }

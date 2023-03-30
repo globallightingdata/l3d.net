@@ -1,5 +1,4 @@
 using L3D.Net.Abstract;
-using L3D.Net.Internal;
 using L3D.Net.Internal.Abstract;
 using Microsoft.Extensions.Logging;
 using System;
@@ -25,10 +24,8 @@ public class ContainerValidator : IContainerValidator
         if (string.IsNullOrWhiteSpace(containerPath))
             throw new ArgumentException(@"Value cannot be null or whitespace.", nameof(containerPath));
 
-        using var directoryScope = new ContainerDirectoryScope(_fileHandler.CreateContainerDirectory());
-        _fileHandler.ExtractContainerToDirectory(containerPath, directoryScope.Directory);
-        var structurePath = Path.Combine(directoryScope.Directory, Constants.L3dXmlFilename);
-        return _xmlValidator.ValidateFile(structurePath, _logger);
+        using var cache = _fileHandler.ExtractContainer(containerPath);
+        return _xmlValidator.ValidateStream(cache.StructureXml!, _logger);
     }
 
     public bool Validate(byte[] containerBytes)
@@ -36,10 +33,8 @@ public class ContainerValidator : IContainerValidator
         if (containerBytes == null || containerBytes.LongLength == 0)
             throw new ArgumentException(@"Value cannot be null or empty array.", nameof(containerBytes));
 
-        using var directoryScope = new ContainerDirectoryScope(_fileHandler.CreateContainerDirectory());
-        _fileHandler.ExtractContainerToDirectory(containerBytes, directoryScope.Directory);
-        var structurePath = Path.Combine(directoryScope.Directory, Constants.L3dXmlFilename);
-        return _xmlValidator.ValidateFile(structurePath, _logger);
+        using var cache = _fileHandler.ExtractContainer(containerBytes);
+        return _xmlValidator.ValidateStream(cache.StructureXml!, _logger);
     }
 
     public bool Validate(Stream containerStream)
@@ -47,9 +42,7 @@ public class ContainerValidator : IContainerValidator
         if (containerStream == null || containerStream.Length == 0)
             throw new ArgumentException(@"Value cannot be null or empty array.", nameof(containerStream));
 
-        using var directoryScope = new ContainerDirectoryScope(_fileHandler.CreateContainerDirectory());
-        _fileHandler.ExtractContainerToDirectory(containerStream, directoryScope.Directory);
-        var structurePath = Path.Combine(directoryScope.Directory, Constants.L3dXmlFilename);
-        return _xmlValidator.ValidateFile(structurePath, _logger);
+        using var cache = _fileHandler.ExtractContainer(containerStream);
+        return _xmlValidator.ValidateStream(cache.StructureXml!, _logger);
     }
 }

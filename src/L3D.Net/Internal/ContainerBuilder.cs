@@ -2,10 +2,10 @@
 using L3D.Net.Exceptions;
 using L3D.Net.Internal.Abstract;
 using L3D.Net.Mapper.V0_11_0;
-using L3D.Net.XML.V0_11_0;
 using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
+using L3D.Net.XML.V0_10_0;
 
 namespace L3D.Net.Internal;
 
@@ -28,20 +28,20 @@ internal class ContainerBuilder : IContainerBuilder
     {
         if (luminaire == null) throw new ArgumentNullException(nameof(luminaire));
 
-        using var scope = new ContainerDirectoryScope(_fileHandler.CreateContainerDirectory());
-        var directory = scope.Directory;
-        PrepareFiles(luminaire, directory);
-        return _fileHandler.CreateContainerByteArray(directory);
+        using var cache = new ContainerCache();
+
+        PrepareFiles(luminaire, cache);
+        return _fileHandler.CreateContainerByteArray(cache);
     }
 
     public void AppendContainerToStream(Luminaire luminaire, Stream stream)
     {
         if (luminaire == null) throw new ArgumentNullException(nameof(luminaire));
 
-        using var scope = new ContainerDirectoryScope(_fileHandler.CreateContainerDirectory());
-        var directory = scope.Directory;
-        PrepareFiles(luminaire, directory);
-        _fileHandler.AppendContainerToStream(directory, stream);
+        using var cache = new ContainerCache();
+
+        PrepareFiles(luminaire, cache);
+        _fileHandler.AppendContainerToStream(cache, stream);
     }
 
     public void CreateContainerFile(Luminaire luminaire, string containerPath)
@@ -51,27 +51,27 @@ internal class ContainerBuilder : IContainerBuilder
         if (string.IsNullOrWhiteSpace(containerPath))
             throw new ArgumentException(@"Value cannot be null or whitespace.", nameof(containerPath));
 
-        using var scope = new ContainerDirectoryScope(_fileHandler.CreateContainerDirectory());
-        var directory = scope.Directory;
-        PrepareFiles(luminaire, directory);
-        _fileHandler.CreateContainerFile(directory, containerPath);
+        using var cache = new ContainerCache();
+
+        PrepareFiles(luminaire, cache);
+        _fileHandler.CreateContainerFile(cache, containerPath);
     }
 
-    private void PrepareFiles(Luminaire luminaire, string targetDirectory)
+    private void PrepareFiles(Luminaire luminaire, ContainerCache cache)
     {
         foreach (var geometryDefinition in luminaire.GeometryDefinitions)
         {
-            var modelTargetDirectory = Path.Combine(targetDirectory, geometryDefinition.GeometryId);
-
-            _fileHandler.CopyModelFiles(geometryDefinition.Model, modelTargetDirectory);
+            _fileHandler.LoadModelFiles(geometryDefinition.Model, geometryDefinition.GeometryId, cache);
         }
 
         var dto = LuminaireMapper.Instance.Convert(luminaire);
 
-        var xmlFilename = Path.Combine(targetDirectory, Constants.L3dXmlFilename);
-        _serializer.Serialize(dto, xmlFilename);
+        cache.StructureXml = new MemoryStream();
+        _serializer.Serialize(dto, cache.StructureXml);
 
-        if (!_validator.ValidateFile(xmlFilename, _logger))
-            throw new InvalidL3DException("Failed to validate created xml file: " + xmlFilename);
+        cache.StructureXml.Seek(0, SeekOrigin.Begin);
+
+        if (!_validator.ValidateStream(cache.StructureXml, _logger))
+            throw new InvalidL3DException("Failed to validate created xml file");
     }
 }

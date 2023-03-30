@@ -57,59 +57,47 @@ public class FileHandlerTests
         return model3D;
     }
 
-    private IModel3D CreateFakeModel3DWithMaterialLibFiles()
-    {
-        var model3D = CreateFakeModel3D();
-        var materialFiles = new List<string>();
-
-        for (var i = 0; i < 3; i++)
-        {
-            var materialFile = Path.GetTempFileName();
-            _filesToDelete.Add(materialFile);
-            materialFiles.Add(materialFile);
-        }
-
-        model3D.ReferencedMaterialLibraryFiles.Returns(materialFiles);
-
-        return model3D;
-    }
-
-    private IModel3D CreateFakeModel3DWithTextureFiles()
-    {
-        var model3D = CreateFakeModel3D();
-        var textureFiles = new List<string>();
-
-        for (var i = 0; i < 3; i++)
-        {
-            var materialFile = Path.GetTempFileName();
-            _filesToDelete.Add(materialFile);
-            textureFiles.Add(materialFile);
-        }
-
-        model3D.ReferencedTextureFiles.Returns(textureFiles);
-
-        return model3D;
-    }
-
     public enum ContainerTypeToTest
     {
         Path,
-        Bytes
+        Bytes,
+        Stream
     }
 
     public static IEnumerable<ContainerTypeToTest> ContainerTypeToTestEnumValues => Enum.GetValues<ContainerTypeToTest>();
 
     [Test]
-    public void CreateContianerFromDirectory_ShouldZipGivenDirectoryToGivenPath()
+    public void CreateContainerFile_ShouldZipGivenDirectoryToGivenPath()
     {
         var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
+        var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
+        var geometryDirectories = Directory.GetDirectories(sourceDirectory).ToArray();
         var targetZipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".zip");
         var testDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 
         _filesToDelete.Add(targetZipPath);
         _directoriesToDelete.Add(testDirectory);
 
-        new FileHandler().CreateContainerFile(sourceDirectory, targetZipPath);
+        using var cache = new ContainerCache
+        {
+            StructureXml = File.OpenRead(sourceXml),
+            Geometries = geometryDirectories.ToDictionary(x => Path.GetFileName(x), y =>
+            {
+                var geometries = new Dictionary<string, Stream>();
+
+                var files = Directory.GetFiles(y);
+                foreach (var file in files)
+                {
+                    var fileName = Path.GetFileName(file);
+
+                    geometries.Add(fileName, File.OpenRead(file));
+                }
+
+                return geometries;
+            })
+        };
+
+        new FileHandler().CreateContainerFile(cache, targetZipPath);
 
         File.Exists(targetZipPath).Should().BeTrue();
 
@@ -121,174 +109,40 @@ public class FileHandlerTests
         unzippedFiles.Should().BeEquivalentTo(sourceFiles);
     }
 
-    [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
-    public void ExtractContainerToDirectory_ShouldUnzipGivenPathToGivenDirectory(ContainerTypeToTest containerTypeToTest)
-    {
-        var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
-        var targetZipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".zip");
-        var targetTestDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-
-        _filesToDelete.Add(targetZipPath);
-        _directoriesToDelete.Add(targetTestDirectory);
-
-        ZipFile.CreateFromDirectory(sourceDirectory, targetZipPath);
-
-        File.Exists(targetZipPath).Should().BeTrue();
-
-        switch (containerTypeToTest)
-        {
-            case ContainerTypeToTest.Path:
-                new FileHandler().ExtractContainerToDirectory(targetZipPath, targetTestDirectory);
-                break;
-            case ContainerTypeToTest.Bytes:
-                var containerBytes = File.ReadAllBytes(targetZipPath);
-                new FileHandler().ExtractContainerToDirectory(containerBytes, targetTestDirectory);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
-        }
-
-        var sourceFiles = Directory.EnumerateFiles(sourceDirectory, "*", SearchOption.AllDirectories).Select(filePath => Path.GetRelativePath(sourceDirectory, filePath)).ToList();
-        var unzippedFiles = Directory.EnumerateFiles(targetTestDirectory, "*", SearchOption.AllDirectories).Select(filePath => Path.GetRelativePath(targetTestDirectory, filePath)).ToList();
-
-        unzippedFiles.Should().BeEquivalentTo(sourceFiles);
-    }
-
     [Test]
-    public void CreateContainerDirectory_ShouldCreateNewInstanceWithNewDirectory()
-    {
-        var scope0 = new FileHandler().CreateContainerDirectory();
-        var scope1 = new FileHandler().CreateContainerDirectory();
-        var scope2 = new FileHandler().CreateContainerDirectory();
-
-        using (new ContainerDirectoryScope(scope0))
-        using (new ContainerDirectoryScope(scope1))
-        using (new ContainerDirectoryScope(scope2))
-        {
-            scope0.Should().NotBeSameAs(scope1);
-            scope1.Should().NotBeSameAs(scope2);
-
-            scope0.Path.Should().NotBeEquivalentTo(scope1.Path);
-            scope1.Path.Should().NotBeEquivalentTo(scope2.Path);
-        }
-    }
-
-    [Test]
-    public void CopyModelFiles_ShouldThrowArgumentNullException_WhenModel3DIsNull()
+    public void LoadModelFiles_ShouldThrowArgumentNullException_WhenModel3DIsNull()
     {
         var fileHandler = new FileHandler();
 
-        var action = () => fileHandler.CopyModelFiles(null!, Guid.NewGuid().ToString());
+        var action = () => fileHandler.LoadModelFiles(null!, Guid.NewGuid().ToString(), new ContainerCache());
 
         action.Should().Throw<ArgumentNullException>();
     }
 
     [Test]
-    public void CopyModelFiles_ShouldThrowArgumentNullException_WhenModel3DHasNoAbsolutePath()
+    public void LoadModelFiles_ShouldThrowArgumentNullException_WhenModel3DHasNoAbsolutePath()
     {
         var fileHandler = new FileHandler();
 
-        var action = () => fileHandler.CopyModelFiles(Substitute.For<IModel3D>(), Guid.NewGuid().ToString());
+        var action = () => fileHandler.LoadModelFiles(Substitute.For<IModel3D>(), Guid.NewGuid().ToString(), new ContainerCache());
 
         action.Should().Throw<ArgumentException>();
     }
 
     [Test]
     [TestCaseSource(typeof(Setup), nameof(Setup.EmptyStringValues))]
-    public void CopyModelFiles_ShouldThrowArgumentException_WhenTargetPathIsNullOrEmpty(string targetPath)
+    public void LoadModelFiles_ShouldThrowArgumentException_WhenGeometryIdIsNullOrEmpty(string geometryId)
     {
         var fileHandler = new FileHandler();
 
-        var action = () => fileHandler.CopyModelFiles(CreateFakeModel3D(), targetPath);
+        var action = () => fileHandler.LoadModelFiles(CreateFakeModel3D(), geometryId, new ContainerCache());
 
         action.Should().Throw<ArgumentException>();
-    }
-
-    [Test]
-    public void CopyModelFiles_ShouldCreateTargetDirectory_WhenDirectoryIsNotAvailable()
-    {
-        var targetTestDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-        _directoriesToDelete.Add(targetTestDirectory);
-        var fileHandler = new FileHandler();
-
-        var model3D = CreateFakeModel3D();
-
-        fileHandler.CopyModelFiles(model3D, targetTestDirectory);
-
-        Directory.Exists(targetTestDirectory).Should().BeTrue();
-    }
-
-    [Test]
-    public void CopyModelFiles_ShouldThrowArgumentException_WhenDirectoryAlreadyExists()
-    {
-        var targetTestDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-        _directoriesToDelete.Add(targetTestDirectory);
-
-        Directory.CreateDirectory(targetTestDirectory);
-
-        var fileHandler = new FileHandler();
-
-        var action = () => fileHandler.CopyModelFiles(CreateFakeModel3D(), targetTestDirectory);
-
-        action.Should().Throw<ArgumentException>();
-    }
-
-    [Test]
-    public void CopyModelFiles_ShouldCopyModelFileToTargetDirectory()
-    {
-        var targetTestDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-        _directoriesToDelete.Add(targetTestDirectory);
-        var model3D = CreateFakeModel3D();
-        var expectedFile = Path.Combine(targetTestDirectory, Path.GetFileName(model3D.FilePath)!);
-
-        var fileHandler = new FileHandler();
-
-        fileHandler.CopyModelFiles(model3D, targetTestDirectory);
-
-        File.Exists(expectedFile).Should().BeTrue();
-    }
-
-    [Test]
-    public void CopyModelFiles_ShouldCopyMaterialLibrariesToTargetDirectory()
-    {
-        var targetTestDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-        _directoriesToDelete.Add(targetTestDirectory);
-        var model3D = CreateFakeModel3DWithMaterialLibFiles();
-
-        var fileHandler = new FileHandler();
-
-        fileHandler.CopyModelFiles(model3D, targetTestDirectory);
-
-        model3D.ReferencedMaterialLibraryFiles.Count().Should().BePositive();
-        foreach (var materialLibrary in model3D.ReferencedMaterialLibraryFiles)
-        {
-            var expectedFile = Path.Combine(targetTestDirectory, Path.GetFileName(materialLibrary));
-            File.Exists(expectedFile).Should().BeTrue();
-        }
-    }
-
-    [Test]
-    public void CopyModelFiles_ShouldCopyTextureFilesToTargetDirectory()
-    {
-        var targetTestDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-        _directoriesToDelete.Add(targetTestDirectory);
-        var model3D = CreateFakeModel3DWithTextureFiles();
-
-        var fileHandler = new FileHandler();
-
-        fileHandler.CopyModelFiles(model3D, targetTestDirectory);
-
-        model3D.ReferencedTextureFiles.Count().Should().BePositive();
-        foreach (var textureFile in model3D.ReferencedTextureFiles)
-        {
-            var expectedFile = Path.Combine(targetTestDirectory, Path.GetFileName(textureFile));
-            File.Exists(expectedFile).Should().BeTrue();
-        }
     }
 
     [Test]
     [TestCaseSource(typeof(Setup), nameof(Setup.EmptyStringValues))]
-    public void CopyModelFiles_ShouldThrowArgumentException_WhenModelHasNullOrEmptyLibraryPaths(string path)
+    public void LoadModelFiles_ShouldThrowArgumentException_WhenModelHasNullOrEmptyLibraryPaths(string path)
     {
         var targetTestDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         _directoriesToDelete.Add(targetTestDirectory);
@@ -297,14 +151,14 @@ public class FileHandlerTests
         model3D.ReferencedMaterialLibraryFiles.Returns(new[] { path });
 
         var fileHandler = new FileHandler();
-        var action = () => fileHandler.CopyModelFiles(model3D, targetTestDirectory);
+        var action = () => fileHandler.LoadModelFiles(model3D, "someId", new ContainerCache());
 
         action.Should().Throw<ArgumentException>().WithMessage("The given model has null or empty material library paths");
     }
 
     [Test]
     [TestCaseSource(typeof(Setup), nameof(Setup.EmptyStringValues))]
-    public void CopyModelFiles_ShouldThrowArgumentException_WhenModelHasNullOrEmptyTexturePaths(string path)
+    public void LoadModelFiles_ShouldThrowArgumentException_WhenModelHasNullOrEmptyTexturePaths(string path)
     {
         var targetTestDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         _directoriesToDelete.Add(targetTestDirectory);
@@ -313,7 +167,7 @@ public class FileHandlerTests
         model3D.ReferencedTextureFiles.Returns(new[] { path });
 
         var fileHandler = new FileHandler();
-        var action = () => fileHandler.CopyModelFiles(model3D, targetTestDirectory);
+        var action = () => fileHandler.LoadModelFiles(model3D, "someId", new ContainerCache());
 
         action.Should().Throw<ArgumentException>().WithMessage("The given model has null or empty texture paths");
     }
@@ -334,7 +188,7 @@ public class FileHandlerTests
     {
         var fileHandler = new FileHandler();
         var action = () =>
-            fileHandler.GetTextureBytes(Guid.NewGuid().ToString(), geomId, Guid.NewGuid().ToString());
+            fileHandler.GetTextureBytes(new ContainerCache(), geomId, Guid.NewGuid().ToString());
 
         action.Should().Throw<ArgumentException>();
     }
@@ -345,7 +199,7 @@ public class FileHandlerTests
     {
         var fileHandler = new FileHandler();
         var action = () =>
-            fileHandler.GetTextureBytes(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), textureName);
+            fileHandler.GetTextureBytes(new ContainerCache(), Guid.NewGuid().ToString(), textureName);
 
         action.Should().Throw<ArgumentException>();
     }
@@ -359,8 +213,17 @@ public class FileHandlerTests
         var expectedPath = Path.Combine(examplePath, geomId, textureName);
         var expectedBytes = File.ReadAllBytes(expectedPath);
 
+        using var cache = new ContainerCache();
+        var memStream = new MemoryStream(expectedBytes);
+        var files = new Dictionary<string, Stream>
+        {
+            { textureName, memStream }
+        };
+
+        cache.Geometries.Add(geomId, files);
+
         var fileHandler = new FileHandler();
-        var textureBytes = fileHandler.GetTextureBytes(examplePath, geomId, textureName);
+        var textureBytes = fileHandler.GetTextureBytes(cache, geomId, textureName);
 
         textureBytes.Should().BeEquivalentTo(expectedBytes);
     }

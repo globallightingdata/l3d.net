@@ -1,27 +1,28 @@
-using L3D.Net.XML.V0_11_0;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using L3D.Net.XML.V0_10_0;
 
 namespace L3D.Net.Tests;
 
 [TestFixture]
 public class ReadXmlExamplesTest
 {
-    static List<string> ExampleFiles()
+    static List<Stream> ExampleFiles()
     {
         Setup.Initialize();
-        var exampleFiles = Setup.ExampleXmlFiles.ToList();
+        var exampleFiles = Setup.ExampleXmlStreams.ToList();
         return exampleFiles;
     }
 
     [Test]
     [TestCaseSource(nameof(ExampleFiles))]
-    public void Reader_ShouldBeAbleToReadAllExamples(string filename)
+    public void Reader_ShouldBeAbleToReadAllExamples(Stream stream)
     {
         var serilizer = new XmlDtoSerializer();
-        var luminaire = serilizer.Deserialize(filename);
+        var luminaire = serilizer.Deserialize(stream);
 
         Assert.NotNull(luminaire);
     }
@@ -32,18 +33,18 @@ public class ReadXmlExamplesTest
     {
         var examples = ExampleFiles();
 
-        int exampleCount = examples.Count;
-        int loopCount = 1000;
+        var exampleCount = examples.Count;
+        var loopCount = 1000;
 
         var stopwatch = new Stopwatch();
         stopwatch.Start();
-        int filesIndex = 0;
-        for (int i = 0; i < loopCount; i++)
+        var filesIndex = 0;
+        for (var i = 0; i < loopCount; i++)
         {
-            foreach (var filename in examples)
+            foreach (var stream in examples)
             {
                 var serilizer = new XmlDtoSerializer();
-                var luminaire = serilizer.Deserialize(filename);
+                var luminaire = serilizer.Deserialize(stream);
                 Assert.NotNull(luminaire);
 
                 if (filesIndex == 0)

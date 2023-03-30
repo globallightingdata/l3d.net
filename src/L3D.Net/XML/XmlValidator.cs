@@ -13,14 +13,14 @@ namespace L3D.Net.XML;
 
 public class XmlValidator : IXmlValidator
 {
-    public bool ValidateFile(string xmlFilename, ILogger? logger = null)
+    public bool ValidateStream(Stream xmlStream, ILogger? logger = null)
     {
-        var xmlDocument = XDocument.Load(xmlFilename);
+        var xmlDocument = XDocument.Load(xmlStream);
         var root = xmlDocument.Root;
 
         if (root == null)
         {
-            logger?.LogError("Unable to read XML content of {XmlFilename}!", xmlFilename);
+            logger?.LogError("Unable to read XML content");
             return false;
         }
 

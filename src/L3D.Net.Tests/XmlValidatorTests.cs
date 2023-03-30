@@ -13,7 +13,7 @@ namespace L3D.Net.Tests;
 [TestFixture]
 public class XmlValidatorTests
 {
-    static IEnumerable<string> GetXmlFiles(string testDirectory)
+    private static IEnumerable<string> GetXmlFiles(string testDirectory)
     {
         var directory = Path.Combine(Setup.TestDataDirectory, "xml", "validation", testDirectory);
         return Directory.EnumerateFiles(directory, "*.xml").ToList();
@@ -27,12 +27,16 @@ public class XmlValidatorTests
     {
         var xmlValidator = new XmlValidator();
 
-        var action = () => xmlValidator.ValidateFile(testFile);
+        var action = () =>
+        {
+            using var fs = File.OpenRead(testFile);
+            return xmlValidator.ValidateStream(fs);
+        };
 
         action.Should().Throw<Exception>().WithMessage("Root element is missing.");
     }
 
-    static IEnumerable<string> GetNoLocationTestFiles() => GetXmlFiles("no_scheme_location");
+    private static IEnumerable<string> GetNoLocationTestFiles() => GetXmlFiles("no_scheme_location");
 
     [Test]
     [TestCaseSource(nameof(GetNoLocationTestFiles))]
@@ -40,12 +44,13 @@ public class XmlValidatorTests
     {
         var xmlValidator = new XmlValidator();
 
-        var result = xmlValidator.ValidateFile(testFile);
+        using var fs = File.OpenRead(testFile);
+        var result = xmlValidator.ValidateStream(fs);
 
         result.Should().BeFalse();
     }
 
-    static IEnumerable<string> GetUnknownSchemeTestFiles() => GetXmlFiles("unknown_scheme");
+    private static IEnumerable<string> GetUnknownSchemeTestFiles() => GetXmlFiles("unknown_scheme");
 
     [Test]
     [TestCaseSource(nameof(GetUnknownSchemeTestFiles))]
@@ -53,7 +58,8 @@ public class XmlValidatorTests
     {
         var xmlValidator = new XmlValidator();
 
-        var result = xmlValidator.ValidateFile(testFile);
+        using var fs = File.OpenRead(testFile);
+        var result = xmlValidator.ValidateStream(fs);
 
         result.Should().BeFalse();
     }
@@ -70,7 +76,8 @@ public class XmlValidatorTests
     {
         var xmlValidator = new XmlValidator();
 
-        var result = xmlValidator.ValidateFile(testFile);
+        using var fs = File.OpenRead(testFile);
+        var result = xmlValidator.ValidateStream(fs);
 
         result.Should().BeFalse();
     }
@@ -81,7 +88,8 @@ public class XmlValidatorTests
     {
         var xmlValidator = new XmlValidator();
         var logger = LoggerSubstitute.Create();
-        xmlValidator.ValidateFile(testFile, logger);
+        using var fs = File.OpenRead(testFile);
+        xmlValidator.ValidateStream(fs, logger);
 
         logger.Received(1).LogError(Arg.Any<string>());
     }
@@ -98,7 +106,8 @@ public class XmlValidatorTests
     {
         var xmlValidator = new XmlValidator();
 
-        var result = xmlValidator.ValidateFile(testFile);
+        using var fs = File.OpenRead(testFile);
+        var result = xmlValidator.ValidateStream(fs);
 
         result.Should().BeTrue();
     }

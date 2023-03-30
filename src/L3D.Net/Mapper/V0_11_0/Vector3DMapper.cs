@@ -1,5 +1,5 @@
-﻿using L3D.Net.XML.V0_11_0.Dto;
-using System.Numerics;
+﻿using System.Numerics;
+using L3D.Net.XML.V0_10_0.Dto;
 
 namespace L3D.Net.Mapper.V0_11_0
 {

@@ -15,7 +15,7 @@ public class ReaderExampleTests
     private readonly List<string> _tempDirectories = new();
     private readonly IWriter _writer = new Writer();
 
-    static List<string> ExampleDirectories()
+    private static List<string> ExampleDirectories()
     {
         Setup.Initialize();
         var directories = Directory.EnumerateDirectories(Setup.ExamplesDirectory).ToList();
@@ -31,7 +31,7 @@ public class ReaderExampleTests
     }
 
     [TearDown]
-    public void Deinit()
+    public void TearDown()
     {
         foreach (var tempDirectory in _tempDirectories)
         {

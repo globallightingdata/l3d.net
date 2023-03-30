@@ -2,7 +2,6 @@
 using L3D.Net.Internal;
 using L3D.Net.Internal.Abstract;
 using NSubstitute;
-using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -29,7 +28,8 @@ public class ContainerReaderTests
     public enum ContainerTypeToTest
     {
         Path,
-        Bytes
+        Bytes,
+        Stream
     }
 
     public static IEnumerable<ContainerTypeToTest> ContainerTypeToTestEnumValues => Enum.GetValues<ContainerTypeToTest>();
@@ -73,32 +73,8 @@ public class ContainerReaderTests
     }
 
     [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
-    public void Read_ShouldCallFileHandlerCreateTemporaryDirectoryScope(ContainerTypeToTest containerTypeToTest)
+    public void Read_ShouldCallFileHandlerExtractContainer(ContainerTypeToTest containerTypeToTest)
     {
-        switch (containerTypeToTest)
-        {
-            case ContainerTypeToTest.Path:
-                _reader.Read(Guid.NewGuid().ToString());
-                break;
-            case ContainerTypeToTest.Bytes:
-                _reader.Read(new byte[] { 0, 1, 2, 3, 4 });
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
-        }
-
-        _fileHandler.Received(1).CreateContainerDirectory();
-    }
-
-    [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
-    public void Read_ShouldCallFileHandlerExtractContainerToDirectory_WithCorrectPath(ContainerTypeToTest containerTypeToTest)
-    {
-        var workingDirectory = Guid.NewGuid().ToString();
-
-        var containerDir = Substitute.For<IContainerDirectory>();
-        containerDir.Path.Returns(workingDirectory);
-        _fileHandler.CreateContainerDirectory().Returns(containerDir);
-
         switch (containerTypeToTest)
         {
             case ContainerTypeToTest.Path:
@@ -106,14 +82,23 @@ public class ContainerReaderTests
                 _reader.Read(containerPath);
 
                 _fileHandler.Received(1)
-                    .ExtractContainerToDirectory(Arg.Is(containerPath), Arg.Is(workingDirectory));
+                    .ExtractContainer(Arg.Is(containerPath));
                 break;
             case ContainerTypeToTest.Bytes:
                 var containerBytes = new byte[] { 0, 1, 2, 3, 4 };
                 _reader.Read(containerBytes);
 
                 _fileHandler.Received(1)
-                    .ExtractContainerToDirectory(Arg.Is(containerBytes), Arg.Is(workingDirectory));
+                    .ExtractContainer(Arg.Is(containerBytes));
+                break;
+            case ContainerTypeToTest.Stream:
+                using (var stream = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                {
+                    _reader.Read(stream);
+
+                    _fileHandler.Received(1)
+                        .ExtractContainer(Arg.Is(stream));
+                }
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -121,15 +106,8 @@ public class ContainerReaderTests
     }
 
     [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
-    public void Read_ShouldCallL3dXmlReaderRead_WithCorrectXmlFilePath(ContainerTypeToTest containerTypeToTest)
+    public void Read_ShouldCallL3dXmlReaderRead(ContainerTypeToTest containerTypeToTest)
     {
-        var workingDirectory = Guid.NewGuid().ToString();
-
-        var containerDir = Substitute.For<IContainerDirectory>();
-        containerDir.Path.Returns(workingDirectory);
-        _fileHandler.CreateContainerDirectory().Returns(containerDir);
-
-        var xmlPath = Path.Combine(workingDirectory, Constants.L3dXmlFilename);
         switch (containerTypeToTest)
         {
             case ContainerTypeToTest.Path:
@@ -138,116 +116,14 @@ public class ContainerReaderTests
             case ContainerTypeToTest.Bytes:
                 _reader.Read(new byte[] { 0, 1, 2, 3, 4 });
                 break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
-        }
-
-        _l3DXmlReader.Received(1).Read(xmlPath, Arg.Any<string>());
-    }
-
-    [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
-    public void Read_ShouldCallL3dXmlReaderRead_WithCorrectWorkingPath(ContainerTypeToTest containerTypeToTest)
-    {
-        var workingDirectory = Guid.NewGuid().ToString();
-
-        var containerDir = Substitute.For<IContainerDirectory>();
-        containerDir.Path.Returns(workingDirectory);
-        _fileHandler.CreateContainerDirectory().Returns(containerDir);
-
-        switch (containerTypeToTest)
-        {
-            case ContainerTypeToTest.Path:
-                _reader.Read(Guid.NewGuid().ToString());
-                break;
-            case ContainerTypeToTest.Bytes:
-                _reader.Read(new byte[] { 0, 1, 2, 3, 4 });
+            case ContainerTypeToTest.Stream:
+                using (var stream = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                    _reader.Read(stream);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
         }
 
-        _l3DXmlReader.Received(1).Read(Arg.Any<string>(), workingDirectory);
-    }
-
-    [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
-    public void Read_ShouldCallContainerDirectoryCleanUp_WhenNoErrorOccured(ContainerTypeToTest containerTypeToTest)
-    {
-        var workingDirectory = Guid.NewGuid().ToString();
-
-        var containerDir = Substitute.For<IContainerDirectory>();
-        containerDir.Path.Returns(workingDirectory);
-        _fileHandler.CreateContainerDirectory().Returns(containerDir);
-
-        switch (containerTypeToTest)
-        {
-            case ContainerTypeToTest.Path:
-                _reader.Read(Guid.NewGuid().ToString());
-                break;
-            case ContainerTypeToTest.Bytes:
-                _reader.Read(new byte[] { 0, 1, 2, 3, 4 });
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
-        }
-
-        containerDir.Received(1).CleanUp();
-    }
-
-    [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
-    public void
-        Read_ShouldCallContainerDirectoryCleanUp_AndNotCatch_WhenFileHandlerExtractContainerToDirectoryThrows(ContainerTypeToTest containerTypeToTest)
-    {
-        var workingDirectory = Guid.NewGuid().ToString();
-
-        var containerDir = Substitute.For<IContainerDirectory>();
-        containerDir.Path.Returns(workingDirectory);
-        _fileHandler.CreateContainerDirectory().Returns(containerDir);
-
-        var message = Guid.NewGuid().ToString();
-
-        Action action;
-        switch (containerTypeToTest)
-        {
-            case ContainerTypeToTest.Path:
-                _fileHandler
-                    .When(handler => handler.ExtractContainerToDirectory(Arg.Any<string>(), Arg.Any<string>()))
-                    .Throw(new Exception(message));
-                action = () => _reader.Read(Guid.NewGuid().ToString());
-                break;
-            case ContainerTypeToTest.Bytes:
-                _fileHandler
-                    .When(handler => handler.ExtractContainerToDirectory(Arg.Any<byte[]>(), Arg.Any<string>()))
-                    .Throw(new Exception(message));
-                action = () => _reader.Read(new byte[] { 0, 1, 2, 3, 4 });
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
-        }
-
-        action.Should().Throw<Exception>().WithMessage(message);
-        containerDir.Received(1).CleanUp();
-    }
-
-    [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
-    public void Read_ShouldCallContainerDirectoryCleanUp_AndNotCatch_WhenXmlValidatorValidateFileThrows(ContainerTypeToTest containerTypeToTest)
-    {
-        var workingDirectory = Guid.NewGuid().ToString();
-
-        var containerDir = Substitute.For<IContainerDirectory>();
-        containerDir.Path.Returns(workingDirectory);
-        _fileHandler.CreateContainerDirectory().Returns(containerDir);
-
-        var message = Guid.NewGuid().ToString();
-        _l3DXmlReader.Read(Arg.Any<string>(), Arg.Any<string>()).Throws(new Exception(message));
-
-        Action action = containerTypeToTest switch
-        {
-            ContainerTypeToTest.Path => () => _reader.Read(Guid.NewGuid().ToString()),
-            ContainerTypeToTest.Bytes => () => _reader.Read(new byte[] { 0, 1, 2, 3, 4 }),
-            _ => throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null)
-        };
-
-        action.Should().Throw<Exception>().WithMessage(message);
-        containerDir.Received(1).CleanUp();
+        _l3DXmlReader.Received(1).Read(Arg.Any<ContainerCache>());
     }
 }

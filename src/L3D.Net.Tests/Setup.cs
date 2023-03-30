@@ -21,6 +21,7 @@ public static class Setup
     public static string ValidVersionsDirectory { get; private set; } = null!;
     public static string InvalidVersionsDirectory { get; private set; } = null!;
 
+    public static IEnumerable<Stream> ExampleXmlStreams { get; private set; } = Array.Empty<Stream>();
     public static IEnumerable<string> ExampleXmlFiles { get; private set; } = Array.Empty<string>();
     public static IEnumerable<string> ExampleObjFiles { get; private set; } = Array.Empty<string>();
     public static IEnumerable<string> ValidVersionXmlFiles { get; private set; } = Array.Empty<string>();
@@ -43,6 +44,8 @@ public static class Setup
             InvalidVersionsDirectory = Path.Combine(TestDataDirectory, "xml", "validation", "invalid_versions");
 
             ExampleXmlFiles = Directory.EnumerateFiles(ExamplesDirectory, "*.xml", SearchOption.AllDirectories).ToList();
+            ExampleXmlStreams =
+                ExampleXmlFiles.Select(x => File.Open(x, FileMode.Open, FileAccess.Read, FileShare.Read));
             ExampleObjFiles = Directory.EnumerateFiles(ExamplesDirectory, "*.obj", SearchOption.AllDirectories).ToList();
             ValidVersionXmlFiles = Directory.EnumerateFiles(ValidVersionsDirectory, "*.xml", SearchOption.AllDirectories).ToList();
             InvalidVersionXmlFiles = Directory.EnumerateFiles(InvalidVersionsDirectory, "*.xml", SearchOption.AllDirectories).ToList();
@@ -55,6 +58,10 @@ public static class Setup
     public static void TearDown()
     {
         Stream.Dispose();
+        foreach (var stream in ExampleXmlStreams)
+        {
+            stream.Dispose();
+        }
     }
 
     public static List<string> EmptyStringValues()

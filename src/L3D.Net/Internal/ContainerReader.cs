@@ -21,28 +21,26 @@ internal class ContainerReader : IContainerReader
     {
         if (string.IsNullOrWhiteSpace(containerPath))
             throw new ArgumentException(@"Value cannot be null or whitespace", nameof(containerPath));
-        return ReadInternal(directory => _fileHandler.ExtractContainerToDirectory(containerPath, directory));
+        return ReadInternal(() => _fileHandler.ExtractContainer(containerPath));
     }
 
     public Luminaire Read(byte[] containerBytes)
     {
         if (containerBytes == null || containerBytes.LongLength == 0)
             throw new ArgumentException(@"Value cannot be null or empty array", nameof(containerBytes));
-        return ReadInternal(directory => _fileHandler.ExtractContainerToDirectory(containerBytes, directory));
+        return ReadInternal(() => _fileHandler.ExtractContainer(containerBytes));
     }
 
     public Luminaire Read(Stream containerStream)
     {
         if (containerStream == null || containerStream.Length == 0)
             throw new ArgumentException(@"Value cannot be null or empty array", nameof(containerStream));
-        return ReadInternal(directory => _fileHandler.ExtractContainerToDirectory(containerStream, directory));
+        return ReadInternal(() => _fileHandler.ExtractContainer(containerStream));
     }
 
-    private Luminaire ReadInternal(Action<string> extractAction)
+    private Luminaire ReadInternal(Func<ContainerCache> extractAction)
     {
-        using var directoryScope = new ContainerDirectoryScope(_fileHandler.CreateContainerDirectory());
-        extractAction(directoryScope.Directory);
-        var structurePath = Path.Combine(directoryScope.Directory, Constants.L3dXmlFilename);
-        return _l3DXmlReader.Read(structurePath, directoryScope.Directory);
+        using var cache = extractAction();
+        return _l3DXmlReader.Read(cache);
     }
 }

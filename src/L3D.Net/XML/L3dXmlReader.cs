@@ -2,10 +2,12 @@
 using L3D.Net.Exceptions;
 using L3D.Net.Internal.Abstract;
 using L3D.Net.Mapper.V0_11_0;
-using L3D.Net.XML.V0_11_0;
 using System;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Xml.Linq;
+using L3D.Net.XML.V0_10_0;
 
 namespace L3D.Net.XML;
 
@@ -18,20 +20,24 @@ internal class L3DXmlReader : IL3DXmlReader
         _serializer = new XmlDtoSerializer();
     }
 
-    public Luminaire Read(string filename, string workingDirectory)
+    public Luminaire Read(ContainerCache cache)
     {
-        var version = GetVersion(filename);
+        if (cache.StructureXml == null)
+            throw new ArgumentException($"{nameof(cache.StructureXml)} in {nameof(cache)} cannot be null");
+
+        var version = GetVersion(cache.StructureXml);
 
         if (version.Major == 0)
-            return ReadV0(filename, workingDirectory);
+            return ReadV0(cache);
 
         throw new InvalidL3DException($"Unknown version of the l3d xml: '{version}'");
     }
 
-    private static Version GetVersion(string filepath)
+    private static Version GetVersion(Stream stream)
     {
-        var xmlDocument = XDocument.Load(filepath);
-        var root = xmlDocument.Root ?? throw new InvalidL3DException($"Unable to read XML content of {filepath}!");
+        stream.Seek(0, SeekOrigin.Begin);
+        var xmlDocument = XDocument.Load(stream);
+        var root = xmlDocument.Root ?? throw new InvalidL3DException($"Unable to read XML content");
 
         var schemeAttribute = root.Attributes().FirstOrDefault(attribute =>
             attribute.Name is { NamespaceName: @"http://www.w3.org/2001/XMLSchema-instance", LocalName: @"noNamespaceSchemaLocation" }) ?? throw new InvalidL3DException(
@@ -47,12 +53,13 @@ internal class L3DXmlReader : IL3DXmlReader
         return version;
     }
 
-    private Luminaire ReadV0(string filepath, string workingDirectory)
+    private Luminaire ReadV0(ContainerCache cache)
     {
-        var luminaireDto = _serializer.Deserialize(filepath);
+        cache.StructureXml!.Seek(0, SeekOrigin.Begin);
+        var luminaireDto = _serializer.Deserialize(cache.StructureXml);
         var luminaire = LuminaireMapper.Instance.Convert(luminaireDto);
 
-        luminaire = LuminaireResolver.Instance.Resolve(luminaire, workingDirectory);
+        luminaire = LuminaireResolver.Instance.Resolve(luminaire, cache);
 
         return luminaire;
     }

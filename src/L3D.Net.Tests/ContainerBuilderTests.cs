@@ -3,13 +3,12 @@ using FluentAssertions;
 using L3D.Net.Data;
 using L3D.Net.Internal;
 using L3D.Net.Internal.Abstract;
-using L3D.Net.Tests.Context;
-using L3D.Net.XML.V0_11_0;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
 using System;
 using System.IO;
+using L3D.Net.XML.V0_10_0;
 
 // ReSharper disable ObjectCreationAsStatement
 
@@ -18,7 +17,7 @@ namespace L3D.Net.Tests;
 [TestFixture]
 public class ContainerBuilderTests
 {
-    private class Context : IContextWithFileHandler
+    private class Context
     {
         public IFileHandler FileHandler { get; }
         private IXmlDtoSerializer Serializer { get; }
@@ -31,29 +30,10 @@ public class ContainerBuilderTests
             FileHandler = Substitute.For<IFileHandler>();
             Serializer = Substitute.For<IXmlDtoSerializer>();
             Validator = Substitute.For<IXmlValidator>();
-            Validator.ValidateFile(Arg.Any<string>(), Arg.Any<ILogger>()).Returns(true);
+            Validator.ValidateStream(Arg.Any<Stream>(), Arg.Any<ILogger>()).Returns(true);
             Logger = LoggerSubstitute.Create();
             Builder = new ContainerBuilder(FileHandler, Serializer, Validator, Logger);
         }
-    }
-
-    private class ContextOptions : IContextOptionsWithFileHandler
-    {
-        public ContextOptions(Context context)
-        {
-            Context = context;
-        }
-
-        private Context Context { get; }
-
-        IContextWithFileHandler IContextOptionsWithFileHandler.Context => Context;
-    }
-
-    private static Context CreateContext(Func<ContextOptions, ContextOptions>? options = null)
-    {
-        var context = new Context();
-        options?.Invoke(new ContextOptions(context));
-        return context;
     }
 
     static Luminaire CreateSimpleLuminaire()
@@ -114,7 +94,7 @@ public class ContainerBuilderTests
     [Test]
     public void CreateContainerFile_ShouldThrowArgumentNullException_WhenLuminaireIsNull()
     {
-        var context = CreateContext();
+        var context = new Context();
 
         var action = () => context.Builder.CreateContainerFile(null!, Guid.NewGuid().ToString());
 
@@ -125,7 +105,7 @@ public class ContainerBuilderTests
     [TestCaseSource(typeof(Setup), nameof(Setup.EmptyStringValues))]
     public void CreateContainerFile_ShouldThrowArgumentException_WhenContainerPathIsNullOrEmpty(string path)
     {
-        var context = CreateContext();
+        var context = new Context();
 
         var action = () => context.Builder.CreateContainerFile(CreateSimpleLuminaire(), path);
 
@@ -133,69 +113,42 @@ public class ContainerBuilderTests
     }
 
     [Test]
-    public void CreateContainerFile_ShouldCallFileHandlerCreateTemporaryDirectoryScope()
+    public void CreateContainerFile_ShouldCallFileHandlerCopyModelFiles_ForEveryGeometryDefinition()
     {
-        var context = CreateContext();
-
-        context.Builder.CreateContainerFile(CreateSimpleLuminaire(), Guid.NewGuid().ToString());
-
-        context.FileHandler.Received(1).CreateContainerDirectory();
-    }
-
-    [Test]
-    public void CreateContainerFile_ShouldCleanUpContainerDirectory()
-    {
-        IContainerDirectory scope = null!;
-        var context = CreateContext(options => options.WithTemporaryDirectoryScope(out scope, out _));
-
-        context.FileHandler.CreateContainerDirectory().Returns(scope);
-
-        context.Builder.CreateContainerFile(CreateSimpleLuminaire(), Guid.NewGuid().ToString());
-
-        scope.Received(1).CleanUp();
-    }
-
-    [Test]
-    public void CreateContainerFile_ShouldCallFileHandlerCopyModelFiles_ForEveryGeometryDefinition_WithCorrectPath()
-    {
-        string tempPath = null!;
-        var context = CreateContext(options => options.WithTemporaryDirectoryScope(out _, out tempPath));
+        var context = new Context();
         var luminaire = CreateComplexLuminaire();
 
         context.Builder.CreateContainerFile(luminaire, Guid.NewGuid().ToString());
 
         foreach (var geometryDefinition in luminaire.GeometryDefinitions)
         {
-            var expectedPath = Path.Combine(tempPath, geometryDefinition.GeometryId);
             var expectedModel = geometryDefinition.Model;
 
-            context.FileHandler.Received(1).CopyModelFiles(Arg.Is(expectedModel), Arg.Is(expectedPath));
+            context.FileHandler.Received(1).LoadModelFiles(Arg.Is(expectedModel), Arg.Is(geometryDefinition.GeometryId), Arg.Any<ContainerCache>());
         }
 
         luminaire.GeometryDefinitions.Count.Should().BePositive();
         context.FileHandler.Received(luminaire.GeometryDefinitions.Count)
-            .CopyModelFiles(Arg.Any<IModel3D>(), Arg.Any<string>());
+            .LoadModelFiles(Arg.Any<IModel3D>(), Arg.Any<string>(), Arg.Any<ContainerCache>());
     }
 
     [Test]
     public void CreateContainerFile_ShouldCallXmlValidatorValidate_ForCorrectPath()
     {
-        string tempPath = null!;
-        var context = CreateContext(options => options.WithTemporaryDirectoryScope(out _, out tempPath));
+        var context = new Context();
         var luminaire = CreateComplexLuminaire();
-        var expectedPath = Path.Combine(tempPath, Constants.L3dXmlFilename);
 
         context.Builder.CreateContainerFile(luminaire, Guid.NewGuid().ToString());
 
-        context.Validator.Received(1).ValidateFile(Arg.Is(expectedPath), Arg.Any<ILogger>());
+        context.Validator.Received(1).ValidateStream(Arg.Any<Stream>(), Arg.Any<ILogger>());
     }
 
     [Test]
     public void CreateContainerFile_ShouldCallNotCatch_WhenXmlValidatorValidateThrows()
     {
         var message = Guid.NewGuid().ToString();
-        var context = CreateContext();
-        context.Validator.When(v => v.ValidateFile(Arg.Any<string>(), Arg.Any<ILogger>()))
+        var context = new Context();
+        context.Validator.When(v => v.ValidateStream(Arg.Any<Stream>(), Arg.Any<ILogger>()))
             .Do(_ => throw new Exception(message));
 
         var action = () => context.Builder.CreateContainerFile(CreateComplexLuminaire(), Guid.NewGuid().ToString());
@@ -206,14 +159,13 @@ public class ContainerBuilderTests
     [Test]
     public void CreateContainerFile_ShouldCallFileHandlerCreateContianerFromDirectory_WithCorrectPath()
     {
-        string tempPath = null!;
-        var context = CreateContext(options => options.WithTemporaryDirectoryScope(out _, out tempPath));
+        var context = new Context();
         var luminaire = CreateComplexLuminaire();
         var containerPath = Guid.NewGuid().ToString();
 
         context.Builder.CreateContainerFile(luminaire, containerPath);
 
-        context.FileHandler.Received(1).CreateContainerFile(Arg.Is(tempPath), Arg.Is(containerPath));
+        context.FileHandler.Received(1).CreateContainerFile(Arg.Any<ContainerCache>(), Arg.Is(containerPath));
     }
 
     #endregion
@@ -223,7 +175,7 @@ public class ContainerBuilderTests
     [Test]
     public void CreateContainerByteArray_ShouldThrowArgumentNullException_WhenLuminaireIsNull()
     {
-        var context = CreateContext();
+        var context = new Context();
 
         var action = () => context.Builder.CreateContainerByteArray(null!);
 
@@ -231,69 +183,42 @@ public class ContainerBuilderTests
     }
 
     [Test]
-    public void CreateContainerByteArray_ShouldCallFileHandlerCreateTemporaryDirectoryScope()
-    {
-        var context = CreateContext();
-
-        context.Builder.CreateContainerByteArray(CreateSimpleLuminaire());
-
-        context.FileHandler.Received(1).CreateContainerDirectory();
-    }
-
-    [Test]
-    public void CreateContainerByteArray_ShouldCleanUpContainerDirectory()
-    {
-        IContainerDirectory scope = null!;
-        var context = CreateContext(options => options.WithTemporaryDirectoryScope(out scope, out _));
-
-        context.FileHandler.CreateContainerDirectory().Returns(scope);
-
-        context.Builder.CreateContainerByteArray(CreateSimpleLuminaire());
-
-        scope.Received(1).CleanUp();
-    }
-
-    [Test]
     public void CreateContainerByteArray_ShouldCallFileHandlerCopyModelFiles_ForEveryGeometryDefinition()
     {
-        string tempPath = null!;
-        var context = CreateContext(options => options.WithTemporaryDirectoryScope(out _, out tempPath));
+        var context = new Context();
         var luminaire = CreateComplexLuminaire();
 
         context.Builder.CreateContainerByteArray(luminaire);
 
         foreach (var geometryDefinition in luminaire.GeometryDefinitions)
         {
-            var expectedPath = Path.Combine(tempPath, geometryDefinition.GeometryId);
             var expectedModel = geometryDefinition.Model;
 
-            context.FileHandler.Received(1).CopyModelFiles(Arg.Is(expectedModel), Arg.Is(expectedPath));
+            context.FileHandler.Received(1).LoadModelFiles(Arg.Is(expectedModel), Arg.Is(geometryDefinition.GeometryId), Arg.Any<ContainerCache>());
         }
 
         luminaire.GeometryDefinitions.Count.Should().BePositive();
         context.FileHandler.Received(luminaire.GeometryDefinitions.Count)
-            .CopyModelFiles(Arg.Any<IModel3D>(), Arg.Any<string>());
+            .LoadModelFiles(Arg.Any<IModel3D>(), Arg.Any<string>(), Arg.Any<ContainerCache>());
     }
 
     [Test]
     public void CreateContainerByteArray_ShouldCallXmlValidatorValidate()
     {
-        string tempPath = null!;
-        var context = CreateContext(options => options.WithTemporaryDirectoryScope(out _, out tempPath));
+        var context = new Context();
         var luminaire = CreateComplexLuminaire();
-        var expectedPath = Path.Combine(tempPath, Constants.L3dXmlFilename);
 
         context.Builder.CreateContainerByteArray(luminaire);
 
-        context.Validator.Received(1).ValidateFile(Arg.Is(expectedPath), Arg.Any<ILogger>());
+        context.Validator.Received(1).ValidateStream(Arg.Any<Stream>(), Arg.Any<ILogger>());
     }
 
     [Test]
     public void CreateContainerByteArray_ShouldCallNotCatch_WhenXmlValidatorValidateThrows()
     {
         var message = Guid.NewGuid().ToString();
-        var context = CreateContext();
-        context.Validator.When(v => v.ValidateFile(Arg.Any<string>(), Arg.Any<ILogger>()))
+        var context = new Context();
+        context.Validator.When(v => v.ValidateStream(Arg.Any<Stream>(), Arg.Any<ILogger>()))
             .Do(_ => throw new Exception(message));
 
         var action = () => context.Builder.CreateContainerByteArray(CreateComplexLuminaire());
@@ -304,13 +229,12 @@ public class ContainerBuilderTests
     [Test]
     public void CreateContainerByteArray_ShouldCallFileHandlerCreateContianerFromDirectory()
     {
-        string tempPath = null!;
-        var context = CreateContext(options => options.WithTemporaryDirectoryScope(out _, out tempPath));
+        var context = new Context();
         var luminaire = CreateComplexLuminaire();
 
         context.Builder.CreateContainerByteArray(luminaire);
 
-        context.FileHandler.Received(1).CreateContainerByteArray(Arg.Is(tempPath));
+        context.FileHandler.Received(1).CreateContainerByteArray(Arg.Any<ContainerCache>());
     }
 
     #endregion

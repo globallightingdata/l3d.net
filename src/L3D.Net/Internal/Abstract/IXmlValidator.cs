@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
+using System.IO;
 
 namespace L3D.Net.Internal.Abstract;
 
 public interface IXmlValidator
 {
-    bool ValidateFile(string xmlFilename, ILogger? logger = null);
+    bool ValidateStream(Stream xmlStream, ILogger? logger = null);
 }
