@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using NUnit.Framework;
+﻿using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace L3D.Net.Tests.Mapper.V0_10_0
 {

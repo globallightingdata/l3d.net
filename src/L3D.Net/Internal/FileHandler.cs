@@ -1,4 +1,5 @@
-﻿using L3D.Net.Exceptions;
+﻿using L3D.Net.Abstract;
+using L3D.Net.Exceptions;
 using L3D.Net.Internal.Abstract;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Linq;
 
 namespace L3D.Net.Internal;
 
-public class FileHandler : IFileHandler
+internal class FileHandler : IFileHandler
 {
     public static readonly FileHandler Instance = new();
 
@@ -57,7 +58,7 @@ public class FileHandler : IFileHandler
         {
             foreach (var file in geometry.Value)
             {
-                entry = archive.CreateEntry(Path.Combine(geometry.Key, file.Key));
+                entry = archive.CreateEntry($"{geometry.Key}/{file.Key}");
 
                 file.Value.Seek(0, SeekOrigin.Begin);
                 using (var geometryFileStream = entry.Open())
@@ -70,65 +71,92 @@ public class FileHandler : IFileHandler
         return memoryStream;
     }
 
-    private static ContainerCache LoadL3DStream(Stream stream)
+    private static ContainerCache? LoadL3DStream(Stream stream, bool canThrow)
     {
-        using var archive = new ZipArchive(stream, ZipArchiveMode.Read, true);
-
-        var entries = archive.Entries;
-
-        if (!entries.Any(e => e.Name.Equals(Constants.L3dXmlFilename)))
-            throw new InvalidL3DException("StructureXml could not be found");
-
-        var cache = new ContainerCache();
-
-        foreach (var entry in entries)
+        try
         {
-            if (entry.Name.Equals(Constants.L3dXmlFilename, StringComparison.Ordinal))
+            using var archive = new ZipArchive(stream, ZipArchiveMode.Read, true);
+
+            var entries = archive.Entries;
+
+            if (canThrow && !entries.Any(e => e.Name.Equals(Constants.L3dXmlFilename)))
+                throw new InvalidL3DException("StructureXml could not be found");
+
+            var cache = new ContainerCache();
+
+            foreach (var entry in entries)
             {
-                using (var entryStream = entry.Open())
+                if (entry.Name.Equals(Constants.L3dXmlFilename, StringComparison.Ordinal))
                 {
-                    cache.StructureXml = new MemoryStream();
-                    entryStream.CopyTo(cache.StructureXml);
+                    using (var entryStream = entry.Open())
+                    {
+                        cache.StructureXml = new MemoryStream();
+                        entryStream.CopyTo(cache.StructureXml);
+                    }
+                }
+                else
+                {
+                    var directoryName = Path.GetDirectoryName(entry.Name);
+                    if (string.IsNullOrWhiteSpace(directoryName)) continue;
+
+                    if (!cache.Geometries.TryGetValue(directoryName, out var files))
+                    {
+                        files = new Dictionary<string, Stream>();
+                        cache.Geometries.Add(directoryName, files);
+                    }
+
+                    using (var entryStream = entry.Open())
+                    {
+                        var memStream = new MemoryStream();
+                        entryStream.CopyTo(memStream);
+                        files.Add(Path.GetFileName(entry.Name), memStream);
+                    }
                 }
             }
-            else
-            {
-                var directoryName = Path.GetDirectoryName(entry.Name);
-                if (string.IsNullOrWhiteSpace(directoryName)) continue;
 
-                if (!cache.Geometries.TryGetValue(directoryName, out var files))
-                {
-                    files = new Dictionary<string, Stream>();
-                    cache.Geometries.Add(directoryName, files);
-                }
-
-                using (var entryStream = entry.Open())
-                {
-                    var memStream = new MemoryStream();
-                    entryStream.CopyTo(memStream);
-                    files.Add(Path.GetFileName(entry.Name), memStream);
-                }
-            }
+            return cache;
         }
+        catch (InvalidDataException)
+        {
+            if (canThrow)
+                throw;
 
-        return cache;
+            return null;
+        }
     }
 
-    public ContainerCache ExtractContainer(string containerPath)
+    public ContainerCache ExtractContainerOrThrow(string containerPath)
     {
         using var fs = File.OpenRead(containerPath);
-        return LoadL3DStream(fs);
+        return LoadL3DStream(fs, true)!;
     }
 
-    public ContainerCache ExtractContainer(byte[] containerBytes)
+    public ContainerCache ExtractContainerOrThrow(byte[] containerBytes)
     {
         using var archiveMemoryStream = new MemoryStream(containerBytes);
-        return LoadL3DStream(archiveMemoryStream);
+        return LoadL3DStream(archiveMemoryStream, true)!;
     }
 
-    public ContainerCache ExtractContainer(Stream containerStream)
+    public ContainerCache ExtractContainerOrThrow(Stream containerStream)
     {
-        return LoadL3DStream(containerStream);
+        return LoadL3DStream(containerStream, true)!;
+    }
+
+    public ContainerCache? ExtractContainer(string containerPath)
+    {
+        using var fs = File.OpenRead(containerPath);
+        return LoadL3DStream(fs, false);
+    }
+
+    public ContainerCache? ExtractContainer(byte[] containerBytes)
+    {
+        using var archiveMemoryStream = new MemoryStream(containerBytes);
+        return LoadL3DStream(archiveMemoryStream, false);
+    }
+
+    public ContainerCache? ExtractContainer(Stream containerStream)
+    {
+        return LoadL3DStream(containerStream, false);
     }
 
     public byte[] GetTextureBytes(ContainerCache cache, string geomId, string textureName)
@@ -158,45 +186,41 @@ public class FileHandler : IFileHandler
 
         ThrowWhenModelIsInvalid(model3D);
 
-        CopyFile(model3D.FilePath, geometryId, cache);
+        CopyFile(model3D.FileName, model3D.Stream, geometryId, cache);
 
-        foreach (var materialLibraryFilename in model3D.ReferencedMaterialLibraryFiles)
+        foreach (var materialLibraryFile in model3D.ReferencedMaterialLibraryFiles)
         {
-            CopyFile(materialLibraryFilename, geometryId, cache);
+            CopyFile(materialLibraryFile.Key, materialLibraryFile.Value, geometryId, cache);
         }
 
-        foreach (var textureFilename in model3D.ReferencedTextureFiles)
+        foreach (var textureFile in model3D.ReferencedTextureFiles)
         {
-            CopyFile(textureFilename, geometryId, cache);
+            CopyFile(textureFile.Key, textureFile.Value, geometryId, cache);
         }
     }
 
-    private static void CopyFile(string filepath, string geometryId, ContainerCache cache)
+    private static void CopyFile(string fileName, Stream file, string geometryId, ContainerCache cache)
     {
-        var fileName = Path.GetFileName(filepath);
-
         if (!cache.Geometries.TryGetValue(geometryId, out var files))
         {
             files = new Dictionary<string, Stream>();
             cache.Geometries.Add(geometryId, files);
         }
 
-        var stream = File.OpenRead(filepath);
-
-        files.Add(fileName, stream);
+        files.Add(fileName, file);
     }
 
     private static void ThrowWhenModelIsInvalid(IModel3D model3D)
     {
         if (model3D == null) throw new ArgumentNullException(nameof(model3D));
 
-        if (string.IsNullOrWhiteSpace(model3D.FilePath))
-            throw new ArgumentException("The given model has no valid AbsolutePath");
+        if (string.IsNullOrWhiteSpace(model3D.FileName))
+            throw new ArgumentException("The given model has no valid file name");
 
-        if (model3D.ReferencedMaterialLibraryFiles.Any(string.IsNullOrWhiteSpace))
+        if (model3D.ReferencedMaterialLibraryFiles.Any(x => string.IsNullOrWhiteSpace(x.Key)))
             throw new ArgumentException("The given model has null or empty material library paths");
 
-        if (model3D.ReferencedTextureFiles.Any(string.IsNullOrWhiteSpace))
+        if (model3D.ReferencedTextureFiles.Any(x => string.IsNullOrWhiteSpace(x.Key)))
             throw new ArgumentException("The given model has null or empty texture paths");
     }
 }

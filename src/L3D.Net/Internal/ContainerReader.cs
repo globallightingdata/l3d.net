@@ -1,5 +1,6 @@
 ﻿using L3D.Net.Abstract;
 using L3D.Net.Data;
+using L3D.Net.Exceptions;
 using L3D.Net.Internal.Abstract;
 using System;
 using System.IO;
@@ -21,26 +22,26 @@ internal class ContainerReader : IContainerReader
     {
         if (string.IsNullOrWhiteSpace(containerPath))
             throw new ArgumentException(@"Value cannot be null or whitespace", nameof(containerPath));
-        return ReadInternal(() => _fileHandler.ExtractContainer(containerPath));
+        return ReadInternal(() => _fileHandler.ExtractContainerOrThrow(containerPath));
     }
 
     public Luminaire Read(byte[] containerBytes)
     {
         if (containerBytes == null || containerBytes.LongLength == 0)
             throw new ArgumentException(@"Value cannot be null or empty array", nameof(containerBytes));
-        return ReadInternal(() => _fileHandler.ExtractContainer(containerBytes));
+        return ReadInternal(() => _fileHandler.ExtractContainerOrThrow(containerBytes));
     }
 
     public Luminaire Read(Stream containerStream)
     {
         if (containerStream == null || containerStream.Length == 0)
             throw new ArgumentException(@"Value cannot be null or empty array", nameof(containerStream));
-        return ReadInternal(() => _fileHandler.ExtractContainer(containerStream));
+        return ReadInternal(() => _fileHandler.ExtractContainerOrThrow(containerStream));
     }
 
     private Luminaire ReadInternal(Func<ContainerCache> extractAction)
     {
         using var cache = extractAction();
-        return _l3DXmlReader.Read(cache);
+        return _l3DXmlReader.Read(cache) ?? throw new InvalidL3DException("No L3D could be read");
     }
 }

@@ -16,6 +16,8 @@ public static class ExamplesExtensions
     {
         var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_000");
         var cubeObjPath = Path.Combine(exampleDirectory, "cube", "cube.obj");
+        var fileName = Path.GetFileName(cubeObjPath);
+        var cache = exampleDirectory.ToCache();
 
         luminaire.Header = new Header
         {
@@ -24,10 +26,10 @@ public static class ExamplesExtensions
 
         var geometryDefinition = new GeometryFileDefinition
         {
-            GeometryId = "PN." + Guid.NewGuid(),
+            GeometryId = "cube",
             Units = GeometricUnits.m,
-            Model = ObjParser.Parse(cubeObjPath, NullLogger.Instance),
-            FileName = cubeObjPath
+            Model = ObjParser.Parse(fileName, cache.Geometries["cube"], NullLogger.Instance),
+            FileName = fileName
         };
 
         luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
@@ -81,6 +83,8 @@ public static class ExamplesExtensions
     {
         var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_001");
         var cubeObjPath = Path.Combine(exampleDirectory, "cube", "cube.obj");
+        var cache = exampleDirectory.ToCache();
+        var fileName = Path.GetFileName(cubeObjPath);
 
         luminaire.Header = new Header
         {
@@ -89,10 +93,10 @@ public static class ExamplesExtensions
 
         var geometryDefinition = new GeometryFileDefinition
         {
-            GeometryId = "PN." + Guid.NewGuid(),
+            GeometryId = "cube",
             Units = GeometricUnits.m,
-            Model = ObjParser.Parse(cubeObjPath, NullLogger.Instance),
-            FileName = cubeObjPath
+            Model = ObjParser.Parse(fileName, cache.Geometries["cube"], NullLogger.Instance),
+            FileName = fileName
         };
 
         luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
@@ -162,6 +166,12 @@ public static class ExamplesExtensions
         var armObjPath = Path.Combine(exampleDirectory, "arm", "arm.obj");
         var armHeadConObjPath = Path.Combine(exampleDirectory, "arm-head-con", "arm-head-con.obj");
         var headObjPath = Path.Combine(exampleDirectory, "head", "head.obj");
+        var cache = exampleDirectory.ToCache();
+        var baseFileName = Path.GetFileName(baseObjPath);
+        var baseArmFileName = Path.GetFileName(baseArmConObjPath);
+        var armFileName = Path.GetFileName(armObjPath);
+        var armHeadFileName = Path.GetFileName(armHeadConObjPath);
+        var headFileName = Path.GetFileName(headObjPath);
 
         luminaire.Header = new Header
         {
@@ -172,38 +182,38 @@ public static class ExamplesExtensions
 
         var baseDefinition = new GeometryFileDefinition
         {
-            GeometryId = "PN." + Guid.NewGuid(),
+            GeometryId = "base",
             Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(baseObjPath, NullLogger.Instance),
-            FileName = baseObjPath
+            Model = ObjParser.Parse(baseFileName, cache.Geometries["base"], NullLogger.Instance),
+            FileName = baseFileName
         };
         var baseArmDefinition = new GeometryFileDefinition
         {
-            GeometryId = "PN." + Guid.NewGuid(),
+            GeometryId = "base-arm-con",
             Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(baseArmConObjPath, NullLogger.Instance),
-            FileName = baseArmConObjPath
+            Model = ObjParser.Parse(baseArmFileName, cache.Geometries["base-arm-con"], NullLogger.Instance),
+            FileName = baseArmFileName
         };
         var armDefinition = new GeometryFileDefinition
         {
-            GeometryId = "PN." + Guid.NewGuid(),
+            GeometryId = "arm",
             Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(armObjPath, NullLogger.Instance),
-            FileName = armObjPath
+            Model = ObjParser.Parse(armFileName, cache.Geometries["arm"], NullLogger.Instance),
+            FileName = armFileName
         };
         var armHeadDefinition = new GeometryFileDefinition
         {
-            GeometryId = "PN." + Guid.NewGuid(),
+            GeometryId = "arm-head-con",
             Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(armHeadConObjPath, NullLogger.Instance),
-            FileName = armHeadConObjPath
+            Model = ObjParser.Parse(armHeadFileName, cache.Geometries["arm-head-con"], NullLogger.Instance),
+            FileName = armHeadFileName
         };
         var headDefinition = new GeometryFileDefinition
         {
-            GeometryId = "PN." + Guid.NewGuid(),
+            GeometryId = "head",
             Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(headObjPath, NullLogger.Instance),
-            FileName = headObjPath
+            Model = ObjParser.Parse(headFileName, cache.Geometries["head"], NullLogger.Instance),
+            FileName = headFileName
         };
 
         luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
@@ -425,6 +435,8 @@ public static class ExamplesExtensions
     {
         var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_003");
         var objPath = Path.Combine(exampleDirectory, "luminaire", "luminaire.obj");
+        var cache = exampleDirectory.ToCache();
+        var fileName = Path.GetFileName(objPath);
 
         luminaire.Header = new Header
         {
@@ -433,10 +445,10 @@ public static class ExamplesExtensions
 
         var bodyDefinition = new GeometryFileDefinition
         {
-            GeometryId = "PN." + Guid.NewGuid(),
+            GeometryId = "luminaire",
             Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(objPath, NullLogger.Instance),
-            FileName = objPath
+            Model = ObjParser.Parse(fileName, cache.Geometries["luminaire"], NullLogger.Instance),
+            FileName = fileName
         };
 
         luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
@@ -490,6 +502,8 @@ public static class ExamplesExtensions
     {
         var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_004");
         var objPath = Path.Combine(exampleDirectory, "luminaire", "luminaire.obj");
+        var cache = exampleDirectory.ToCache();
+        var fileName = Path.GetFileName(objPath);
 
         luminaire.Header = new Header
         {
@@ -498,10 +512,10 @@ public static class ExamplesExtensions
 
         var bodyDefinition = new GeometryFileDefinition
         {
-            GeometryId = "PN." + Guid.NewGuid(),
+            GeometryId = "luminaire",
             Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(objPath, NullLogger.Instance),
-            FileName = objPath
+            Model = ObjParser.Parse(fileName, cache.Geometries["luminaire"], NullLogger.Instance),
+            FileName = fileName
         };
 
         luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
@@ -636,6 +650,9 @@ public static class ExamplesExtensions
         var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_005");
         var baseObjPath = Path.Combine(exampleDirectory, "base", "base.obj");
         var headObjPath = Path.Combine(exampleDirectory, "head", "head.obj");
+        var cache = exampleDirectory.ToCache();
+        var baseFileName = Path.GetFileName(baseObjPath);
+        var headFileName = Path.GetFileName(headObjPath);
 
         luminaire.Header = new Header
         {
@@ -646,17 +663,17 @@ public static class ExamplesExtensions
 
         var baseDefinition = new GeometryFileDefinition
         {
-            GeometryId = "PN." + Guid.NewGuid(),
+            GeometryId = "base",
             Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(baseObjPath, NullLogger.Instance),
-            FileName = baseObjPath
+            Model = ObjParser.Parse(baseFileName, cache.Geometries["base"], NullLogger.Instance),
+            FileName = baseFileName
         };
         var headDefinition = new GeometryFileDefinition
         {
-            GeometryId = "PN." + Guid.NewGuid(),
+            GeometryId = "head",
             Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(headObjPath, NullLogger.Instance),
-            FileName = headObjPath
+            Model = ObjParser.Parse(headFileName, cache.Geometries["head"], NullLogger.Instance),
+            FileName = headFileName
         };
 
         luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
@@ -770,8 +787,12 @@ public static class ExamplesExtensions
     {
         var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_006");
         var baseObjPath = Path.Combine(exampleDirectory, "base", "base.obj");
-        var baseHeadConeObjPath = Path.Combine(exampleDirectory, "base-head-con", "base-head-con.obj");
+        var baseHeadConObjPath = Path.Combine(exampleDirectory, "base-head-con", "base-head-con.obj");
         var headObjPath = Path.Combine(exampleDirectory, "head", "head.obj");
+        var cache = exampleDirectory.ToCache();
+        var baseFileName = Path.GetFileName(baseObjPath);
+        var baseHeadConFileName = Path.GetFileName(baseHeadConObjPath);
+        var headFileName = Path.GetFileName(headObjPath);
 
         luminaire.Header = new Header
         {
@@ -780,24 +801,24 @@ public static class ExamplesExtensions
 
         var baseDefinition = new GeometryFileDefinition
         {
-            GeometryId = "PN." + Guid.NewGuid(),
+            GeometryId = "base",
             Units = GeometricUnits.m,
-            Model = ObjParser.Parse(baseObjPath, NullLogger.Instance),
-            FileName = baseObjPath
+            Model = ObjParser.Parse(baseFileName, cache.Geometries["base"], NullLogger.Instance),
+            FileName = baseFileName
         };
         var baseHeadConnectionDefinition = new GeometryFileDefinition
         {
-            GeometryId = "PN." + Guid.NewGuid(),
+            GeometryId = "base-head-con",
             Units = GeometricUnits.m,
-            Model = ObjParser.Parse(baseHeadConeObjPath, NullLogger.Instance),
-            FileName = baseHeadConeObjPath
+            Model = ObjParser.Parse(baseHeadConFileName, cache.Geometries["base-head-con"], NullLogger.Instance),
+            FileName = baseHeadConFileName
         };
         var headDefinition = new GeometryFileDefinition
         {
-            GeometryId = "PN." + Guid.NewGuid(),
+            GeometryId = "head",
             Units = GeometricUnits.m,
-            Model = ObjParser.Parse(headObjPath, NullLogger.Instance),
-            FileName = headObjPath
+            Model = ObjParser.Parse(headFileName, cache.Geometries["head"], NullLogger.Instance),
+            FileName = headFileName
         };
 
         luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
@@ -924,8 +945,12 @@ public static class ExamplesExtensions
     {
         var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_007");
         var baseObjPath = Path.Combine(exampleDirectory, "base", "base.obj");
-        var baseHeadConeObjPath = Path.Combine(exampleDirectory, "base-head-con", "base-head-con.obj");
+        var baseHeadConObjPath = Path.Combine(exampleDirectory, "base-head-con", "base-head-con.obj");
         var headObjPath = Path.Combine(exampleDirectory, "head", "head.obj");
+        var cache = exampleDirectory.ToCache();
+        var baseFileName = Path.GetFileName(baseObjPath);
+        var baseHeadConFileName = Path.GetFileName(baseHeadConObjPath);
+        var headFileName = Path.GetFileName(headObjPath);
 
         luminaire.Header = new Header
         {
@@ -934,24 +959,24 @@ public static class ExamplesExtensions
 
         var baseDefinition = new GeometryFileDefinition
         {
-            GeometryId = "PN." + Guid.NewGuid(),
+            GeometryId = "base",
             Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(baseObjPath, NullLogger.Instance),
-            FileName = baseObjPath
+            Model = ObjParser.Parse(baseFileName, cache.Geometries["base"], NullLogger.Instance),
+            FileName = baseFileName
         };
         var baseHeadConnectionDefinition = new GeometryFileDefinition
         {
-            GeometryId = "PN." + Guid.NewGuid(),
-            Units = GeometricUnits.m,
-            Model = ObjParser.Parse(baseHeadConeObjPath, NullLogger.Instance),
-            FileName = baseHeadConeObjPath
+            GeometryId = "base-head-con",
+            Units = GeometricUnits.mm,
+            Model = ObjParser.Parse(baseHeadConFileName, cache.Geometries["base-head-con"], NullLogger.Instance),
+            FileName = baseHeadConFileName
         };
         var headDefinition = new GeometryFileDefinition
         {
-            GeometryId = "PN." + Guid.NewGuid(),
+            GeometryId = "head",
             Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(headObjPath, NullLogger.Instance),
-            FileName = headObjPath
+            Model = ObjParser.Parse(headFileName, cache.Geometries["head"], NullLogger.Instance),
+            FileName = headFileName
         };
 
         luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
@@ -1211,6 +1236,8 @@ public static class ExamplesExtensions
     {
         var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_008");
         var cubeObjPath = Path.Combine(exampleDirectory, "cube", "textured_cube.obj");
+        var cache = exampleDirectory.ToCache();
+        var fileName = Path.GetFileName(cubeObjPath);
 
         luminaire.Header = new Header
         {
@@ -1219,10 +1246,10 @@ public static class ExamplesExtensions
 
         var baseDefinition = new GeometryFileDefinition
         {
-            GeometryId = "PN." + Guid.NewGuid(),
+            GeometryId = "cube",
             Units = GeometricUnits.m,
-            Model = ObjParser.Parse(cubeObjPath, NullLogger.Instance),
-            FileName = cubeObjPath
+            Model = ObjParser.Parse(fileName, cache.Geometries["cube"], NullLogger.Instance),
+            FileName = fileName
         };
 
         luminaire.GeometryDefinitions = new List<GeometryFileDefinition>

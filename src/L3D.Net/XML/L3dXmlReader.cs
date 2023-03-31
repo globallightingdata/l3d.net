@@ -2,12 +2,11 @@
 using L3D.Net.Exceptions;
 using L3D.Net.Internal.Abstract;
 using L3D.Net.Mapper.V0_11_0;
+using L3D.Net.XML.V0_10_0;
 using System;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using System.Xml.Linq;
-using L3D.Net.XML.V0_10_0;
 
 namespace L3D.Net.XML;
 
@@ -20,7 +19,7 @@ internal class L3DXmlReader : IL3DXmlReader
         _serializer = new XmlDtoSerializer();
     }
 
-    public Luminaire Read(ContainerCache cache)
+    public Luminaire? Read(ContainerCache cache)
     {
         if (cache.StructureXml == null)
             throw new ArgumentException($"{nameof(cache.StructureXml)} in {nameof(cache)} cannot be null");
@@ -53,7 +52,7 @@ internal class L3DXmlReader : IL3DXmlReader
         return version;
     }
 
-    private Luminaire ReadV0(ContainerCache cache)
+    private Luminaire? ReadV0(ContainerCache cache)
     {
         cache.StructureXml!.Seek(0, SeekOrigin.Begin);
         var luminaireDto = _serializer.Deserialize(cache.StructureXml);

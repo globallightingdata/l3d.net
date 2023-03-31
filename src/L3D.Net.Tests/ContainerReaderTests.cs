@@ -1,4 +1,6 @@
 ﻿using FluentAssertions;
+using L3D.Net.Data;
+using L3D.Net.Exceptions;
 using L3D.Net.Internal;
 using L3D.Net.Internal.Abstract;
 using NSubstitute;
@@ -21,6 +23,7 @@ public class ContainerReaderTests
     {
         _fileHandler = Substitute.For<IFileHandler>();
         _l3DXmlReader = Substitute.For<IL3DXmlReader>();
+        _l3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire());
 
         _reader = new ContainerReader(_fileHandler, _l3DXmlReader);
     }
@@ -82,14 +85,14 @@ public class ContainerReaderTests
                 _reader.Read(containerPath);
 
                 _fileHandler.Received(1)
-                    .ExtractContainer(Arg.Is(containerPath));
+                    .ExtractContainerOrThrow(Arg.Is(containerPath));
                 break;
             case ContainerTypeToTest.Bytes:
                 var containerBytes = new byte[] { 0, 1, 2, 3, 4 };
                 _reader.Read(containerBytes);
 
                 _fileHandler.Received(1)
-                    .ExtractContainer(Arg.Is(containerBytes));
+                    .ExtractContainerOrThrow(Arg.Is(containerBytes));
                 break;
             case ContainerTypeToTest.Stream:
                 using (var stream = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
@@ -97,7 +100,7 @@ public class ContainerReaderTests
                     _reader.Read(stream);
 
                     _fileHandler.Received(1)
-                        .ExtractContainer(Arg.Is(stream));
+                        .ExtractContainerOrThrow(Arg.Is(stream));
                 }
                 break;
             default:
@@ -125,5 +128,26 @@ public class ContainerReaderTests
         }
 
         _l3DXmlReader.Received(1).Read(Arg.Any<ContainerCache>());
+    }
+
+    [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
+    public void Read_ShouldThrow_IfNothingCouldBeRead(ContainerTypeToTest containerTypeToTest)
+    {
+        _l3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns((Luminaire)null!);
+
+        Action act = containerTypeToTest switch
+        {
+            ContainerTypeToTest.Path => () => _reader.Read(Guid.NewGuid().ToString()),
+            ContainerTypeToTest.Bytes => () => _reader.Read(new byte[] { 0, 1, 2, 3, 4 }),
+            ContainerTypeToTest.Stream => () =>
+            {
+                using var stream = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 });
+                _reader.Read(stream);
+            }
+            ,
+            _ => () => throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null)
+        };
+
+        act.Should().Throw<InvalidL3DException>().WithMessage("No L3D could be read");
     }
 }

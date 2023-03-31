@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using FluentAssertions;
+﻿using FluentAssertions;
 using L3D.Net.Data;
 using L3D.Net.Mapper.V0_11_0;
 using L3D.Net.XML.V0_10_0.Dto;
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace L3D.Net.Tests.Mapper.V0_10_0
 {

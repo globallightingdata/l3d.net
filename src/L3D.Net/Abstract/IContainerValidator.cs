@@ -1,12 +1,13 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace L3D.Net.Abstract;
 
-public interface IContainerValidator
+internal interface IContainerValidator
 {
-    bool Validate(string containerPath);
+    IEnumerable<ValidationHint> Validate(string containerPath, Validation flags);
 
-    bool Validate(byte[] containerBytes);
+    IEnumerable<ValidationHint> Validate(byte[] containerBytes, Validation flags);
 
-    bool Validate(Stream containerStream);
+    IEnumerable<ValidationHint> Validate(Stream containerStream, Validation flags);
 }

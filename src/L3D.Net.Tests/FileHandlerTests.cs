@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using L3D.Net.Abstract;
 using L3D.Net.Internal;
 using L3D.Net.Internal.Abstract;
 using NSubstitute;
@@ -53,18 +54,9 @@ public class FileHandlerTests
         _filesToDelete.Add(modelPath);
 
         var model3D = Substitute.For<IModel3D>();
-        model3D.FilePath.Returns(modelPath);
+        model3D.FileName.Returns(modelPath);
         return model3D;
     }
-
-    public enum ContainerTypeToTest
-    {
-        Path,
-        Bytes,
-        Stream
-    }
-
-    public static IEnumerable<ContainerTypeToTest> ContainerTypeToTestEnumValues => Enum.GetValues<ContainerTypeToTest>();
 
     [Test]
     public void CreateContainerFile_ShouldZipGivenDirectoryToGivenPath()
@@ -131,7 +123,7 @@ public class FileHandlerTests
 
     [Test]
     [TestCaseSource(typeof(Setup), nameof(Setup.EmptyStringValues))]
-    public void LoadModelFiles_ShouldThrowArgumentException_WhenGeometryIdIsNullOrEmpty(string geometryId)
+    public void LoadModelFiles_ShouldThrowArgumentException_WhenGeometryIdIsNullOrEmpty(string? geometryId)
     {
         var fileHandler = new FileHandler();
 
@@ -142,13 +134,13 @@ public class FileHandlerTests
 
     [Test]
     [TestCaseSource(typeof(Setup), nameof(Setup.EmptyStringValues))]
-    public void LoadModelFiles_ShouldThrowArgumentException_WhenModelHasNullOrEmptyLibraryPaths(string path)
+    public void LoadModelFiles_ShouldThrowArgumentException_WhenModelHasNullOrEmptyLibraryPaths(string? path)
     {
         var targetTestDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         _directoriesToDelete.Add(targetTestDirectory);
         var model3D = CreateFakeModel3D();
 
-        model3D.ReferencedMaterialLibraryFiles.Returns(new[] { path });
+        model3D.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream> { [path ?? string.Empty] = Stream.Null });
 
         var fileHandler = new FileHandler();
         var action = () => fileHandler.LoadModelFiles(model3D, "someId", new ContainerCache());
@@ -158,13 +150,14 @@ public class FileHandlerTests
 
     [Test]
     [TestCaseSource(typeof(Setup), nameof(Setup.EmptyStringValues))]
-    public void LoadModelFiles_ShouldThrowArgumentException_WhenModelHasNullOrEmptyTexturePaths(string path)
+    public void LoadModelFiles_ShouldThrowArgumentException_WhenModelHasNullOrEmptyTexturePaths(string? path)
     {
         var targetTestDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         _directoriesToDelete.Add(targetTestDirectory);
         var model3D = CreateFakeModel3D();
 
-        model3D.ReferencedTextureFiles.Returns(new[] { path });
+        model3D.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream> { ["someId"] = Stream.Null });
+        model3D.ReferencedTextureFiles.Returns(new Dictionary<string, Stream> { [path ?? string.Empty] = Stream.Null });
 
         var fileHandler = new FileHandler();
         var action = () => fileHandler.LoadModelFiles(model3D, "someId", new ContainerCache());

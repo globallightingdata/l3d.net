@@ -8,7 +8,7 @@ public static class GlobalXmlDefinitions
     internal static readonly Regex VersionRegex = new(@"https://gldf.io/xsd/l3d/(\d{1,3}\.\d{1,3}(?:\.\d{1,6})?)/l3d.xsd",
         RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
-    public static readonly Version CurrentVersion = new(0, 11, 0, 0);
+    public static readonly Version CurrentVersion = new(0, 10, 0, 0);
 
     internal static bool IsParseable(Version other) =>
         other.Major <= CurrentVersion.Major;

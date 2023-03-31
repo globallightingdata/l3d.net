@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using L3D.Net.Data;
+﻿using L3D.Net.Data;
 using L3D.Net.Geometry;
 using L3D.Net.Internal;
 using L3D.Net.Internal.Abstract;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace L3D.Net.XML.V0_10_0
 {
@@ -23,8 +22,11 @@ namespace L3D.Net.XML.V0_10_0
             _fileHandler = fileHandler ?? throw new ArgumentNullException(nameof(fileHandler));
         }
 
-        public Luminaire Resolve(Luminaire luminaire, ContainerCache cache, ILogger? logger = null)
+        public Luminaire? Resolve(Luminaire? luminaire, ContainerCache cache, ILogger? logger = null)
         {
+            if (luminaire == null)
+                return null;
+
             var geometryParts = luminaire.Parts.SelectMany(GetParts);
 
             foreach (var geometryPart in geometryParts)
@@ -45,9 +47,13 @@ namespace L3D.Net.XML.V0_10_0
             if (source == null)
                 return geometryFileDefinition;
 
-            var modelPath = Path.Combine(source.GeometryId, source.FileName);
+            if (!cache.Geometries.TryGetValue(source.GeometryId, out var files))
+                return geometryFileDefinition;
 
-            var model = _objParser.Parse(modelPath, logger);
+            var model = _objParser.Parse(source.FileName, files!, logger);
+
+            if (model == null)
+                return geometryFileDefinition;
 
             geometryFileDefinition.Model = ScaleModel(model, GetScale(geometryFileDefinition.Units), source.GeometryId, cache);
             geometryFileDefinition.Units = source.Units;

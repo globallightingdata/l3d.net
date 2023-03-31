@@ -1,11 +1,11 @@
 ﻿using FluentAssertions;
+using L3D.Net.XML.V0_10_0;
+using L3D.Net.XML.V0_10_0.Dto;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
-using L3D.Net.XML.V0_10_0;
-using L3D.Net.XML.V0_10_0.Dto;
 
 namespace L3D.Net.Tests;
 

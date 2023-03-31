@@ -1,4 +1,4 @@
-﻿namespace L3D.Net;
+﻿namespace L3D.Net.Abstract;
 
 internal static class Constants
 {

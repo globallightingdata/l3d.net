@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace L3D.Net.Tests;
@@ -19,10 +20,17 @@ public class ReadObjExamplesTest
 
     [Test]
     [TestCaseSource(nameof(ExampleFiles))]
-    public void ObjParser_ShouldBeAbleToReadAllExamples(string filename)
+    public void ObjParser_ShouldBeAbleToReadAllExamples(string filePath)
     {
+        var geometry = Path.GetDirectoryName(filePath)!;
+        var l3d = Path.GetDirectoryName(geometry)!;
+        var fileName = Path.GetFileName(filePath);
         var parser = new ObjParser();
-        var act = () => parser.Parse(filename, Substitute.For<ILogger>());
+        var act = () =>
+        {
+            using var cache = l3d.ToCache();
+            return parser.Parse(fileName, cache.Geometries[Path.GetFileName(geometry)], Substitute.For<ILogger>());
+        };
         act.Should().NotThrow();
     }
 }

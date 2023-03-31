@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using L3D.Net.Abstract;
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace L3D.Net.XML.V0_10_0.Dto;

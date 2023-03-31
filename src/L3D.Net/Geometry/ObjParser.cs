@@ -14,35 +14,41 @@ public class ObjParser : IObjParser
 {
     public static readonly IObjParser Instance = new ObjParser();
 
-    public IModel3D Parse(string filePath, ILogger? logger = null)
+    public IModel3D? Parse(string fileName, Dictionary<string, Stream> files, ILogger? logger = null)
     {
-        var directory = Path.GetDirectoryName(filePath) ??
-                        throw new ArgumentException($"The file directory of '{filePath}' could not be determined!");
+        if (!files.TryGetValue(fileName, out var stream))
+            return null;
 
-        var objFile = ObjFile.FromFile(filePath);
+        using var copy = new MemoryStream();
+        stream.CopyTo(copy);
+        copy.Seek(0, SeekOrigin.Begin);
+        var objFile = ObjFile.FromStream(copy);
 
-        var objMaterialLibraries = CollectAvailableMaterialLibraries(logger, objFile, directory);
+        var objMaterialLibraries = CollectAvailableMaterialLibraries(logger, objFile, files);
 
-        var textures = CollectAvailableTextures(directory, objMaterialLibraries);
+        var textures = CollectAvailableTextures(files, objMaterialLibraries);
 
         return new ObjModel3D
         {
-            FilePath = filePath,
-            ReferencedMaterialLibraries = objMaterialLibraries.Select(tuple => tuple.Item1).ToList(),
-            ReferencedTextureFiles = textures,
+            FileName = fileName,
+            ReferencedMaterialLibraryFiles = objMaterialLibraries.Select(tuple => tuple.Item1).ToDictionary(d => d, d => files[d]),
+            ReferencedTextureFiles = textures.ToDictionary(d => d, d => files[d]),
             Data = ConvertGeometry(objFile, objMaterialLibraries.Select(tuple => tuple.Item2).ToList())
         };
     }
 
     private static List<Tuple<string, ObjMaterialFile>> CollectAvailableMaterialLibraries(ILogger? logger,
-        ObjFile objFile, string directory)
+        ObjFile objFile, IReadOnlyDictionary<string, Stream> files)
     {
         var objMaterials = objFile.MaterialLibraries.Select(mtl =>
         {
             try
             {
-                var materialFile = Path.Combine(directory, mtl);
-                return Tuple.Create(materialFile, ObjMaterialFile.FromFile(materialFile));
+                var materialFile = files[mtl];
+                using var copy = new MemoryStream();
+                materialFile.CopyTo(copy);
+                copy.Seek(0, SeekOrigin.Begin);
+                return Tuple.Create(mtl, ObjMaterialFile.FromStream(copy));
             }
             catch (Exception e)
             {
@@ -53,7 +59,7 @@ public class ObjParser : IObjParser
         return objMaterials;
     }
 
-    private static List<string> CollectAvailableTextures(string directory,
+    private static List<string> CollectAvailableTextures(IReadOnlyDictionary<string, Stream> files,
         List<Tuple<string, ObjMaterialFile>> objMaterials)
     {
         var textures = new List<string?>();
@@ -82,14 +88,14 @@ public class ObjParser : IObjParser
 
         textures = textures
             .Where(texture => texture != null)
+            .Where(files.ContainsKey!)
             .Distinct()
-            .Select(fileName => Path.Combine(directory, fileName!))
-            .ToList()!;
+            .ToList();
         return textures!;
     }
 
 
-    private static ModelData ConvertGeometry(ObjFile objFile, IReadOnlyList<ObjMaterialFile> objMaterialFiles)
+    private static ModelData ConvertGeometry(ObjFile objFile, IEnumerable<ObjMaterialFile> objMaterialFiles)
     {
         var vertices = objFile.Vertices
             .Select(vertex => new Vector3(vertex.Position.X, vertex.Position.Y, vertex.Position.Z)).ToList();

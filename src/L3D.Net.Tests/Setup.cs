@@ -1,4 +1,5 @@
 ﻿using L3D.Net.Data;
+using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions.Interfaces;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -61,6 +62,11 @@ public static class Setup
         foreach (var stream in ExampleXmlStreams)
         {
             stream.Dispose();
+        }
+
+        foreach (var tmpStream in PathExtensions.Streams)
+        {
+            tmpStream.Dispose();
         }
     }
 

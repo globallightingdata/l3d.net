@@ -1,14 +1,13 @@
-﻿using Extensions.Logging.NSubstitute;
-using FluentAssertions;
+﻿using FluentAssertions;
+using L3D.Net.Abstract;
 using L3D.Net.Data;
 using L3D.Net.Internal;
 using L3D.Net.Internal.Abstract;
-using Microsoft.Extensions.Logging;
+using L3D.Net.XML.V0_10_0;
 using NSubstitute;
 using NUnit.Framework;
 using System;
 using System.IO;
-using L3D.Net.XML.V0_10_0;
 
 // ReSharper disable ObjectCreationAsStatement
 
@@ -22,7 +21,6 @@ public class ContainerBuilderTests
         public IFileHandler FileHandler { get; }
         private IXmlDtoSerializer Serializer { get; }
         public IXmlValidator Validator { get; }
-        private ILogger Logger { get; }
         public ContainerBuilder Builder { get; }
 
         public Context()
@@ -30,9 +28,8 @@ public class ContainerBuilderTests
             FileHandler = Substitute.For<IFileHandler>();
             Serializer = Substitute.For<IXmlDtoSerializer>();
             Validator = Substitute.For<IXmlValidator>();
-            Validator.ValidateStream(Arg.Any<Stream>(), Arg.Any<ILogger>()).Returns(true);
-            Logger = LoggerSubstitute.Create();
-            Builder = new ContainerBuilder(FileHandler, Serializer, Validator, Logger);
+            Validator.ValidateStream(Arg.Any<Stream>()).Returns(Array.Empty<ValidationHint>());
+            Builder = new ContainerBuilder(FileHandler, Serializer, Validator);
         }
     }
 
@@ -56,8 +53,7 @@ public class ContainerBuilderTests
         var action = () => _ = new ContainerBuilder(
             null!,
             Substitute.For<IXmlDtoSerializer>(),
-            Substitute.For<IXmlValidator>(),
-            Substitute.For<ILogger>()
+            Substitute.For<IXmlValidator>()
         );
 
         action.Should().Throw<ArgumentNullException>();
@@ -69,8 +65,7 @@ public class ContainerBuilderTests
         var action = () => _ = new ContainerBuilder(
             Substitute.For<IFileHandler>(),
             null!,
-            Substitute.For<IXmlValidator>(),
-            Substitute.For<ILogger>()
+            Substitute.For<IXmlValidator>()
         );
 
         action.Should().Throw<ArgumentNullException>();
@@ -82,8 +77,7 @@ public class ContainerBuilderTests
         var action = () => _ = new ContainerBuilder(
             Substitute.For<IFileHandler>(),
             Substitute.For<IXmlDtoSerializer>(),
-            null!,
-            Substitute.For<ILogger>()
+            null!
         );
 
         action.Should().Throw<ArgumentNullException>();
@@ -124,7 +118,7 @@ public class ContainerBuilderTests
         {
             var expectedModel = geometryDefinition.Model;
 
-            context.FileHandler.Received(1).LoadModelFiles(Arg.Is(expectedModel), Arg.Is(geometryDefinition.GeometryId), Arg.Any<ContainerCache>());
+            context.FileHandler.Received(1).LoadModelFiles(Arg.Is(expectedModel!), Arg.Is(geometryDefinition.GeometryId), Arg.Any<ContainerCache>());
         }
 
         luminaire.GeometryDefinitions.Count.Should().BePositive();
@@ -140,7 +134,7 @@ public class ContainerBuilderTests
 
         context.Builder.CreateContainerFile(luminaire, Guid.NewGuid().ToString());
 
-        context.Validator.Received(1).ValidateStream(Arg.Any<Stream>(), Arg.Any<ILogger>());
+        context.Validator.Received(1).ValidateStream(Arg.Any<Stream>());
     }
 
     [Test]
@@ -148,7 +142,7 @@ public class ContainerBuilderTests
     {
         var message = Guid.NewGuid().ToString();
         var context = new Context();
-        context.Validator.When(v => v.ValidateStream(Arg.Any<Stream>(), Arg.Any<ILogger>()))
+        context.Validator.When(v => v.ValidateStream(Arg.Any<Stream>()))
             .Do(_ => throw new Exception(message));
 
         var action = () => context.Builder.CreateContainerFile(CreateComplexLuminaire(), Guid.NewGuid().ToString());
@@ -194,7 +188,7 @@ public class ContainerBuilderTests
         {
             var expectedModel = geometryDefinition.Model;
 
-            context.FileHandler.Received(1).LoadModelFiles(Arg.Is(expectedModel), Arg.Is(geometryDefinition.GeometryId), Arg.Any<ContainerCache>());
+            context.FileHandler.Received(1).LoadModelFiles(Arg.Is(expectedModel!), Arg.Is(geometryDefinition.GeometryId), Arg.Any<ContainerCache>());
         }
 
         luminaire.GeometryDefinitions.Count.Should().BePositive();
@@ -210,7 +204,7 @@ public class ContainerBuilderTests
 
         context.Builder.CreateContainerByteArray(luminaire);
 
-        context.Validator.Received(1).ValidateStream(Arg.Any<Stream>(), Arg.Any<ILogger>());
+        context.Validator.Received(1).ValidateStream(Arg.Any<Stream>());
     }
 
     [Test]
@@ -218,7 +212,7 @@ public class ContainerBuilderTests
     {
         var message = Guid.NewGuid().ToString();
         var context = new Context();
-        context.Validator.When(v => v.ValidateStream(Arg.Any<Stream>(), Arg.Any<ILogger>()))
+        context.Validator.When(v => v.ValidateStream(Arg.Any<Stream>()))
             .Do(_ => throw new Exception(message));
 
         var action = () => context.Builder.CreateContainerByteArray(CreateComplexLuminaire());

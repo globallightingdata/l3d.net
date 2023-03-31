@@ -1,15 +1,17 @@
 ﻿using L3D.Net.Data;
 using L3D.Net.Internal.Abstract;
 using System.Collections.Generic;
+using System.IO;
 
 namespace L3D.Net.Geometry;
 
 public class ObjModel3D : IModel3D
 {
-    public string FilePath { get; set; } = string.Empty;
-
-    IEnumerable<string> IModel3D.ReferencedTextureFiles => ReferencedTextureFiles;
-
+    public string FileName { get; set; } = string.Empty;
+    public Stream Stream { get; set; } = Stream.Null;
+    public ModelData? Data { get; set; }
+    public Dictionary<string, Stream> ReferencedMaterialLibraryFiles { get; set; } = new();
+    public Dictionary<string, Stream> ReferencedTextureFiles { get; set; } = new();
     public bool IsFaceIndexValid(int groupIndex, int faceIndex)
     {
         if (Data == null)
@@ -23,11 +25,4 @@ public class ObjModel3D : IModel3D
 
         return true;
     }
-
-    public ModelData? Data { get; set; }
-
-    IEnumerable<string> IModel3D.ReferencedMaterialLibraryFiles => ReferencedMaterialLibraries;
-
-    public List<string> ReferencedMaterialLibraries { get; set; } = new();
-    public List<string> ReferencedTextureFiles { get; set; } = new();
 }

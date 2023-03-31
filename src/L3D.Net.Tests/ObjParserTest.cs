@@ -18,13 +18,16 @@ public class ObjParserTest
         var objPath = Path.Combine(Setup.TestDataDirectory, "obj", "two_groups.obj");
         var mtlPath = Path.Combine(Setup.TestDataDirectory, "obj", "two_groups.mtl");
 
+        using var cache = Setup.TestDataDirectory.ToCache();
+
         var parser = new ObjParser();
 
-        var model = parser.Parse(objPath, Substitute.For<ILogger>());
+        var fileName = Path.GetFileName(objPath);
+        var model = parser.Parse(fileName, cache.Geometries["obj"], Substitute.For<ILogger>());
 
-        model.FilePath.Should().Be(objPath);
+        model!.FileName.Should().Be(fileName);
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(1);
-        model.ReferencedMaterialLibraryFiles.Should().Contain(mtlPath);
+        model.ReferencedMaterialLibraryFiles.Should().Contain(d => d.Key == Path.GetFileName(mtlPath));
         model.ReferencedTextureFiles.Should().HaveCount(0);
         model.Data!.Vertices.Should().HaveCount(16);
         model.Data.Normals.Should().HaveCount(12);
@@ -62,15 +65,18 @@ public class ObjParserTest
         var mtlPath = Path.Combine(examplePath, "cube", "textured_cube.mtl");
         var textureFile = Path.Combine(examplePath, "cube", "CubeTexture.png");
 
+        using var cache = examplePath.ToCache();
+
         var parser = new ObjParser();
 
-        var model = parser.Parse(objPath, Substitute.For<ILogger>());
+        var fileName = Path.GetFileName(objPath);
+        var model = parser.Parse(fileName, cache.Geometries["cube"], Substitute.For<ILogger>());
 
-        model.FilePath.Should().Be(objPath);
+        model!.FileName.Should().Be(fileName);
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(1);
-        model.ReferencedMaterialLibraryFiles.Should().Contain(mtlPath);
+        model.ReferencedMaterialLibraryFiles.Should().Contain(d => d.Key == Path.GetFileName(mtlPath));
         model.ReferencedTextureFiles.Should().HaveCount(1);
-        model.ReferencedTextureFiles.First().Should().Be(textureFile);
+        model.ReferencedTextureFiles.Should().Contain(d => d.Key == Path.GetFileName(textureFile));
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(1);
         var modelMaterial = model.Data.Materials.First();
