@@ -1,9 +1,11 @@
-﻿using System;
+﻿using FluentAssertions;
+using L3D.Net.Abstract;
+using L3D.Net.Data;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using FluentAssertions;
-using NUnit.Framework;
 
 namespace L3D.Net.Tests;
 
@@ -11,8 +13,9 @@ namespace L3D.Net.Tests;
 public class ReaderExampleTests
 {
     private readonly List<string> _tempDirectories = new();
+    private readonly IWriter _writer = new Writer();
 
-    static List<string> ExampleDirectories()
+    private static List<string> ExampleDirectories()
     {
         Setup.Initialize();
         var directories = Directory.EnumerateDirectories(Setup.ExamplesDirectory).ToList();
@@ -28,7 +31,7 @@ public class ReaderExampleTests
     }
 
     [TearDown]
-    public void Deinit()
+    public void TearDown()
     {
         foreach (var tempDirectory in _tempDirectories)
         {
@@ -42,11 +45,12 @@ public class ReaderExampleTests
             }
         }
     }
-        
+
     public enum ContainerTypeToTest
     {
         Path,
-        Bytes
+        Bytes,
+        Stream
     }
 
     public static IEnumerable<ContainerTypeToTest> ContainerTypeToTestEnumValues => Enum.GetValues<ContainerTypeToTest>();
@@ -62,12 +66,30 @@ public class ReaderExampleTests
 
         var containerTempDirectory = GetTempDirectory();
 
-        var builder = Builder.NewLuminaire();
+        var luminaire = new Luminaire();
 
-        builder = buildFunc(builder);
+        luminaire = buildFunc(luminaire);
 
         var containerPath = Path.Combine(containerTempDirectory, "luminaire" + Constants.L3dExtension);
-        builder.Build(containerPath);
+
+        switch (containerTypeToTest)
+        {
+            case ContainerTypeToTest.Stream:
+                using (var stream = File.OpenWrite(containerPath))
+                {
+                    _writer.WriteToStream(luminaire, stream);
+                }
+                break;
+            case ContainerTypeToTest.Path:
+                _writer.WriteToFile(luminaire, containerPath);
+                break;
+            case ContainerTypeToTest.Bytes:
+                var bytes = _writer.WriteToByteArray(luminaire);
+                File.WriteAllBytes(containerPath, bytes);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
+        }
 
         Action action = containerTypeToTest switch
         {
@@ -76,7 +98,15 @@ public class ReaderExampleTests
             {
                 var containerBytes = File.ReadAllBytes(containerPath);
                 new Reader().ReadContainer(containerBytes);
-            },
+            }
+            ,
+            ContainerTypeToTest.Stream => () =>
+            {
+                using var stream = File.OpenRead(containerPath);
+                new Reader().ReadContainer(stream);
+            }
+
+            ,
             _ => throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null)
         };
 

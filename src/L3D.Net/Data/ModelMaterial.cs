@@ -3,19 +3,10 @@ using System.Numerics;
 
 namespace L3D.Net.Data;
 
-internal class ModelMaterial
+public class ModelMaterial
 {
-    public string Name { get; }
-    public Vector3 Color { get; }
-    public string TextureName { get; }
-
-    public ModelMaterial(string name, Vector3 color, string textureName)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException(@"Value cannot be null or whitespace.", nameof(name));
-            
-        Name = name;
-        Color = color;
-        TextureName = textureName;
-    }
+    public string Name { get; set; } = string.Empty;
+    public Vector3 Color { get; set; }
+    public string TextureName { get; set; } = string.Empty;
+    public byte[] TextureBytes { get; set; } = Array.Empty<byte>();
 }

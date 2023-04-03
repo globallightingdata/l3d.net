@@ -20,9 +20,12 @@
     <!--<EmbedAllSources>true</EmbedAllSources>-->
     <PackageReadmeFile>README.md</PackageReadmeFile>    
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="XSD\V0_10_0.xsd" />
+  </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="JeremyAnsel.Media.WavefrontObj" Version="3.0.26" />
+    <PackageReference Include="JeremyAnsel.Media.WavefrontObj" Version="3.0.27" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
     <PackageReference Include="MinVer" PrivateAssets="all" Version="4.3.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
@@ -39,9 +42,11 @@
   
   <PropertyGroup>
     <MinVerTagPrefix>v</MinVerTagPrefix>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   
   <ItemGroup>
+    <EmbeddedResource Include="XSD\V0_10_0.xsd" />
     <EmbeddedResource Include="XSD\V0_9_2.xsd" />
     <None Include=".\..\..\README.md">
       <Pack>true</Pack>

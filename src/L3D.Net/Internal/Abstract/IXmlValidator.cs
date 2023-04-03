@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using L3D.Net.Abstract;
+using System.Collections.Generic;
+using System.IO;
 
 namespace L3D.Net.Internal.Abstract;
 
-interface IXmlValidator
+public interface IXmlValidator
 {
-    bool ValidateFile(string xmlFilename, ILogger logger);
+    IEnumerable<ValidationHint> ValidateStream(Stream xmlStream);
 }

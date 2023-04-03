@@ -1,38 +1,42 @@
-﻿using System;
+﻿using L3D.Net.Data;
+using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions.Interfaces;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
-using NUnit.Framework;
 
 namespace L3D.Net.Tests;
 
 [SetUpFixture]
-public class Setup
+public static class Setup
 {
     private static bool _isInitialized;
-    private static readonly Mutex Mutex = new();
-        
-    public static string TestDataDirectory { get; private set; }
-    public static string ExamplesDirectory { get; private set; }
-    public static string ValidVersionsDirectory { get; private set; }
-    public static string InvalidVersionsDirectory { get; private set; }
+    private static readonly object Lock = new();
 
-    public static IEnumerable<string> ExampleXmlFiles { get; private set; }
-    public static IEnumerable<string> ExampleObjFiles { get; private set; }
-    public static IEnumerable<string> ValidVersionXmlFiles { get; private set; }
-    public static IEnumerable<string> InvalidVersionXmlFiles { get; private set; }
+    private static readonly MemoryStream Stream = new();
+
+    public static string TestDataDirectory { get; private set; } = null!;
+    public static string ExamplesDirectory { get; private set; } = null!;
+    public static string ValidVersionsDirectory { get; private set; } = null!;
+    public static string InvalidVersionsDirectory { get; private set; } = null!;
+
+    public static IEnumerable<Stream> ExampleXmlStreams { get; private set; } = Array.Empty<Stream>();
+    public static IEnumerable<string> ExampleXmlFiles { get; private set; } = Array.Empty<string>();
+    public static IEnumerable<string> ExampleObjFiles { get; private set; } = Array.Empty<string>();
+    public static IEnumerable<string> ValidVersionXmlFiles { get; private set; } = Array.Empty<string>();
+    public static IEnumerable<string> InvalidVersionXmlFiles { get; private set; } = Array.Empty<string>();
 
     [OneTimeSetUp]
     public static void Initialize()
     {
-        lock (Mutex)
+        lock (Lock)
         {
             if (_isInitialized)
                 return;
 
-            var testBinDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var testBinDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
 
             TestDataDirectory = Path.Combine(testBinDirectory, "TestData");
 
@@ -41,6 +45,8 @@ public class Setup
             InvalidVersionsDirectory = Path.Combine(TestDataDirectory, "xml", "validation", "invalid_versions");
 
             ExampleXmlFiles = Directory.EnumerateFiles(ExamplesDirectory, "*.xml", SearchOption.AllDirectories).ToList();
+            ExampleXmlStreams =
+                ExampleXmlFiles.Select(x => File.Open(x, FileMode.Open, FileAccess.Read, FileShare.Read));
             ExampleObjFiles = Directory.EnumerateFiles(ExamplesDirectory, "*.obj", SearchOption.AllDirectories).ToList();
             ValidVersionXmlFiles = Directory.EnumerateFiles(ValidVersionsDirectory, "*.xml", SearchOption.AllDirectories).ToList();
             InvalidVersionXmlFiles = Directory.EnumerateFiles(InvalidVersionsDirectory, "*.xml", SearchOption.AllDirectories).ToList();
@@ -48,12 +54,27 @@ public class Setup
             _isInitialized = true;
         }
     }
-        
+
+    [OneTimeTearDown]
+    public static void TearDown()
+    {
+        Stream.Dispose();
+        foreach (var stream in ExampleXmlStreams)
+        {
+            stream.Dispose();
+        }
+
+        foreach (var tmpStream in PathExtensions.Streams)
+        {
+            tmpStream.Dispose();
+        }
+    }
+
     public static List<string> EmptyStringValues()
     {
         return new List<string>
         {
-            null,
+            null!,
             "",
             " ",
             "\t",
@@ -62,27 +83,36 @@ public class Setup
             Environment.NewLine
         };
     }
-        
+
     public static List<byte[]> EmptyByteArrayValues()
     {
         return new List<byte[]>
         {
-            null,
+            null!,
             Array.Empty<byte>()
         };
     }
 
-    public static readonly Dictionary<string, Func<LuminaireBuilder, LuminaireBuilder>> ExampleBuilderMapping =
-        new Dictionary<string, Func<LuminaireBuilder, LuminaireBuilder>>
+    public static List<Stream> EmptyStreamValues()
+    {
+        return new List<Stream>
         {
-            {"example_000", builder => builder.BuildExample000()},
-            {"example_001", builder => builder.BuildExample001()},
-            {"example_002", builder => builder.BuildExample002()},
-            {"example_003", builder => builder.BuildExample003()},
-            {"example_004", builder => builder.BuildExample004()},
-            {"example_005", builder => builder.BuildExample005()},
-            {"example_006", builder => builder.BuildExample006()},
-            {"example_007", builder => builder.BuildExample007()},
-            {"example_008", builder => builder.BuildExample008()},
+            null!,
+            Stream
+        };
+    }
+
+    public static readonly Dictionary<string, Func<Luminaire, Luminaire>> ExampleBuilderMapping =
+        new()
+        {
+            {"example_000", luminaire => luminaire.BuildExample000()},
+            {"example_001", luminaire => luminaire.BuildExample001()},
+            {"example_002", luminaire => luminaire.BuildExample002()},
+            {"example_003", luminaire => luminaire.BuildExample003()},
+            {"example_004", luminaire => luminaire.BuildExample004()},
+            {"example_005", luminaire => luminaire.BuildExample005()},
+            {"example_006", luminaire => luminaire.BuildExample006()},
+            {"example_007", luminaire => luminaire.BuildExample007()},
+            {"example_008", luminaire => luminaire.BuildExample008()}
         };
 }

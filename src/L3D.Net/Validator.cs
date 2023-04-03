@@ -1,28 +1,32 @@
 using L3D.Net.Abstract;
 using L3D.Net.Internal;
 using L3D.Net.XML;
-using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.IO;
 
 namespace L3D.Net;
 
-class Validator : IValidator
+public class Validator : IValidator
 {
-    public bool ValidateContainer(string containerPath, ILogger logger)
+    public IEnumerable<ValidationHint> ValidateContainer(string containerPath, Validation flags)
     {
-        return CreateContainerValidator(logger).Validate(containerPath);
+        return CreateContainerValidator().Validate(containerPath, flags);
     }
 
-    public bool ValidateContainer(byte[] containerBytes, ILogger logger)
+    public IEnumerable<ValidationHint> ValidateContainer(byte[] containerBytes, Validation flags)
     {
-        return CreateContainerValidator(logger).Validate(containerBytes);
+        return CreateContainerValidator().Validate(containerBytes, flags);
     }
 
-    private static IContainerValidator CreateContainerValidator(ILogger logger)
+    public IEnumerable<ValidationHint> ValidateContainer(Stream containerStream, Validation flags)
+    {
+        return CreateContainerValidator().Validate(containerStream, flags);
+    }
+
+    private static IContainerValidator CreateContainerValidator()
     {
         var fileHandler = new FileHandler();
 
-        return new ContainerValidator(fileHandler,
-                                      new XmlValidator(),
-                                      logger);
+        return new ContainerValidator(fileHandler, new XmlValidator(), new L3DXmlReader());
     }
 }

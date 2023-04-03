@@ -1,10 +1,13 @@
-using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.IO;
 
 namespace L3D.Net.Abstract;
 
 public interface IValidator
 {
-    bool ValidateContainer(string containerPath, ILogger logger = null);
-        
-    bool ValidateContainer(byte[] containerBytes, ILogger logger = null);
+    IEnumerable<ValidationHint> ValidateContainer(string containerPath, Validation flags);
+
+    IEnumerable<ValidationHint> ValidateContainer(byte[] containerBytes, Validation flags);
+
+    IEnumerable<ValidationHint> ValidateContainer(Stream containerStream, Validation flags);
 }

@@ -2,11 +2,11 @@
 
 namespace L3D.Net.Data;
 
-internal class Luminaire
+public class Luminaire
 {
-    public Header Header { get; } = new Header();
+    public Header? Header { get; set; }
 
-    public List<GeometryDefinition> GeometryDefinitions { get; } = new List<GeometryDefinition>();
+    public List<GeometryFileDefinition> GeometryDefinitions { get; set; } = new();
 
-    public List<GeometryPart> Parts { get; } = new List<GeometryPart>();
+    public List<GeometryPart> Parts { get; set; } = new();
 }

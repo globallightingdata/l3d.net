@@ -1,4 +1,7 @@
-﻿using System;
+﻿using L3D.Net.Abstract;
+using L3D.Net.Internal.Abstract;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -6,38 +9,62 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
-using L3D.Net.Internal.Abstract;
-using Microsoft.Extensions.Logging;
 
 namespace L3D.Net.XML;
 
 public class XmlValidator : IXmlValidator
 {
-    public bool ValidateFile(string xmlFilename, ILogger validationLogger)
+    public IEnumerable<ValidationHint> ValidateStream(Stream xmlStream)
     {
-        var xmlDocument = XDocument.Load(xmlFilename);
-        var root = xmlDocument.Root;
-
-        if (root == null)
+        if (!TryLoadDocument(xmlStream, out var document) || document!.Root == null)
         {
-            validationLogger?.LogError("Unable to read XML content of {XmlFilename}!", xmlFilename);
-            return false;
+            yield return new StructureXmlValidationHint(ErrorMessages.StructureXmlNotReadable);
+            yield break;
         }
 
-        if (!TryGetVersion(root, validationLogger, out var version))
-            return false;
+        if (!TryGetSchemeAttribute(document.Root!, out var attribute))
+        {
+            yield return new StructureXmlValidationHint(ErrorMessages.StructureXmlVersionMissing);
+            yield break;
+        }
 
-        if (!TryLoadXsd(version, validationLogger, out var scheme))
-            return false;
-        
-        var schemeSet = CreateSchemaSet(scheme);
-            
-        return Validate(xmlDocument, schemeSet, validationLogger);
+        if (!TryGetVersion(attribute!, out var version))
+        {
+            yield return new StructureXmlValidationHint(ErrorMessages.StructureXmlVersionNotReadable, attribute!.Value);
+            yield break;
+        }
+
+        if (!TryLoadXsd(version!, out var scheme))
+        {
+            yield return new StructureXmlValidationHint(ErrorMessages.StructureXsdVersionNotKnown, $"Version: {version}");
+            yield break;
+        }
+
+        var schemeSet = CreateSchemaSet(scheme!);
+
+        foreach (var validationHint in Validate(document, schemeSet))
+        {
+            yield return validationHint;
+        }
     }
 
-    private bool Validate(XDocument xmlDocument, XmlSchemaSet schemeSet, ILogger validationLogger)
+    private static bool TryLoadDocument(Stream xmlStream, out XDocument? document)
     {
-        var isValid = true;
+        try
+        {
+            document = XDocument.Load(xmlStream);
+            return true;
+        }
+        catch
+        {
+            document = null;
+            return false;
+        }
+    }
+
+    private static IEnumerable<ValidationHint> Validate(XDocument xmlDocument, XmlSchemaSet schemeSet)
+    {
+        var validationHints = new List<ValidationHint>();
 
         try
         {
@@ -45,25 +72,23 @@ public class XmlValidator : IXmlValidator
             {
                 if (ev.Severity == XmlSeverityType.Error)
                 {
-                    isValid = false;
-                    validationLogger?.Log(LogLevel.Error, ev.Message);
+                    validationHints.Add(new StructureXmlValidationHint(ErrorMessages.StructureXmlContentError, ev.Message, Severity.Error));
                 }
                 else
                 {
-                    validationLogger?.Log(LogLevel.Warning, ev.Message);
+                    validationHints.Add(new StructureXmlValidationHint(ErrorMessages.StructureXmlContentWarning, ev.Message, Severity.Warning));
                 }
             });
         }
         catch (Exception e)
         {
-            isValid = false;
-            validationLogger?.Log(LogLevel.Error, e.Message);
+            validationHints.Add(new StructureXmlValidationHint(ErrorMessages.StructureXmlContentValidationFailed, e.Message));
         }
 
-        return isValid;
+        return validationHints;
     }
 
-    private XmlSchemaSet CreateSchemaSet(string xsdText)
+    private static XmlSchemaSet CreateSchemaSet(string xsdText)
     {
         using var xsdStringReader = new StringReader(xsdText);
         using var schemaDoc = XmlReader.Create(xsdStringReader);
@@ -72,25 +97,29 @@ public class XmlValidator : IXmlValidator
         return schemaSet;
     }
 
-    private bool TryGetVersion(XElement root, ILogger validationLogger, out Version version)
+    private static bool TryGetSchemeAttribute(XElement root, out XAttribute? attribute)
     {
-        version = null;
-
         var schemeAttribute = root.Attributes().FirstOrDefault(attribute =>
             attribute.Name is { NamespaceName: @"http://www.w3.org/2001/XMLSchema-instance", LocalName: @"noNamespaceSchemaLocation" });
 
         if (schemeAttribute == null)
         {
-            validationLogger?.LogError("XML document does not reference a valid XSD scheme in namespace (http://www.w3.org/2001/XMLSchema-instance)!");
+            attribute = null;
             return false;
         }
 
-        var match = GlobalXmlDefinitions.VersionRegex.Match(schemeAttribute.Value);
+        attribute = schemeAttribute;
+        return true;
+    }
+
+    private static bool TryGetVersion(XAttribute attribute, out Version? version)
+    {
+        var match = GlobalXmlDefinitions.VersionRegex.Match(attribute.Value);
 
         if (!match.Success || !Version.TryParse(match.Groups[1].Value, out version) ||
             !GlobalXmlDefinitions.IsParseable(version))
         {
-            validationLogger?.LogError("The scheme ({SchemeAttribute}) is not known!", schemeAttribute.Value);
+            version = null;
             return false;
         }
 
@@ -99,7 +128,7 @@ public class XmlValidator : IXmlValidator
         return true;
     }
 
-    private bool TryLoadXsd(Version version, ILogger validationLogger, out string content)
+    private static bool TryLoadXsd(Version version, out string? content)
     {
         try
         {
@@ -110,9 +139,8 @@ public class XmlValidator : IXmlValidator
             content = reader.ReadToEnd();
             return true;
         }
-        catch (Exception e)
+        catch
         {
-            validationLogger?.LogError(e, "Failed to get embedded XSD for version {Version}!", version);
             content = null;
             return false;
         }

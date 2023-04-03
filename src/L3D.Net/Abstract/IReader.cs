@@ -1,11 +1,13 @@
-using L3D.Net.API.Dto;
-using Microsoft.Extensions.Logging;
+using L3D.Net.Data;
+using System.IO;
 
 namespace L3D.Net.Abstract;
 
 public interface IReader
 {
-    LuminaireDto ReadContainer(string containerPath, ILogger logger = null);
+    Luminaire ReadContainer(string containerPath);
 
-    LuminaireDto ReadContainer(byte[] containerBytes, ILogger logger = null);
+    Luminaire ReadContainer(byte[] containerBytes);
+
+    Luminaire ReadContainer(Stream containerStream);
 }

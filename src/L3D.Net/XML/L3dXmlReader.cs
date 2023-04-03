@@ -1,48 +1,50 @@
-﻿using System;
+﻿using L3D.Net.Data;
+using L3D.Net.Exceptions;
+using L3D.Net.Internal.Abstract;
+using L3D.Net.Mapper.V0_11_0;
+using L3D.Net.XML.V0_10_0;
+using System;
+using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using L3D.Net.Data;
-using L3D.Net.Internal.Abstract;
-using L3D.Net.XML.V0_9_2;
-using Microsoft.Extensions.Logging;
 
 namespace L3D.Net.XML;
 
-internal class L3dXmlReader : IL3dXmlReader
+internal class L3DXmlReader : IL3DXmlReader
 {
-    private readonly ILogger _logger;
+    private readonly XmlDtoSerializer _serializer;
 
-    public L3dXmlReader(ILogger logger)
+    public L3DXmlReader()
     {
-        _logger = logger;
+        _serializer = new XmlDtoSerializer();
     }
 
-    public Luminaire Read(string filename, string workingDirectory)
+    public Luminaire? Read(ContainerCache cache)
     {
-        var version = GetVersion(filename);
+        if (cache.StructureXml == null)
+            throw new ArgumentException($"{nameof(cache.StructureXml)} in {nameof(cache)} cannot be null");
 
-        if (version.Major == 0) 
-            return ReadV0(filename, workingDirectory);
+        var version = GetVersion(cache.StructureXml);
 
-        throw new Exception($"Unknown version of the l3d xml: '{version}'");
+        if (version.Major == 0)
+            return ReadV0(cache);
+
+        throw new InvalidL3DException($"Unknown version of the l3d xml: '{version}'");
     }
-        
-    private Version GetVersion(string filepath)
+
+    private static Version GetVersion(Stream stream)
     {
-        var xmlDocument = XDocument.Load(filepath);
-        var root = xmlDocument.Root ?? throw new Exception($"Unable to read XML content of {filepath}!");
-            
+        stream.Seek(0, SeekOrigin.Begin);
+        var xmlDocument = XDocument.Load(stream);
+        var root = xmlDocument.Root ?? throw new InvalidL3DException($"Unable to read XML content");
+
         var schemeAttribute = root.Attributes().FirstOrDefault(attribute =>
-            attribute.Name is { NamespaceName: @"http://www.w3.org/2001/XMLSchema-instance", LocalName: @"noNamespaceSchemaLocation" });
-
-        if (schemeAttribute == null)
-            throw new Exception(
+            attribute.Name is { NamespaceName: @"http://www.w3.org/2001/XMLSchema-instance", LocalName: @"noNamespaceSchemaLocation" }) ?? throw new InvalidL3DException(
                 "XML document does not reference a valid XSD scheme in namespace (http://www.w3.org/2001/XMLSchema-instance)!");
-
         var match = GlobalXmlDefinitions.VersionRegex.Match(schemeAttribute.Value);
 
         if (!match.Success || !Version.TryParse(match.Groups[1].Value, out var version) || !GlobalXmlDefinitions.IsParseable(version))
-            throw new Exception(
+            throw new InvalidL3DException(
                 $"The scheme ({schemeAttribute.Value}) is not known!");
 
         version = GlobalXmlDefinitions.GetNextMatchingVersion(version);
@@ -50,13 +52,14 @@ internal class L3dXmlReader : IL3dXmlReader
         return version;
     }
 
-    private Luminaire ReadV0(string filepath, string workingDirectory)
+    private Luminaire? ReadV0(ContainerCache cache)
     {
-        var xmlSerializer = new XmlDtoSerializer();
-        var luminaireConstructor = new LuminaireFromDtoConstructor();
-        var luminaireDto = xmlSerializer.Deserialize(filepath);
-        var builder = Builder.NewLuminaire(_logger);
-        var luminaire = luminaireConstructor.BuildLuminaireFromDto(builder, luminaireDto, workingDirectory);
+        cache.StructureXml!.Seek(0, SeekOrigin.Begin);
+        var luminaireDto = _serializer.Deserialize(cache.StructureXml);
+        var luminaire = LuminaireMapper.Instance.Convert(luminaireDto);
+
+        luminaire = LuminaireResolver.Instance.Resolve(luminaire, cache);
+
         return luminaire;
     }
 }

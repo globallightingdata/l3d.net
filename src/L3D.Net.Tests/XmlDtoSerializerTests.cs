@@ -1,39 +1,27 @@
-﻿using System;
+﻿using FluentAssertions;
+using L3D.Net.XML.V0_10_0;
+using L3D.Net.XML.V0_10_0.Dto;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
-using FluentAssertions;
-using L3D.Net.XML.V0_9_2;
-using L3D.Net.XML.V0_9_2.Dto;
-using NUnit.Framework;
 
 namespace L3D.Net.Tests;
 
 [TestFixture]
 public class XmlDtoSerializerTests
 {
-    private string _tempDirectory;
-
     [SetUp]
-    public void Init()
+    public void SetUp()
     {
         Setup.Initialize();
-        var tempFileName = Guid.NewGuid().ToString();
-        _tempDirectory = Path.Combine(Path.GetTempPath(), tempFileName);
-
-        Directory.CreateDirectory(_tempDirectory);
     }
 
-    [TearDown]
-    public void Deinit()
-    {
-        Directory.Delete(_tempDirectory, true);
-    }
-
-    static IEnumerable<string> ExampleFiles()
+    private static IEnumerable<Stream> ExampleFiles()
     {
         Setup.Initialize();
-        return Setup.ExampleXmlFiles;
+        return Setup.ExampleXmlStreams;
     }
 
     [Test]
@@ -41,37 +29,42 @@ public class XmlDtoSerializerTests
     {
         var serializer = new XmlDtoSerializer();
 
-        Action action = () => serializer.Serialize(null, Guid.NewGuid().ToString());
+        var action = () =>
+        {
+            using var ms = new MemoryStream();
+            serializer.Serialize(null!, ms);
+        };
 
         action.Should().Throw<ArgumentNullException>();
     }
 
     [Test]
-    [TestCaseSource(typeof(Setup), nameof(Setup.EmptyStringValues))]
-    public void Serialize_ShouldThrowArgumentException_WhenFilenameIsNullOrEmptyOrWhitespace(string filename)
+    public void Serialize_ShouldThrowArgumentException_WhenStreamIsNullOrEmpty()
     {
         var serializer = new XmlDtoSerializer();
 
-        Action action = () => serializer.Serialize(new LuminaireDto(), filename);
+        var action = () => serializer.Serialize(new LuminaireDto(), null!);
 
         action.Should().Throw<ArgumentException>();
     }
 
     [Test]
     [TestCaseSource(nameof(ExampleFiles))]
-    public void ExampleTest(string exampleXml)
+    public void ExampleTest(Stream stream)
     {
-        var sourceFilename = Path.GetFileName(exampleXml);
-        var targetFilepath = Path.Combine(_tempDirectory, sourceFilename);
         var serilizer = new XmlDtoSerializer();
 
-        var dto = serilizer.Deserialize(exampleXml);
+        var dto = serilizer.Deserialize(stream);
 
-        serilizer.Serialize(dto, targetFilepath);
+        stream.Seek(0, SeekOrigin.Begin);
 
-        var exampleDocument = XDocument.Load(exampleXml);
-        var testDocument = XDocument.Load(targetFilepath);
-            
+        using var ms = new MemoryStream();
+        serilizer.Serialize(dto, ms);
+        ms.Seek(0, SeekOrigin.Begin);
+
+        var exampleDocument = XDocument.Load(stream);
+        var testDocument = XDocument.Load(ms);
+
         testDocument.Should().BeEquivalentTo(exampleDocument);
     }
 }

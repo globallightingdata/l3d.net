@@ -1,14 +1,7 @@
-﻿using System;
+﻿namespace L3D.Net.Data;
 
-namespace L3D.Net.Data;
-
-internal class LightEmittingPart : TransformablePart
+public class LightEmittingPart : TransformablePart
 {
-    public LightEmittingPart(string name, Shape shape) : base(name)
-    {
-        Shape = shape ?? throw new ArgumentNullException(nameof(shape));
-    }
-
-    public Shape Shape { get; }
-    public LuminousHeights LuminousHeights { get; set; }
+    public Shape? Shape { get; set; }
+    public LuminousHeights? LuminousHeights { get; set; }
 }
