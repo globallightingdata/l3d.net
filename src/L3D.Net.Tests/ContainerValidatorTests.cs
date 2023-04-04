@@ -3,7 +3,6 @@ using L3D.Net.Abstract;
 using L3D.Net.Data;
 using L3D.Net.Internal;
 using L3D.Net.Internal.Abstract;
-using Newtonsoft.Json.Linq;
 using NSubstitute;
 using NUnit.Framework;
 using System;

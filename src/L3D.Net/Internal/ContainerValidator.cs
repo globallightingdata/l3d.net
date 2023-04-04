@@ -109,7 +109,7 @@ internal class ContainerValidator : IContainerValidator
             }
         }
 
-        var geometryReferences = geometryParts.Select(x => x.GeometryReference).Where(x => x != null).ToArray()!;
+        var geometryReferences = geometryParts.Select(x => x.GeometryReference).Where(x => x != null).ToArray();
         IModel3D[] models = geometryReferences.Where(x => x.Model != null).Select(x => x.Model).ToArray()!;
         var mtlNames = models.SelectMany(x => x.ReferencedMaterialLibraryFiles.Keys).ToArray();
         var textureNames = models.SelectMany(x => x.ReferencedTextureFiles.Keys).ToArray();

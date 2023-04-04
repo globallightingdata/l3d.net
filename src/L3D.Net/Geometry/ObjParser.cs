@@ -131,7 +131,7 @@ public class ObjParser : IObjParser
         textures = textures
             .Where(texture => texture != null)
             .Distinct()
-            .ToList()!;
+            .ToList();
         return textures!;
     }
 

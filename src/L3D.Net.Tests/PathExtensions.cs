@@ -42,7 +42,7 @@ namespace L3D.Net.Tests
                     }
 
                     return geometries;
-                })!
+                })
             };
         }
     }
