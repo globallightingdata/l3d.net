@@ -4,7 +4,7 @@ namespace L3D.Net.Data;
 
 public class Luminaire
 {
-    public Header? Header { get; set; }
+    public Header Header { get; set; } = new();
 
     public List<GeometryFileDefinition> GeometryDefinitions { get; set; } = new();
 

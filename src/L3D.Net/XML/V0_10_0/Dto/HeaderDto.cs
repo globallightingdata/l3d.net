@@ -16,7 +16,7 @@ public class HeaderDto
 
     /// <remarks/>
     //[XmlElement(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-    public string? CreatedWithApplication { get; set; }
+    public string CreatedWithApplication { get; set; } = string.Empty;
 
     /// <remarks/>
     //[XmlElement(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]

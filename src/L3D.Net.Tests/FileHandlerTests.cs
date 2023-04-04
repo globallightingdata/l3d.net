@@ -127,7 +127,7 @@ public class FileHandlerTests
     {
         var fileHandler = new FileHandler();
 
-        var action = () => fileHandler.LoadModelFiles(CreateFakeModel3D(), geometryId, new ContainerCache());
+        var action = () => fileHandler.LoadModelFiles(CreateFakeModel3D(), geometryId!, new ContainerCache());
 
         action.Should().Throw<ArgumentException>();
     }

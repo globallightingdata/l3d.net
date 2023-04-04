@@ -27,8 +27,8 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                     new JointPart())
                 .SetArgDisplayNames("<new JointPartDto()>", "<new JointPart()>");
             yield return new TestCaseData(
-                    new LightEmittingPartDto(),
-                    new LightEmittingPart())
+                    new LightEmittingPartDto(new CircleDto { Diameter = 0.1 }),
+                    new LightEmittingPart(new Circle { Diameter = 0.1 }))
                 .SetArgDisplayNames("<new LightEmittingPartDto()>", "<new LightEmittingPart()>");
             yield return new TestCaseData(
                     new SensorPartDto(),
@@ -85,7 +85,11 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                         GeometryReference = new GeometryReferenceDto { GeometryId = "id" },
                         LightEmittingObjects = new List<LightEmittingPartDto>
                         {
-                            new()
+                            new(new RectangleDto
+                            {
+                                SizeX = 50,
+                                SizeY = 60
+                            })
                             {
                                 Name = "name3",
                                 Rotation = new Vector3Dto { X = 1.0f, Y = 1.1f, Z = 1.2f },
@@ -96,11 +100,6 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                                     C90 = 20,
                                     C180 = 30,
                                     C270 = 40
-                                },
-                                Shape = new RectangleDto
-                                {
-                                    SizeX = 50,
-                                    SizeY = 60
                                 }
                             }
                         },
@@ -187,7 +186,11 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                         GeometryReference = new GeometryFileDefinition { GeometryId = "id" },
                         LightEmittingObjects = new List<LightEmittingPart>
                         {
-                            new()
+                            new(new Rectangle
+                            {
+                                SizeX = 50,
+                                SizeY = 60
+                            })
                             {
                                 Name = "name3",
                                 Rotation = new Vector3 { X = 1.0f, Y = 1.1f, Z = 1.2f },
@@ -198,11 +201,6 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                                     C90 = 20,
                                     C180 = 30,
                                     C270 = 40
-                                },
-                                Shape = new Rectangle
-                                {
-                                    SizeX = 50,
-                                    SizeY = 60
                                 }
                             }
                         },
@@ -313,7 +311,11 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                     })
                 .SetArgDisplayNames("<filled JointPartDto>", "<filled JointPart>");
             yield return new TestCaseData(
-                    new LightEmittingPartDto
+                    new LightEmittingPartDto(new RectangleDto
+                    {
+                        SizeX = 50,
+                        SizeY = 60
+                    })
                     {
                         Name = "name3",
                         Rotation = new Vector3Dto { X = 1.0f, Y = 1.1f, Z = 1.2f },
@@ -324,14 +326,13 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                             C90 = 20,
                             C180 = 30,
                             C270 = 40
-                        },
-                        Shape = new RectangleDto
-                        {
-                            SizeX = 50,
-                            SizeY = 60
                         }
                     },
-                    new LightEmittingPart
+                    new LightEmittingPart(new Rectangle
+                    {
+                        SizeX = 50,
+                        SizeY = 60
+                    })
                     {
                         Name = "name3",
                         Rotation = new Vector3 { X = 1.0f, Y = 1.1f, Z = 1.2f },
@@ -342,11 +343,6 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                             C90 = 20,
                             C180 = 30,
                             C270 = 40
-                        },
-                        Shape = new Rectangle
-                        {
-                            SizeX = 50,
-                            SizeY = 60
                         }
                     })
                 .SetArgDisplayNames("<filled LightEmittingPartDto>", "<filled LightEmittingPart>");

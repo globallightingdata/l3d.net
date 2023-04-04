@@ -13,5 +13,5 @@ public class PartDto
 {
     /// <remarks/>
     [XmlAttribute("partName")]
-    public string? Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 }

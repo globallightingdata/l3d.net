@@ -10,45 +10,45 @@ namespace L3D.Net.XML.V0_10_0.Dto;
 public class GeometryPartDto : TransformablePartDto
 {
     [XmlElement(ElementName = "GeometryReference")]
-    public GeometryReferenceDto? GeometryReference { get; set; }
+    public GeometryReferenceDto GeometryReference { get; set; } = new();
 
     /// <remarks/>
     [XmlArrayItem("Joint")]
-    public List<JointPartDto> Joints { get; set; } = new();
+    public List<JointPartDto>? Joints { get; set; }
 
     /// <remarks/>
     [XmlArrayItem("LightEmittingObject")]
-    public List<LightEmittingPartDto> LightEmittingObjects { get; set; } = new();
+    public List<LightEmittingPartDto>? LightEmittingObjects { get; set; }
 
     /// <remarks/>
     [XmlArray("SensorObjects")]
     [XmlArrayItem("SensorObject")]
-    public List<SensorPartDto> Sensors { get; set; } = new();
+    public List<SensorPartDto>? Sensors { get; set; }
 
     /// <remarks/>
     [XmlArrayItem("LightEmittingSurface")]
-    public List<LightEmittingSurfacePartDto> LightEmittingSurfaces { get; set; } = new();
+    public List<LightEmittingSurfacePartDto>? LightEmittingSurfaces { get; set; }
 
     /// <remarks/>
     [XmlArrayItem("ElectricalConnector")]
-    public List<Vector3Dto> ElectricalConnectors { get; set; } = new();
+    public List<Vector3Dto>? ElectricalConnectors { get; set; }
 
     /// <remarks/>
     [XmlArrayItem("PendulumConnector")]
-    public List<Vector3Dto> PendulumConnectors { get; set; } = new();
+    public List<Vector3Dto>? PendulumConnectors { get; set; }
 
     /// <remarks/>
     [XmlAttribute("includedInMeasurement")]
     public bool IncludedInMeasurement { get; set; } = true;
 
     // ReSharper disable UnusedMember.Global
-    [ExcludeFromCodeCoverage] public bool ShouldSerializeLightEmittingObjects() => LightEmittingObjects != null && LightEmittingObjects.Count > 0;
-    [ExcludeFromCodeCoverage] public bool ShouldSerializeSensors() => Sensors != null && Sensors.Count > 0;
-    [ExcludeFromCodeCoverage] public bool ShouldSerializeLightEmittingFaceAssignments() => LightEmittingSurfaces != null && LightEmittingSurfaces.Count > 0;
-    [ExcludeFromCodeCoverage] public bool ShouldSerializeJoints() => Joints != null && Joints.Count > 0;
-    [ExcludeFromCodeCoverage] public bool ShouldSerializeElectricalConnectors() => ElectricalConnectors != null && ElectricalConnectors.Count > 0;
-    [ExcludeFromCodeCoverage] public bool ShouldSerializePendulumConnectors() => PendulumConnectors != null && PendulumConnectors.Count > 0;
-    [ExcludeFromCodeCoverage] public bool ShouldSerializeLightEmittingSurfaces() => LightEmittingSurfaces != null && LightEmittingSurfaces.Count > 0;
+    [ExcludeFromCodeCoverage] public bool ShouldSerializeLightEmittingObjects() => LightEmittingObjects is { Count: > 0 };
+    [ExcludeFromCodeCoverage] public bool ShouldSerializeSensors() => Sensors is { Count: > 0 };
+    [ExcludeFromCodeCoverage] public bool ShouldSerializeLightEmittingFaceAssignments() => LightEmittingSurfaces is { Count: > 0 };
+    [ExcludeFromCodeCoverage] public bool ShouldSerializeJoints() => Joints is { Count: > 0 };
+    [ExcludeFromCodeCoverage] public bool ShouldSerializeElectricalConnectors() => ElectricalConnectors is { Count: > 0 };
+    [ExcludeFromCodeCoverage] public bool ShouldSerializePendulumConnectors() => PendulumConnectors is { Count: > 0 };
+    [ExcludeFromCodeCoverage] public bool ShouldSerializeLightEmittingSurfaces() => LightEmittingSurfaces is { Count: > 0 };
     [ExcludeFromCodeCoverage] public bool ShouldSerializeIncludedInMeasurement() => !IncludedInMeasurement;
     // ReSharper restore UnusedMember.Global
 }

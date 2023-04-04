@@ -37,6 +37,49 @@ public class ObjParser : IObjParser
         };
     }
 
+    public IModel3D Parse(string filePath, ILogger? logger = null)
+    {
+        var directory = Path.GetDirectoryName(filePath) ??
+                        throw new Exception($"The file directory of '{filePath}' could not be determined!");
+
+        var objFile = ObjFile.FromFile(filePath);
+
+        var objMaterialLibraries = CollectAvailableMaterialLibraries(objFile, directory, logger);
+
+        var textures = CollectAvailableTextures(objMaterialLibraries);
+
+        var filePaths = objMaterialLibraries.Select(x => x.Item1).Union(textures).ToList();
+        filePaths.Add(filePath);
+
+        var files = filePaths.ToDictionary<string, string, Stream>(Path.GetFileName, d => File.OpenRead(Path.Combine(directory, d)));
+
+        return new ObjModel3D
+        {
+            FileName = Path.GetFileName(filePath),
+            ReferencedMaterialLibraryFiles = objMaterialLibraries.Select(tuple => tuple.Item1).ToDictionary(d => d, d => files[d]),
+            ReferencedTextureFiles = textures.ToDictionary(d => d, d => files[d]),
+            Data = ConvertGeometry(objFile, objMaterialLibraries.Select(tuple => tuple.Item2).ToList())
+        };
+    }
+
+    private static List<Tuple<string, ObjMaterialFile>> CollectAvailableMaterialLibraries(ObjFile objFile, string directory, ILogger? logger = null)
+    {
+        List<Tuple<string, ObjMaterialFile>> objMaterials = objFile.MaterialLibraries.Select(mtl =>
+        {
+            try
+            {
+                var materialFile = Path.Combine(directory, mtl);
+                return Tuple.Create(mtl, ObjMaterialFile.FromFile(materialFile));
+            }
+            catch (Exception e)
+            {
+                logger?.Log(LogLevel.Warning, e.Message);
+                return null;
+            }
+        }).Where(mtl => mtl != null).ToList();
+        return objMaterials;
+    }
+
     private static List<Tuple<string, ObjMaterialFile>> CollectAvailableMaterialLibraries(ILogger? logger,
         ObjFile objFile, IReadOnlyDictionary<string, Stream> files)
     {
@@ -59,7 +102,40 @@ public class ObjParser : IObjParser
         return objMaterials;
     }
 
-    private static List<string> CollectAvailableTextures(IReadOnlyDictionary<string, Stream> files,
+    private static List<string> CollectAvailableTextures(List<Tuple<string, ObjMaterialFile>> objMaterials)
+    {
+        var textures = new List<string?>();
+
+        foreach (var materialFile in objMaterials)
+        {
+            foreach (var objMaterial in materialFile.Item2.Materials)
+            {
+                textures.Add(objMaterial?.AmbientMap?.FileName);
+                textures.Add(objMaterial?.BumpMap?.FileName);
+                textures.Add(objMaterial?.DecalMap?.FileName);
+                textures.Add(objMaterial?.DiffuseMap?.FileName);
+                textures.Add(objMaterial?.DispMap?.FileName);
+                textures.Add(objMaterial?.DissolveMap?.FileName);
+                textures.Add(objMaterial?.ReflectionMap?.CubeBack?.FileName);
+                textures.Add(objMaterial?.ReflectionMap?.CubeBottom?.FileName);
+                textures.Add(objMaterial?.ReflectionMap?.CubeFront?.FileName);
+                textures.Add(objMaterial?.ReflectionMap?.CubeLeft?.FileName);
+                textures.Add(objMaterial?.ReflectionMap?.CubeRight?.FileName);
+                textures.Add(objMaterial?.ReflectionMap?.CubeTop?.FileName);
+                textures.Add(objMaterial?.EmissiveMap?.FileName);
+                textures.Add(objMaterial?.SpecularMap?.FileName);
+                textures.Add(objMaterial?.SpecularExponentMap?.FileName);
+            }
+        }
+
+        textures = textures
+            .Where(texture => texture != null)
+            .Distinct()
+            .ToList()!;
+        return textures!;
+    }
+
+    private static IEnumerable<string> CollectAvailableTextures(IReadOnlyDictionary<string, Stream> files,
         List<Tuple<string, ObjMaterialFile>> objMaterials)
     {
         var textures = new List<string?>();
