@@ -30,6 +30,6 @@ internal class XmlDtoSerializer : IXmlDtoSerializer
     {
         if (stream == null) throw new ArgumentNullException(nameof(stream));
 
-        return (LuminaireDto)new XmlSerializer(typeof(LuminaireDto)).Deserialize(stream);
+        return (LuminaireDto)_serializer.Deserialize(stream);
     }
 }
