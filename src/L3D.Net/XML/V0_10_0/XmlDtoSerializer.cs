@@ -7,6 +7,13 @@ namespace L3D.Net.XML.V0_10_0;
 
 internal class XmlDtoSerializer : IXmlDtoSerializer
 {
+    private readonly XmlSerializer _serializer;
+
+    internal XmlDtoSerializer()
+    {
+        _serializer = new XmlSerializer(typeof(LuminaireDto));
+    }
+
     public void Serialize(LuminaireDto dto, Stream stream)
     {
         if (dto == null) throw new ArgumentNullException(nameof(dto));
@@ -16,7 +23,7 @@ internal class XmlDtoSerializer : IXmlDtoSerializer
         ns.Add("", "");
         ns.Add("xsi", "http://www.w3.org/2001/XMLSchema-instance");
 
-        new XmlSerializer(typeof(LuminaireDto)).Serialize(stream, dto, ns);
+        _serializer.Serialize(stream, dto, ns);
     }
 
     public LuminaireDto Deserialize(Stream stream)
