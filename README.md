@@ -141,9 +141,9 @@ foreach (var geometryPartDto in container.Parts)
 Validation of an L3D container from disk:
 ```CSharp
 var validator = new Validator();
-var validationResult = validator.ValidateContainer("path/to/container.l3d");
+var validationHints = validator.ValidateContainer("path/to/container.l3d");
 
-if (validationResult)
+if (!validationHints.Any())
     // Container validation successful
 else
     // Container validation unsuccessful
@@ -153,9 +153,9 @@ Validation of an L3D container already read from disk in byte array (byte[]) for
 ```CSharp
 var validator = new Validator();
 byte[] l3dContainer = // Get a byte[] representation of an L3D container;
-var validationResult = validator.ValidateContainer(l3dContainer);
+var validationHints = validator.ValidateContainer(l3dContainer);
 
-if (validationResult)
+if (!validationHints.Any())
     // Container validation successful
 else
     // Container validation unsuccessful

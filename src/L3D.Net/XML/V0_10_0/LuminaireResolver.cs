@@ -37,11 +37,8 @@ namespace L3D.Net.XML.V0_10_0
             return luminaire;
         }
 
-        private GeometryFileDefinition? ResolveGeometrySource(GeometryFileDefinition? geometryFileDefinition, IEnumerable<GeometryFileDefinition> geometrySources, ContainerCache cache, ILogger? logger)
+        private GeometryFileDefinition ResolveGeometrySource(GeometryFileDefinition geometryFileDefinition, IEnumerable<GeometryFileDefinition> geometrySources, ContainerCache cache, ILogger? logger)
         {
-            if (geometryFileDefinition == null)
-                return null;
-
             var source = geometrySources.FirstOrDefault(x => x.GeometryId.Equals(geometryFileDefinition.GeometryId, StringComparison.Ordinal));
 
             if (source == null)
@@ -106,7 +103,7 @@ namespace L3D.Net.XML.V0_10_0
         {
             yield return geometryPart;
 
-            foreach (var subGeometryPart in geometryPart.Joints.SelectMany(x => x.Geometries))
+            foreach (var subGeometryPart in geometryPart.Joints?.SelectMany(x => x.Geometries) ?? Array.Empty<GeometryPart>())
             {
                 foreach (var part in GetParts(subGeometryPart))
                 {

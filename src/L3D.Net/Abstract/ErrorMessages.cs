@@ -23,5 +23,13 @@
         public const string NotAL3D = "not_a_l3d";
 
         public const string MissingGeometryReference = "missing_geometry_reference";
+
+        public const string UnusedFile = "unused_file";
+
+        public const string MissingMaterial = "missing_material_reference";
+
+        public const string MissingTexture = "missing_texture_reference";
+
+        public const string InvalidL3DContent = "invalid_l3d_content";
     }
 }

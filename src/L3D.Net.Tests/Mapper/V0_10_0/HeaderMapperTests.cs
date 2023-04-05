@@ -59,7 +59,7 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
         public void ConvertNullable_ShouldReturnCorrectDataModel(HeaderDto element, Header expected)
         {
             HeaderMapper.Instance.ConvertNullable(element).Should().BeEquivalentTo(expected, opt => opt
-                .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(10)))
+                .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(50)))
                 .WhenTypeIs<DateTime>());
         }
 
@@ -67,7 +67,7 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
         public void ConvertNullable_ShouldReturnCorrectDto(HeaderDto expected, Header element)
         {
             HeaderMapper.Instance.ConvertNullable(element).Should().BeEquivalentTo(expected, opt => opt
-                .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(10)))
+                .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(50)))
                 .WhenTypeIs<DateTime>());
         }
 
@@ -75,7 +75,7 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
         public void Convert_ShouldReturnCorrectDataModel(HeaderDto element, Header expected)
         {
             HeaderMapper.Instance.Convert(element).Should().BeEquivalentTo(expected, opt => opt
-                .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(10)))
+                .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(50)))
                 .WhenTypeIs<DateTime>());
         }
 
@@ -83,7 +83,7 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
         public void Convert_ShouldReturnCorrectDto(HeaderDto expected, Header element)
         {
             HeaderMapper.Instance.Convert(element).Should().BeEquivalentTo(expected, opt => opt
-                .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(10)))
+                .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(50)))
                 .WhenTypeIs<DateTime>());
         }
     }

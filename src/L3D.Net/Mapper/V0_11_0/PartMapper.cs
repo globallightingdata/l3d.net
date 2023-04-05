@@ -28,27 +28,26 @@ namespace L3D.Net.Mapper.V0_11_0
                 ZAxis = AxisRotationMapper.Instance.ConvertNullable(jointPart.ZAxis),
                 Geometries = jointPart.Geometries.Select(ConvertData).Cast<GeometryPart>().ToList()
             },
-            LightEmittingPartDto lightEmittingPartDto => new LightEmittingPart
+            LightEmittingPartDto lightEmittingPartDto => new LightEmittingPart(ShapeMapper.Instance.Convert(lightEmittingPartDto.Shape))
             {
                 Name = lightEmittingPartDto.Name,
                 Position = Vector3DMapper.Instance.Convert(lightEmittingPartDto.Position),
                 Rotation = Vector3DMapper.Instance.Convert(lightEmittingPartDto.Rotation),
-                LuminousHeights = LuminousHeightsMapper.Instance.ConvertNullable(lightEmittingPartDto.LuminousHeights),
-                Shape = ShapeMapper.Instance.ConvertNullable(lightEmittingPartDto.Shape)
+                LuminousHeights = LuminousHeightsMapper.Instance.ConvertNullable(lightEmittingPartDto.LuminousHeights)
             },
             GeometryPartDto geometryPart => new GeometryPart
             {
                 Name = geometryPart.Name,
-                ElectricalConnectors = geometryPart.ElectricalConnectors.Select(x => Vector3DMapper.Instance.Convert(x)).ToList(),
-                GeometryReference = GeometryReferenceMapper.Instance.ConvertNullable(geometryPart.GeometryReference),
+                ElectricalConnectors = geometryPart.ElectricalConnectors?.Select(x => Vector3DMapper.Instance.Convert(x)).ToList(),
+                GeometryReference = GeometryReferenceMapper.Instance.Convert(geometryPart.GeometryReference),
                 Position = Vector3DMapper.Instance.Convert(geometryPart.Position),
                 Rotation = Vector3DMapper.Instance.Convert(geometryPart.Rotation),
                 IncludedInMeasurement = geometryPart.IncludedInMeasurement,
-                Joints = geometryPart.Joints.Select(Convert).Cast<JointPart>().ToList(),
-                LightEmittingObjects = geometryPart.LightEmittingObjects.Select(Convert).Cast<LightEmittingPart>().ToList(),
-                LightEmittingSurfaces = geometryPart.LightEmittingSurfaces.Select(Convert).Cast<LightEmittingSurfacePart>().ToList(),
-                PendulumConnectors = geometryPart.PendulumConnectors.Select(Vector3DMapper.Instance.Convert).ToList(),
-                Sensors = geometryPart.Sensors.Select(Convert).Cast<SensorPart>().ToList()
+                Joints = geometryPart.Joints?.Select(Convert).Cast<JointPart>().ToList(),
+                LightEmittingObjects = geometryPart.LightEmittingObjects?.Select(Convert).Cast<LightEmittingPart>().ToList(),
+                LightEmittingSurfaces = geometryPart.LightEmittingSurfaces?.Select(Convert).Cast<LightEmittingSurfacePart>().ToList(),
+                PendulumConnectors = geometryPart.PendulumConnectors?.Select(Vector3DMapper.Instance.Convert).ToList(),
+                Sensors = geometryPart.Sensors?.Select(Convert).Cast<SensorPart>().ToList()
             },
             SensorPartDto sensorObjectDto => new SensorPart
             {
@@ -82,27 +81,26 @@ namespace L3D.Net.Mapper.V0_11_0
                 ZAxis = AxisRotationMapper.Instance.ConvertNullable(jointPart.ZAxis),
                 Geometries = jointPart.Geometries.Select(ConvertData).Cast<GeometryPartDto>().ToList(),
             },
-            LightEmittingPart lightEmittingPartDto => new LightEmittingPartDto
+            LightEmittingPart lightEmittingPartDto => new LightEmittingPartDto(ShapeMapper.Instance.Convert(lightEmittingPartDto.Shape))
             {
                 Name = lightEmittingPartDto.Name,
                 Position = Vector3DMapper.Instance.Convert(lightEmittingPartDto.Position),
                 Rotation = Vector3DMapper.Instance.Convert(lightEmittingPartDto.Rotation),
-                LuminousHeights = LuminousHeightsMapper.Instance.ConvertNullable(lightEmittingPartDto.LuminousHeights),
-                Shape = ShapeMapper.Instance.ConvertNullable(lightEmittingPartDto.Shape)
+                LuminousHeights = LuminousHeightsMapper.Instance.ConvertNullable(lightEmittingPartDto.LuminousHeights)
             },
             GeometryPart geometryPart => new GeometryPartDto
             {
                 Name = geometryPart.Name,
-                ElectricalConnectors = geometryPart.ElectricalConnectors.Select(x => Vector3DMapper.Instance.Convert(x)).ToList(),
-                GeometryReference = GeometryReferenceMapper.Instance.ConvertNullable(geometryPart.GeometryReference),
+                ElectricalConnectors = geometryPart.ElectricalConnectors?.Select(x => Vector3DMapper.Instance.Convert(x)).ToList(),
+                GeometryReference = GeometryReferenceMapper.Instance.Convert(geometryPart.GeometryReference),
                 Position = Vector3DMapper.Instance.Convert(geometryPart.Position),
                 Rotation = Vector3DMapper.Instance.Convert(geometryPart.Rotation),
                 IncludedInMeasurement = geometryPart.IncludedInMeasurement,
-                Joints = geometryPart.Joints.Select(ConvertData).Cast<JointPartDto>().ToList(),
-                LightEmittingObjects = geometryPart.LightEmittingObjects.Select(ConvertData).Cast<LightEmittingPartDto>().ToList(),
-                LightEmittingSurfaces = geometryPart.LightEmittingSurfaces.Select(ConvertData).Cast<LightEmittingSurfacePartDto>().ToList(),
-                PendulumConnectors = geometryPart.PendulumConnectors.Select(Vector3DMapper.Instance.Convert).ToList(),
-                Sensors = geometryPart.Sensors.Select(ConvertData).Cast<SensorPartDto>().ToList()
+                Joints = geometryPart.Joints?.Select(ConvertData).Cast<JointPartDto>().ToList(),
+                LightEmittingObjects = geometryPart.LightEmittingObjects?.Select(ConvertData).Cast<LightEmittingPartDto>().ToList(),
+                LightEmittingSurfaces = geometryPart.LightEmittingSurfaces?.Select(ConvertData).Cast<LightEmittingSurfacePartDto>().ToList(),
+                PendulumConnectors = geometryPart.PendulumConnectors?.Select(Vector3DMapper.Instance.Convert).ToList(),
+                Sensors = geometryPart.Sensors?.Select(ConvertData).Cast<SensorPartDto>().ToList()
             },
             SensorPart sensorObjectDto => new SensorPartDto
             {

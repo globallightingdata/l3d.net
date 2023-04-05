@@ -1,7 +1,6 @@
 ﻿using L3D.Net.Data;
 using L3D.Net.Internal.Abstract;
 using Microsoft.Extensions.Logging.Abstractions;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
@@ -44,14 +43,13 @@ public static class ExamplesExtensions
                 Name = "luminaire",
                 LightEmittingObjects = new List<LightEmittingPart>
                 {
-                    new()
+                    new(new Rectangle
                     {
-                        Name = "leo",
-                        Shape = new Rectangle
-                        {
-                            SizeX = 0.5,
-                            SizeY = 0.25
-                        }
+                        SizeX = 0.5,
+                        SizeY = 0.25
+                    })
+                    {
+                        Name = "leo"
                     }
                 },
                 LightEmittingSurfaces = new List<LightEmittingSurfacePart>
@@ -111,14 +109,13 @@ public static class ExamplesExtensions
                 Name = "luminaire",
                 LightEmittingObjects = new List<LightEmittingPart>
                 {
-                    new()
+                    new(new Rectangle
+                    {
+                        SizeX = 0.5,
+                        SizeY = 0.25
+                    })
                     {
                         Name = "leo",
-                        Shape = new Rectangle
-                        {
-                            SizeX = 0.5,
-                            SizeY = 0.25
-                        },
                         Position = new Vector3
                         {
                             X = -0.25f,
@@ -368,14 +365,13 @@ public static class ExamplesExtensions
                                                                                 IncludedInMeasurement = false,
                                                                                 LightEmittingObjects = new List<LightEmittingPart>
                                                                                 {
-                                                                                    new()
+                                                                                    new(new Rectangle
+                                                                                    {
+                                                                                        SizeX = 0.08,
+                                                                                        SizeY = 0.18
+                                                                                    })
                                                                                     {
                                                                                         Name = "leo",
-                                                                                        Shape = new Rectangle
-                                                                                        {
-                                                                                            SizeX = 0.08,
-                                                                                            SizeY = 0.18
-                                                                                        },
                                                                                         Position = new Vector3
                                                                                         {
                                                                                             X = 0f,
@@ -464,13 +460,12 @@ public static class ExamplesExtensions
                 GeometryReference = bodyDefinition,
                 LightEmittingObjects = new List<LightEmittingPart>
                 {
-                    new()
+                    new(new Circle
                     {
-                        Name = "leo",
-                        Shape = new Circle
-                        {
-                            Diameter = 0.2
-                        }
+                        Diameter = 0.2
+                    })
+                    {
+                        Name = "leo"
                     }
                 },
                 LightEmittingSurfaces = new List<LightEmittingSurfacePart>
@@ -537,14 +532,13 @@ public static class ExamplesExtensions
                 },
                 LightEmittingObjects = new List<LightEmittingPart>
                 {
-                    new()
+                    new(new Rectangle
+                    {
+                        SizeX = 0.15,
+                        SizeY = 1.0
+                    })
                     {
                         Name = "leo_top",
-                        Shape = new Rectangle
-                        {
-                            SizeX = 0.15,
-                            SizeY = 1.0
-                        },
                         Position = new Vector3
                         {
                             X = 0f,
@@ -558,14 +552,13 @@ public static class ExamplesExtensions
                             Z = 90f
                         }
                     },
-                    new()
+                    new(new Rectangle
+                    {
+                        SizeX = 0.17,
+                        SizeY = 1.175
+                    })
                     {
                         Name = "leo_bottom",
-                        Shape = new Rectangle
-                        {
-                            SizeX = 0.17,
-                            SizeY = 1.175
-                        },
                         Position = new Vector3
                         {
                             X = 0f,
@@ -732,14 +725,13 @@ public static class ExamplesExtensions
                                 IncludedInMeasurement = false,
                                 LightEmittingObjects = new List<LightEmittingPart>
                                 {
-                                    new()
+                                    new(new Rectangle
+                                    {
+                                        SizeX = 0.15,
+                                        SizeY = 0.035
+                                    })
                                     {
                                         Name = "leo",
-                                        Shape = new Rectangle
-                                        {
-                                            SizeX = 0.15,
-                                            SizeY = 0.035
-                                        },
                                         Position = new Vector3
                                         {
                                             X = 0f,
@@ -857,13 +849,12 @@ public static class ExamplesExtensions
                             GeometryReference = headDefinition,
                             LightEmittingObjects = new List<LightEmittingPart>
                             {
-                                new()
+                                new(new Circle
+                                {
+                                    Diameter = 0.1
+                                })
                                 {
                                     Name = $"leo-{index}",
-                                    Shape = new Circle
-                                    {
-                                        Diameter = 0.1
-                                    },
                                     Position = new Vector3
                                     {
                                         X = 0.045f,
@@ -1058,13 +1049,12 @@ public static class ExamplesExtensions
                                                 },
                                                 LightEmittingObjects = new List<LightEmittingPart>
                                                 {
-                                                    new()
+                                                    new(new Circle
+                                                    {
+                                                        Diameter = 0.0575
+                                                    })
                                                     {
                                                         Name = "LEO0",
-                                                        Shape = new Circle
-                                                        {
-                                                            Diameter = 0.0575
-                                                        },
                                                         Position = new Vector3
                                                         {
                                                             X = -0.4f,
@@ -1170,13 +1160,12 @@ public static class ExamplesExtensions
                                                 },
                                                 LightEmittingObjects = new List<LightEmittingPart>
                                                 {
-                                                    new()
+                                                    new(new Circle
+                                                    {
+                                                        Diameter = 0.0575
+                                                    })
                                                     {
                                                         Name = "LEO1",
-                                                        Shape = new Circle
-                                                        {
-                                                            Diameter = 0.0575
-                                                        },
                                                         Position = new Vector3
                                                         {
                                                             X = -0.4f,
@@ -1265,14 +1254,13 @@ public static class ExamplesExtensions
                 GeometryReference = baseDefinition,
                 LightEmittingObjects = new List<LightEmittingPart>
                 {
-                    new()
+                    new(new Rectangle
                     {
-                        Name = "leo",
-                        Shape = new Rectangle
-                        {
-                            SizeX = 0.5,
-                            SizeY = 0.25
-                        }
+                        SizeX = 0.5,
+                        SizeY = 0.25
+                    })
+                    {
+                        Name = "leo"
                     }
                 },
                 LightEmittingSurfaces = new List<LightEmittingSurfacePart>

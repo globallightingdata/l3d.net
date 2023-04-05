@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using L3D.Net.Abstract;
+using L3D.Net.Internal.Abstract;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using L3D.Net.Abstract;
-using L3D.Net.Internal.Abstract;
 
 namespace L3D.Net.Tests
 {
     public static class PathExtensions
     {
-        public static readonly List<Stream> Streams = new(); 
+        public static readonly List<Stream> Streams = new();
 
         public static ContainerCache ToCache(this string directory)
         {
@@ -42,7 +42,7 @@ namespace L3D.Net.Tests
                     }
 
                     return geometries;
-                })!
+                })
             };
         }
     }

@@ -10,14 +10,14 @@ namespace L3D.Net.Mapper.V0_11_0
 
         protected override Luminaire ConvertData(LuminaireDto element) => new()
         {
-            Header = HeaderMapper.Instance.ConvertNullable(element.Header),
+            Header = HeaderMapper.Instance.Convert(element.Header),
             GeometryDefinitions = element.GeometryDefinitions.Select(x => GeometryDefinitionMapper.Instance.Convert(x)).ToList(),
             Parts = element.Parts.Select(PartMapper.Instance.Convert).Where(x => x != null).Cast<GeometryPart>().ToList()
         };
 
         protected override LuminaireDto ConvertData(Luminaire element) => new()
         {
-            Header = HeaderMapper.Instance.ConvertNullable(element.Header),
+            Header = HeaderMapper.Instance.Convert(element.Header),
             GeometryDefinitions = element.GeometryDefinitions.Select(x => GeometryDefinitionMapper.Instance.Convert(x)).ToList(),
             Parts = element.Parts.Select(PartMapper.Instance.Convert).Where(x => x != null).Cast<GeometryPartDto>().ToList()
         };

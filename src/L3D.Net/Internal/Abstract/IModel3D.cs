@@ -6,7 +6,7 @@ namespace L3D.Net.Internal.Abstract;
 
 public interface IModel3D
 {
-    string FileName { get; set;  }
+    string FileName { get; set; }
     Stream Stream { get; set; }
     Dictionary<string, Stream> ReferencedMaterialLibraryFiles { get; set; }
     Dictionary<string, Stream> ReferencedTextureFiles { get; set; }

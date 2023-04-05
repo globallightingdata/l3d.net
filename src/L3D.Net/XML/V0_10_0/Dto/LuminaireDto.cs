@@ -12,7 +12,7 @@ public class LuminaireDto
     public string Scheme = Constants.CurrentSchemeUri;
 
     /// <remarks/>
-    public HeaderDto? Header { get; set; }
+    public HeaderDto Header { get; set; } = new();
 
     /// <remarks/>
     [XmlArrayItem("GeometryFileDefinition", Type = typeof(GeometryFileDefinitionDto))]

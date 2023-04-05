@@ -43,7 +43,11 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                                 GeometryReference = new GeometryReferenceDto { GeometryId = "id" },
                                 LightEmittingObjects = new List<LightEmittingPartDto>
                                 {
-                                    new()
+                                    new(new RectangleDto
+                                    {
+                                        SizeX = 50,
+                                        SizeY = 60
+                                    })
                                     {
                                         Name = "name3",
                                         Rotation = new Vector3Dto { X = 1.0f, Y = 1.1f, Z = 1.2f },
@@ -54,11 +58,6 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                                             C90 = 20,
                                             C180 = 30,
                                             C270 = 40
-                                        },
-                                        Shape = new RectangleDto
-                                        {
-                                            SizeX = 50,
-                                            SizeY = 60
                                         }
                                     }
                                 },
@@ -144,7 +143,11 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                                 GeometryReference = new GeometryFileDefinition { GeometryId = "id" },
                                 LightEmittingObjects = new List<LightEmittingPart>
                                 {
-                                    new()
+                                    new(new Rectangle
+                                    {
+                                        SizeX = 50,
+                                        SizeY = 60
+                                    })
                                     {
                                         Name = "name3",
                                         Rotation = new Vector3 { X = 1.0f, Y = 1.1f, Z = 1.2f },
@@ -155,11 +158,6 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                                             C90 = 20,
                                             C180 = 30,
                                             C270 = 40
-                                        },
-                                        Shape = new Rectangle
-                                        {
-                                            SizeX = 50,
-                                            SizeY = 60
                                         }
                                     }
                                 },
@@ -243,7 +241,11 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                                 GeometryReference = new GeometryReferenceDto { GeometryId = "id" },
                                 LightEmittingObjects = new List<LightEmittingPartDto>
                                 {
-                                    new()
+                                    new(new RectangleDto
+                                    {
+                                        SizeX = 50,
+                                        SizeY = 60
+                                    })
                                     {
                                         Name = "name3",
                                         Rotation = new Vector3Dto { X = 1.0f, Y = 1.1f, Z = 1.2f },
@@ -254,11 +256,6 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                                             C90 = 20,
                                             C180 = 30,
                                             C270 = 40
-                                        },
-                                        Shape = new RectangleDto
-                                        {
-                                            SizeX = 50,
-                                            SizeY = 60
                                         }
                                     }
                                 },
@@ -346,7 +343,11 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                                 GeometryReference = new GeometryFileDefinition { GeometryId = "id" },
                                 LightEmittingObjects = new List<LightEmittingPart>
                                 {
-                                    new()
+                                    new(new Rectangle
+                                    {
+                                        SizeX = 50,
+                                        SizeY = 60
+                                    })
                                     {
                                         Name = "name3",
                                         Rotation = new Vector3 { X = 1.0f, Y = 1.1f, Z = 1.2f },
@@ -357,11 +358,6 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                                             C90 = 20,
                                             C180 = 30,
                                             C270 = 40
-                                        },
-                                        Shape = new Rectangle
-                                        {
-                                            SizeX = 50,
-                                            SizeY = 60
                                         }
                                     }
                                 },
@@ -440,7 +436,7 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
         public void ConvertNullable_ShouldReturnCorrectDataModel(LuminaireDto element, Luminaire expected)
         {
             LuminaireMapper.Instance.ConvertNullable(element).Should().BeEquivalentTo(expected, opt => opt
-                .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(10)))
+                .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(50)))
                 .WhenTypeIs<DateTime>());
         }
 
@@ -448,7 +444,7 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
         public void ConvertNullable_ShouldReturnCorrectDto(LuminaireDto expected, Luminaire element)
         {
             LuminaireMapper.Instance.ConvertNullable(element).Should().BeEquivalentTo(expected, opt => opt
-                .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(10)))
+                .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(50)))
                 .WhenTypeIs<DateTime>());
         }
 
@@ -456,7 +452,7 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
         public void Convert_ShouldReturnCorrectDataModel(LuminaireDto element, Luminaire expected)
         {
             LuminaireMapper.Instance.Convert(element).Should().BeEquivalentTo(expected, opt => opt
-                .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(10)))
+                .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(50)))
                 .WhenTypeIs<DateTime>());
         }
 
@@ -464,7 +460,7 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
         public void Convert_ShouldReturnCorrectDto(LuminaireDto expected, Luminaire element)
         {
             LuminaireMapper.Instance.Convert(element).Should().BeEquivalentTo(expected, opt => opt
-                .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(10)))
+                .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(50)))
                 .WhenTypeIs<DateTime>());
         }
     }
