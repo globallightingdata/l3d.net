@@ -69,7 +69,7 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                 .SetArgDisplayNames("<filled FaceRangeAssignmentDto>", "<filled SingleFaceAssignment>");
         }
 
-        private static IEnumerable<TestCaseData> AllTestCases => NullableTestCases().Union(TestCases());
+        private static IEnumerable<TestCaseData> AllTestCases => NullableTestCases().Concat(TestCases());
 
         [Test, TestCaseSource(nameof(AllTestCases))]
         public void ConvertNullable_ShouldReturnCorrectDataModel(FaceAssignmentDto element, FaceAssignment expected)

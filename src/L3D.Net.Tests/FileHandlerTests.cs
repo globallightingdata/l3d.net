@@ -140,7 +140,7 @@ public class FileHandlerTests
         _directoriesToDelete.Add(targetTestDirectory);
         var model3D = CreateFakeModel3D();
 
-        model3D.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream> { [path ?? string.Empty] = Stream.Null });
+        model3D.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]> { [path ?? string.Empty] = Array.Empty<byte>() });
 
         var fileHandler = new FileHandler();
         var action = () => fileHandler.LoadModelFiles(model3D, "someId", new ContainerCache());
@@ -156,8 +156,8 @@ public class FileHandlerTests
         _directoriesToDelete.Add(targetTestDirectory);
         var model3D = CreateFakeModel3D();
 
-        model3D.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream> { ["someId"] = Stream.Null });
-        model3D.ReferencedTextureFiles.Returns(new Dictionary<string, Stream> { [path ?? string.Empty] = Stream.Null });
+        model3D.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]> { ["someId"] = Array.Empty<byte>() });
+        model3D.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]> { [path ?? string.Empty] = Array.Empty<byte>() });
 
         var fileHandler = new FileHandler();
         var action = () => fileHandler.LoadModelFiles(model3D, "someId", new ContainerCache());

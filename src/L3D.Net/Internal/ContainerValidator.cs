@@ -424,9 +424,9 @@ internal class ContainerValidator : IContainerValidator
         var parts = part switch
         {
             GeometryPart geometryPart => geometryPart.LightEmittingObjects?
-                .Union<Part>(geometryPart.LightEmittingSurfaces ?? new())
-                .Union(geometryPart.Joints ?? new())
-                .Union(geometryPart.Sensors ?? new()) ?? Array.Empty<Part>(),
+                .Concat<Part>(geometryPart.LightEmittingSurfaces ?? new())
+                .Concat(geometryPart.Joints ?? new())
+                .Concat(geometryPart.Sensors ?? new()) ?? Array.Empty<Part>(),
             JointPart jointPart => jointPart.Geometries,
             _ => Array.Empty<Part>()
         };

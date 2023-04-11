@@ -63,7 +63,7 @@ public class XmlValidatorTests
     private static IEnumerable<string> GetInvalidTestFiles()
     {
         Setup.Initialize();
-        return GetXmlFiles("invalid").Union(Setup.InvalidVersionXmlFiles);
+        return GetXmlFiles("invalid").Concat(Setup.InvalidVersionXmlFiles);
     }
 
     [Test]
@@ -80,7 +80,7 @@ public class XmlValidatorTests
     private static IEnumerable<string> GetValidTestFiles()
     {
         Setup.Initialize();
-        return Setup.ExampleXmlFiles.Union(Setup.ValidVersionXmlFiles);
+        return Setup.ExampleXmlFiles.Concat(Setup.ValidVersionXmlFiles);
     }
 
     [Test]

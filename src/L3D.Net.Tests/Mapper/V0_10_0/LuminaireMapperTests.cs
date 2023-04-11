@@ -430,7 +430,7 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                 .SetArgDisplayNames("<filled>", "<filled>");
         }
 
-        private static IEnumerable<TestCaseData> AllTestCases => NullableTestCases().Union(TestCases());
+        private static IEnumerable<TestCaseData> AllTestCases => NullableTestCases().Concat(TestCases());
 
         [Test, TestCaseSource(nameof(AllTestCases))]
         public void ConvertNullable_ShouldReturnCorrectDataModel(LuminaireDto element, Luminaire expected)

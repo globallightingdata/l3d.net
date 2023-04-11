@@ -394,8 +394,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
 
         context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire
         {
@@ -457,8 +457,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
 
         context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire
         {
@@ -575,22 +575,22 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
 
         var model3 = Substitute.For<IModel3D?>();
-        model3!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>
+        model3!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["mtl1"] = Stream.Null
+            ["mtl1"] = Array.Empty<byte>()
         });
-        model3.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>
+        model3.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["tex1"] = Stream.Null
+            ["tex1"] = Array.Empty<byte>()
         });
 
         var model4 = Substitute.For<IModel3D?>();
-        model4!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model4.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model4!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model4.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
 
         context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire
         {
@@ -671,17 +671,17 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
 
         var model3 = Substitute.For<IModel3D?>();
-        model3!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>
+        model3!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["mtl1"] = Stream.Null
+            ["mtl1"] = Array.Empty<byte>()
         });
-        model3.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>
+        model3.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["tex1"] = Stream.Null
+            ["tex1"] = Array.Empty<byte>()
         });
 
         context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire
@@ -754,22 +754,22 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
 
         var model2 = Substitute.For<IModel3D?>();
-        model2!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>
+        model2!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["mtl1"] = Stream.Null
-        }, new Dictionary<string, Stream>());
-        model2.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>
+            ["mtl1"] = Array.Empty<byte>()
+        }, new Dictionary<string, byte[]>());
+        model2.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["tex1"] = Stream.Null
-        }, new Dictionary<string, Stream>());
+            ["tex1"] = Array.Empty<byte>()
+        }, new Dictionary<string, byte[]>());
 
         var model4 = Substitute.For<IModel3D?>();
-        model4!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model4.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model4!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model4.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
 
         context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire
         {
@@ -851,22 +851,22 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
 
         var model2 = Substitute.For<IModel3D?>();
-        model2!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>
+        model2!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["mtl1"] = Stream.Null
+            ["mtl1"] = Array.Empty<byte>()
         });
-        model2.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>
+        model2.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["tex1"] = Stream.Null
+            ["tex1"] = Array.Empty<byte>()
         });
 
         var model4 = Substitute.For<IModel3D?>();
-        model4!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model4.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model4!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model4.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
 
         context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire
         {
@@ -945,22 +945,22 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
 
         var model2 = Substitute.For<IModel3D?>();
-        model2!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>
+        model2!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["mtl1"] = Stream.Null
-        }, new Dictionary<string, Stream>());
-        model2.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>
+            ["mtl1"] = Array.Empty<byte>()
+        }, new Dictionary<string, byte[]>());
+        model2.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["tex1"] = Stream.Null
-        }, new Dictionary<string, Stream>());
+            ["tex1"] = Array.Empty<byte>()
+        }, new Dictionary<string, byte[]>());
 
         var model4 = Substitute.For<IModel3D?>();
-        model4!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model4.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model4!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model4.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
 
         context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire
         {
@@ -1042,22 +1042,22 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
 
         var model2 = Substitute.For<IModel3D?>();
-        model2!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>
+        model2!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["mtl1"] = Stream.Null
+            ["mtl1"] = Array.Empty<byte>()
         });
-        model2.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>
+        model2.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["tex1"] = Stream.Null
+            ["tex1"] = Array.Empty<byte>()
         });
 
         var model4 = Substitute.For<IModel3D?>();
-        model4!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model4.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model4!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model4.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
 
         context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire
         {
@@ -1136,8 +1136,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -1231,8 +1231,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -1323,8 +1323,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -1418,8 +1418,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -1510,8 +1510,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -1595,8 +1595,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -1677,8 +1677,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -1729,8 +1729,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -1778,8 +1778,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -1844,8 +1844,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -1907,8 +1907,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -2023,8 +2023,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -2136,8 +2136,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -2231,8 +2231,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -2323,8 +2323,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -2418,8 +2418,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -2510,8 +2510,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -2605,8 +2605,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -2697,8 +2697,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -2792,8 +2792,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -2884,8 +2884,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -2980,8 +2980,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -3072,8 +3072,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -3168,8 +3168,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -3261,8 +3261,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -3356,8 +3356,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -3448,8 +3448,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -3559,8 +3559,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -3667,8 +3667,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -3787,8 +3787,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -3904,8 +3904,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -4006,8 +4006,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -4105,8 +4105,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -4208,8 +4208,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -4308,8 +4308,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -4403,8 +4403,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -4495,8 +4495,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -4589,8 +4589,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.FileName.Returns("file.obj");
         model1.Data.Returns(new ModelData());
         model1.IsFaceIndexValid(1, 2).Returns(true);
@@ -4680,8 +4680,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.IsFaceIndexValid(1, 2).Returns(true);
 
         context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire
@@ -4773,8 +4773,8 @@ public class ContainerValidatorTests
         var context = CreateContext();
 
         var model1 = Substitute.For<IModel3D?>();
-        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, Stream>());
-        model1.ReferencedTextureFiles.Returns(new Dictionary<string, Stream>());
+        model1!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
+        model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
         model1.IsFaceIndexValid(1, 2).Returns(true);
 
         context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire

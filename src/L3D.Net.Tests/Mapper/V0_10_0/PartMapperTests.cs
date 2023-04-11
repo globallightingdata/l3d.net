@@ -382,7 +382,7 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                 .SetArgDisplayNames("<filled SensorPartDto>", "<filled SensorPart>");
         }
 
-        private static IEnumerable<TestCaseData> AllTestCases => NullableTestCases().Union(TestCases());
+        private static IEnumerable<TestCaseData> AllTestCases => NullableTestCases().Concat(TestCases());
 
         [Test, TestCaseSource(nameof(AllTestCases))]
         public void ConvertNullable_ShouldReturnCorrectDataModel(PartDto element, Part expected)

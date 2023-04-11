@@ -31,8 +31,20 @@ public class ObjParser : IObjParser
         return new ObjModel3D
         {
             FileName = fileName,
-            ReferencedMaterialLibraryFiles = objMaterialLibraries.Select(tuple => tuple.Item1).ToDictionary(d => d, d => files[d]),
-            ReferencedTextureFiles = textures.ToDictionary(d => d, d => files[d]),
+            ReferencedMaterialLibraryFiles = objMaterialLibraries.Select(tuple => tuple.Item1).ToDictionary(d => d, d =>
+            {
+                var data = new byte[files[d].Length];
+                using var br = new BinaryReader(files[d]);
+                data = br.ReadBytes(data.Length);
+                return data;
+            }),
+            ReferencedTextureFiles = textures.ToDictionary(d => d, d =>
+            {
+                var data = new byte[files[d].Length];
+                using var br = new BinaryReader(files[d]);
+                data = br.ReadBytes(data.Length);
+                return data;
+            }),
             Data = ConvertGeometry(objFile, objMaterialLibraries.Select(tuple => tuple.Item2).ToList())
         };
     }
@@ -51,7 +63,7 @@ public class ObjParser : IObjParser
         var filePaths = objMaterialLibraries.Select(x => x.Item1).Union(textures).ToList();
         filePaths.Add(filePath);
 
-        var files = filePaths.ToDictionary<string, string, Stream>(Path.GetFileName, d => File.OpenRead(Path.Combine(directory, d)));
+        var files = filePaths.ToDictionary<string, string, byte[]>(Path.GetFileName, d => File.ReadAllBytes(Path.Combine(directory, d)));
 
         return new ObjModel3D
         {

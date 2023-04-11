@@ -185,7 +185,7 @@ internal class FileHandler : IFileHandler
 
         ThrowWhenModelIsInvalid(model3D);
 
-        CopyFile(model3D.FileName, model3D.Stream, geometryId, cache);
+        CopyFile(model3D.FileName, model3D.ObjFile, geometryId, cache);
 
         foreach (var materialLibraryFile in model3D.ReferencedMaterialLibraryFiles)
         {
@@ -198,7 +198,7 @@ internal class FileHandler : IFileHandler
         }
     }
 
-    private static void CopyFile(string fileName, Stream file, string geometryId, ContainerCache cache)
+    private static void CopyFile(string fileName, byte[] file, string geometryId, ContainerCache cache)
     {
         if (!cache.Geometries.TryGetValue(geometryId, out var files))
         {
@@ -206,7 +206,8 @@ internal class FileHandler : IFileHandler
             cache.Geometries.Add(geometryId, files);
         }
 
-        files.Add(fileName, file);
+        var copy = new MemoryStream(file);
+        files.Add(fileName, copy);
     }
 
     private static void ThrowWhenModelIsInvalid(IModel3D model3D)

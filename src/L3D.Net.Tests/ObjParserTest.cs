@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using L3D.Net.Geometry;
 using Microsoft.Extensions.Logging;
 using NSubstitute;

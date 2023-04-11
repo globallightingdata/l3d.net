@@ -47,7 +47,7 @@ namespace L3D.Net.Tests.Mapper.V0_10_0
                 .SetArgDisplayNames("<filled RectangleDto>", "<filled Rectangle>");
         }
 
-        private static IEnumerable<TestCaseData> AllTestCases => NullableTestCases().Union(TestCases());
+        private static IEnumerable<TestCaseData> AllTestCases => NullableTestCases().Concat(TestCases());
 
         [Test, TestCaseSource(nameof(AllTestCases))]
         public void ConvertNullable_ShouldReturnCorrectDataModel(ShapeDto element, Shape expected)
