@@ -44,7 +44,7 @@ namespace L3D.Net.XML.V0_10_0
             if (source == null)
                 return geometryFileDefinition;
 
-            if (!cache.Geometries.TryGetValue(source.GeometryId, out var files))
+            if (!cache.Geometries.TryGetValue(source.FileName, out var files))
                 return geometryFileDefinition;
 
             var model = _objParser.Parse(source.FileName, files!, logger);
