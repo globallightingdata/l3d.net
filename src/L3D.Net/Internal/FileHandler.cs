@@ -96,13 +96,12 @@ internal class FileHandler : IFileHandler
                 }
                 else
                 {
-                    var directoryName = Path.GetDirectoryName(entry.Name);
-                    if (string.IsNullOrWhiteSpace(directoryName)) continue;
+                    if (string.IsNullOrWhiteSpace(entry.Name)) continue;
 
-                    if (!cache.Geometries.TryGetValue(directoryName, out var files))
+                    if (!cache.Geometries.TryGetValue(entry.Name, out var files))
                     {
                         files = new Dictionary<string, Stream>();
-                        cache.Geometries.Add(directoryName, files);
+                        cache.Geometries.Add(entry.Name, files);
                     }
 
                     using (var entryStream = entry.Open())
