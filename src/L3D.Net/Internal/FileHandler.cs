@@ -79,14 +79,14 @@ internal class FileHandler : IFileHandler
 
             var entries = archive.Entries;
 
-            if (canThrow && !entries.Any(e => e.Name.Equals(Constants.L3dXmlFilename)))
+            if (canThrow && !entries.Any(e => e.FullName.Equals(Constants.L3dXmlFilename)))
                 throw new InvalidL3DException("StructureXml could not be found");
 
             var cache = new ContainerCache();
 
             foreach (var entry in entries)
             {
-                if (entry.Name.Equals(Constants.L3dXmlFilename, StringComparison.Ordinal))
+                if (entry.FullName.Equals(Constants.L3dXmlFilename, StringComparison.Ordinal))
                 {
                     using (var entryStream = entry.Open())
                     {
@@ -98,10 +98,12 @@ internal class FileHandler : IFileHandler
                 {
                     if (string.IsNullOrWhiteSpace(entry.Name)) continue;
 
-                    if (!cache.Geometries.TryGetValue(entry.Name, out var files))
+                    var geometryName = entry.FullName.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries)[0];
+
+                    if (!cache.Geometries.TryGetValue(geometryName, out var files))
                     {
                         files = new Dictionary<string, Stream>();
-                        cache.Geometries.Add(entry.Name, files);
+                        cache.Geometries.Add(geometryName, files);
                     }
 
                     using (var entryStream = entry.Open())
