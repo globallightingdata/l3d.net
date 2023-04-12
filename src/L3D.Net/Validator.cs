@@ -23,10 +23,5 @@ public class Validator : IValidator
         return CreateContainerValidator().Validate(containerStream, flags);
     }
 
-    private static IContainerValidator CreateContainerValidator()
-    {
-        var fileHandler = new FileHandler();
-
-        return new ContainerValidator(fileHandler, new XmlValidator(), new L3DXmlReader());
-    }
+    private static IContainerValidator CreateContainerValidator() => new ContainerValidator(new FileHandler(), new XmlValidator(), new L3DXmlReader());
 }
