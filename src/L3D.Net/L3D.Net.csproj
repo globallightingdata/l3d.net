@@ -21,7 +21,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>    
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="XSD\V0_10_0.xsd" />
+    <None Remove="XSD\V0_11_0.xsd" />
   </ItemGroup>
   
   <ItemGroup>
@@ -46,8 +46,9 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <EmbeddedResource Include="XSD\V0_10_0.xsd" />
-    <EmbeddedResource Include="XSD\V0_9_2.xsd" />
+    <EmbeddedResource Include="XSD\V0_11_0.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <None Include=".\..\..\README.md">
       <Pack>true</Pack>
       <PackagePath>\</PackagePath>

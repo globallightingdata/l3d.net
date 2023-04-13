@@ -39,7 +39,7 @@ public static class Setup
 
             TestDataDirectory = Path.Combine(testBinDirectory, "TestData");
 
-            ExamplesDirectory = Path.Combine(TestDataDirectory, "xml", "v0.9.2");
+            ExamplesDirectory = Path.Combine(TestDataDirectory, "xml", "v0.11.0");
             ValidVersionsDirectory = Path.Combine(TestDataDirectory, "xml", "validation", "valid_versions");
             InvalidVersionsDirectory = Path.Combine(TestDataDirectory, "xml", "validation", "invalid_versions");
 

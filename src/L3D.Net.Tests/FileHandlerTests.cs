@@ -200,7 +200,7 @@ public class FileHandlerTests
     [Test]
     public void GetTextureBytes_ShouldReturnFileBytes_WhenCorrect()
     {
-        var examplePath = Path.Combine(Setup.TestDataDirectory, "xml", "v0.9.2", "example_008");
+        var examplePath = Path.Combine(Setup.TestDataDirectory, "xml", "v0.11.0", "example_008");
         var geomId = "cube";
         var textureName = "CubeTexture.png";
         var expectedPath = Path.Combine(examplePath, geomId, textureName);

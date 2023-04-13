@@ -9,6 +9,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
+using System.Xml.XPath;
 
 namespace L3D.Net.XML;
 
@@ -28,11 +29,15 @@ public class XmlValidator : IXmlValidator
             yield break;
         }
 
-        if (!TryGetVersion(attribute!, out var version))
+        var versionInformation = document.XPathSelectElement(Constants.L3dFormatVersionPath)?.Attributes().ToDictionary(d => d.Name.LocalName, d => d.Value);
+
+        if (versionInformation == null || Constants.L3dFormatVersionRequiredFields.Except(versionInformation.Keys).Any() || !TryGetVersion(versionInformation, out var version) || !GlobalXmlDefinitions.IsParseable(version!))
         {
             yield return new StructureXmlValidationHint(ErrorMessages.StructureXmlVersionNotReadable, attribute!.Value);
             yield break;
         }
+
+        version = GlobalXmlDefinitions.GetNextMatchingVersion(version!);
 
         if (!TryLoadXsd(version!, out var scheme))
         {
@@ -112,19 +117,23 @@ public class XmlValidator : IXmlValidator
         return true;
     }
 
-    private static bool TryGetVersion(XAttribute attribute, out Version? version)
+    private static bool TryGetVersion(Dictionary<string, string> fields, out Version? version)
     {
-        var match = GlobalXmlDefinitions.VersionRegex.Match(attribute.Value);
-
-        if (!match.Success || !Version.TryParse(match.Groups[1].Value, out version) ||
-            !GlobalXmlDefinitions.IsParseable(version))
+        if (!fields.TryGetValue(Constants.L3dFormatVersionMajor, out var majorValue) || !int.TryParse(majorValue, out var major) || major < 0)
+        {
+            version = null;
+            return false;
+        }
+        if (!fields.TryGetValue(Constants.L3dFormatVersionMinor, out var minorValue) || !int.TryParse(minorValue, out var minor) || minor < 0)
         {
             version = null;
             return false;
         }
 
-        version = GlobalXmlDefinitions.GetNextMatchingVersion(version);
+        if (!fields.TryGetValue(Constants.L3dFormatVersionPreRelease, out var preReleaseValue) || !int.TryParse(preReleaseValue, out var preRelease) || preRelease < 0)
+            preRelease = 0;
 
+        version = new Version(major, minor, preRelease);
         return true;
     }
 

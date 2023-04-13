@@ -52,7 +52,7 @@ public class ObjParser : IObjParser
     public IModel3D Parse(string filePath, ILogger? logger = null)
     {
         var directory = Path.GetDirectoryName(filePath) ??
-                        throw new Exception($"The file directory of '{filePath}' could not be determined!");
+                        throw new ArgumentException($"The file directory of '{filePath}' could not be determined");
 
         var objFile = ObjFile.FromFile(filePath);
 
@@ -88,7 +88,7 @@ public class ObjParser : IObjParser
                 logger?.Log(LogLevel.Warning, e.Message);
                 return null;
             }
-        }).Where(mtl => mtl != null).ToList();
+        }).Where(mtl => mtl != null).ToList()!;
         return objMaterials;
     }
 

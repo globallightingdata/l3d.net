@@ -1,7 +1,7 @@
 ﻿using L3D.Net.Data;
-using L3D.Net.XML.V0_10_0.Dto;
 using System;
 using System.Linq;
+using L3D.Net.XML.V0_11_0.Dto;
 
 namespace L3D.Net.Mapper.V0_11_0
 {
