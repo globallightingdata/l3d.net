@@ -110,6 +110,7 @@ internal class FileHandler : IFileHandler
                     {
                         var memStream = new MemoryStream();
                         entryStream.CopyTo(memStream);
+                        memStream.Seek(0, SeekOrigin.Begin);
                         files.Add(Path.GetFileName(entry.Name), memStream);
                     }
                 }
