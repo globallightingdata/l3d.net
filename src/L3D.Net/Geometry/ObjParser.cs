@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace L3D.Net.Geometry;
 
@@ -19,10 +20,8 @@ public class ObjParser : IObjParser
         if (!files.TryGetValue(fileName, out var stream))
             return null;
 
-        using var copy = new MemoryStream();
-        stream.CopyTo(copy);
-        copy.Seek(0, SeekOrigin.Begin);
-        var objFile = ObjFile.FromStream(copy);
+        stream.Seek(0, SeekOrigin.Begin);
+        var objFile = ObjFile.FromStream(stream);
 
         var objMaterialLibraries = CollectAvailableMaterialLibraries(logger, objFile, files);
 
@@ -100,10 +99,8 @@ public class ObjParser : IObjParser
             try
             {
                 var materialFile = files[mtl];
-                using var copy = new MemoryStream();
-                materialFile.CopyTo(copy);
-                copy.Seek(0, SeekOrigin.Begin);
-                return Tuple.Create(mtl, ObjMaterialFile.FromStream(copy));
+                materialFile.Seek(0, SeekOrigin.Begin);
+                return Tuple.Create(mtl, ObjMaterialFile.FromStream(materialFile));
             }
             catch (Exception e)
             {

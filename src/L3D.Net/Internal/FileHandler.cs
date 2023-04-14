@@ -110,7 +110,6 @@ internal class FileHandler : IFileHandler
                     {
                         var memStream = new MemoryStream();
                         entryStream.CopyTo(memStream);
-                        memStream.Seek(0, SeekOrigin.Begin);
                         files.Add(Path.GetFileName(entry.Name), memStream);
                     }
                 }
@@ -175,6 +174,7 @@ internal class FileHandler : IFileHandler
         if (!files.TryGetValue(textureName, out var stream))
             return Array.Empty<byte>();
 
+        stream.Seek(0, SeekOrigin.Begin);
         var buffer = new byte[stream.Length];
         _ = stream.Read(buffer, 0, buffer.Length);
 
