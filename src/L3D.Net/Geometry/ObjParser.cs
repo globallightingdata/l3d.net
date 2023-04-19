@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices.ComTypes;
+using L3D.Net.Extensions;
 
 namespace L3D.Net.Geometry;
 
@@ -44,7 +45,8 @@ public class ObjParser : IObjParser
                 data = br.ReadBytes(data.Length);
                 return data;
             }),
-            Data = ConvertGeometry(objFile, objMaterialLibraries.Select(tuple => tuple.Item2).ToList())
+            Data = ConvertGeometry(objFile, objMaterialLibraries.Select(tuple => tuple.Item2).ToList()),
+            ObjFile = stream.ToArray()
         };
     }
 
@@ -53,7 +55,9 @@ public class ObjParser : IObjParser
         var directory = Path.GetDirectoryName(filePath) ??
                         throw new ArgumentException($"The file directory of '{filePath}' could not be determined");
 
-        var objFile = ObjFile.FromFile(filePath);
+        using var fs = File.OpenRead(filePath);
+
+        var objFile = ObjFile.FromStream(fs);
 
         var objMaterialLibraries = CollectAvailableMaterialLibraries(objFile, directory, logger);
 
@@ -69,7 +73,8 @@ public class ObjParser : IObjParser
             FileName = Path.GetFileName(filePath),
             ReferencedMaterialLibraryFiles = objMaterialLibraries.Select(tuple => tuple.Item1).ToDictionary(d => d, d => files[d]),
             ReferencedTextureFiles = textures.ToDictionary(d => d, d => files[d]),
-            Data = ConvertGeometry(objFile, objMaterialLibraries.Select(tuple => tuple.Item2).ToList())
+            Data = ConvertGeometry(objFile, objMaterialLibraries.Select(tuple => tuple.Item2).ToList()),
+            ObjFile = fs.ToArray()
         };
     }
 
