@@ -37,22 +37,35 @@ internal class L3DXmlReader : IL3DXmlReader
 
     private static Version GetVersion(Stream stream)
     {
-        stream.Seek(0, SeekOrigin.Begin);
-        var xmlDocument = XDocument.Load(stream);
-        var root = xmlDocument.Root ?? throw new InvalidL3DException($"Unable to read XML content");
+        try
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+            var xmlDocument = XDocument.Load(stream);
+            var root = xmlDocument.Root ?? throw new InvalidL3DException($"Unable to read XML content");
 
-        if (root.Attributes().All(attribute => attribute.Name is not { NamespaceName: @"http://www.w3.org/2001/XMLSchema-instance", LocalName: @"noNamespaceSchemaLocation" }))
-            throw new InvalidL3DException(
-                "XML document does not reference a valid XSD scheme in namespace (http://www.w3.org/2001/XMLSchema-instance)!");
+            if (root.Attributes().All(attribute => attribute.Name is not
+                {
+                    NamespaceName: @"http://www.w3.org/2001/XMLSchema-instance", LocalName: @"noNamespaceSchemaLocation"
+                }))
+                throw new InvalidL3DException(
+                    "XML document does not reference a valid XSD scheme in namespace (http://www.w3.org/2001/XMLSchema-instance)!");
 
-        var versionInformation = xmlDocument.XPathSelectElement(Constants.L3dFormatVersionPath)?.Attributes().ToDictionary(d => d.Name.LocalName, d => d.Value);
+            var versionInformation = xmlDocument.XPathSelectElement(Constants.L3dFormatVersionPath)?.Attributes()
+                .ToDictionary(d => d.Name.LocalName, d => d.Value);
 
-        if (versionInformation == null || Constants.L3dFormatVersionRequiredFields.Except(versionInformation.Keys).Any() || !TryGetVersion(versionInformation, out var version) || !GlobalXmlDefinitions.IsParseable(version!))
-            throw new InvalidL3DException("The version is not known");
+            if (versionInformation == null ||
+                Constants.L3dFormatVersionRequiredFields.Except(versionInformation.Keys).Any() ||
+                !TryGetVersion(versionInformation, out var version))
+                throw new InvalidL3DException("The version is not known");
 
-        version = GlobalXmlDefinitions.GetNextMatchingVersion(version!);
+            version = GlobalXmlDefinitions.GetNextMatchingVersion(version!);
 
-        return version;
+            return version;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidL3DException("Unable to load version from l3d xml, see inner exception", ex);
+        }
     }
 
     private static bool TryGetVersion(IReadOnlyDictionary<string, string> fields, out Version? version)
@@ -68,8 +81,13 @@ internal class L3DXmlReader : IL3DXmlReader
             return false;
         }
 
-        if (!fields.TryGetValue(Constants.L3dFormatVersionPreRelease, out var preReleaseValue) || !int.TryParse(preReleaseValue, out var preRelease))
-            preRelease = 0;
+        var preRelease = 0;
+
+        if (fields.TryGetValue(Constants.L3dFormatVersionPreRelease, out var preReleaseValue) && (!int.TryParse(preReleaseValue, out preRelease) || preRelease < 0))
+        {
+            version = null;
+            return false;
+        }
 
         version = new Version(major, minor, preRelease);
         return true;

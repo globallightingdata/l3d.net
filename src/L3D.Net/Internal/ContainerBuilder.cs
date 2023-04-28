@@ -58,10 +58,12 @@ internal class ContainerBuilder : IContainerBuilder
 
     private void PrepareFiles(Luminaire luminaire, ContainerCache cache)
     {
+        if (luminaire.GeometryDefinitions.Any(x => x.Model == null))
+            throw new InvalidL3DException("All geometry definitions must have a model");
+
         foreach (var geometryDefinition in luminaire.GeometryDefinitions)
         {
-            if (geometryDefinition.Model != null)
-                _fileHandler.LoadModelFiles(geometryDefinition.Model, geometryDefinition.GeometryId, cache);
+            _fileHandler.AddModelFilesToCache(geometryDefinition.Model!, geometryDefinition.GeometryId, cache);
         }
 
         var dto = LuminaireMapper.Instance.Convert(luminaire);

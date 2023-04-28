@@ -104,8 +104,7 @@ public class ContainerValidatorTests
     {
         var context = CreateContext();
 
-        var action = () => context.ContainerValidator.Validate(containerPath, Validation.All);
-
+        var action = () => context.ContainerValidator.Validate(containerPath, Validation.All).ToArray();
         action.Should().Throw<ArgumentException>();
     }
 
@@ -114,7 +113,7 @@ public class ContainerValidatorTests
     {
         var context = CreateContext();
 
-        var action = () => context.ContainerValidator.Validate(containerBytes, Validation.All);
+        var action = () => context.ContainerValidator.Validate(containerBytes, Validation.All).ToArray();
 
         action.Should().Throw<ArgumentException>();
     }
@@ -124,7 +123,7 @@ public class ContainerValidatorTests
     {
         var context = CreateContext();
 
-        var action = () => context.ContainerValidator.Validate(containerStream, Validation.All);
+        var action = () => context.ContainerValidator.Validate(containerStream, Validation.All).ToArray();
 
         action.Should().Throw<ArgumentException>();
     }
@@ -137,14 +136,14 @@ public class ContainerValidatorTests
         {
             case ContainerTypeToTest.Path:
                 var containerPath = Guid.NewGuid().ToString();
-                context.ContainerValidator.Validate(containerPath, Validation.All);
+                _ = context.ContainerValidator.Validate(containerPath, Validation.All).ToArray();
 
                 context.FileHandler.Received(1)
                     .ExtractContainer(Arg.Is(containerPath));
                 break;
             case ContainerTypeToTest.Bytes:
                 var containerBytes = new byte[] { 0, 1, 2, 3, 4 };
-                context.ContainerValidator.Validate(containerBytes, Validation.All);
+                _ = context.ContainerValidator.Validate(containerBytes, Validation.All).ToArray();
 
                 context.FileHandler.Received(1)
                     .ExtractContainer(Arg.Is(containerBytes));
@@ -152,7 +151,7 @@ public class ContainerValidatorTests
             case ContainerTypeToTest.Stream:
                 using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
                 {
-                    context.ContainerValidator.Validate(ms, Validation.All);
+                    _ = context.ContainerValidator.Validate(ms, Validation.All).ToArray();
 
                     context.FileHandler.Received(1)
                         .ExtractContainer(Arg.Is(ms));
@@ -296,7 +295,7 @@ public class ContainerValidatorTests
             case ContainerTypeToTest.Stream:
                 using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
                 {
-                    context.ContainerValidator.Validate(ms, Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.StructureXmlMissing);
+                    context.ContainerValidator.Validate(ms, Validation.All).ToArray().Should().ContainSingle(d => d.Message == ErrorMessages.StructureXmlMissing);
                 }
                 break;
             default:
@@ -352,7 +351,7 @@ public class ContainerValidatorTests
             case ContainerTypeToTest.Stream:
                 using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
                 {
-                    context.ContainerValidator.Validate(ms, Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.InvalidZip);
+                    context.ContainerValidator.Validate(ms, Validation.All).ToArray().Should().ContainSingle(d => d.Message == ErrorMessages.InvalidZip);
                 }
                 break;
             default:
@@ -531,7 +530,7 @@ public class ContainerValidatorTests
             case ContainerTypeToTest.Stream:
                 using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
                 {
-                    context.ContainerValidator.Validate(ms, Validation.All).Should()
+                    context.ContainerValidator.Validate(ms, Validation.All).ToArray().Should()
                         .ContainSingle(d => d.Message == ErrorMessages.NotAL3D);
                 }
                 break;

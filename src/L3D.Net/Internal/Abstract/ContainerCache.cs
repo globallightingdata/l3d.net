@@ -5,14 +5,14 @@ using System.Linq;
 
 namespace L3D.Net.Internal.Abstract
 {
-    public class ContainerCache : IDisposable
+    public sealed class ContainerCache : IDisposable
     {
         private bool _disposed;
 
         public Stream? StructureXml { get; set; }
         public Dictionary<string, Dictionary<string, Stream>> Geometries { get; set; } = new();
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (_disposed)
                 return;

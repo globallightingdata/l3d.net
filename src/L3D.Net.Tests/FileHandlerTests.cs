@@ -18,6 +18,40 @@ public class FileHandlerTests
     private readonly List<string> _filesToDelete = new();
     private readonly List<string> _directoriesToDelete = new();
 
+    [SetUp]
+    public void Init()
+    {
+        var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
+        var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
+        var geometryDirectories = Directory.GetDirectories(sourceDirectory).ToArray();
+        var targetZipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".zip");
+        var testDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+
+        _filesToDelete.Add(targetZipPath);
+        _directoriesToDelete.Add(testDirectory);
+
+        using var cache = new ContainerCache
+        {
+            StructureXml = File.OpenRead(sourceXml),
+            Geometries = geometryDirectories.ToDictionary(x => Path.GetFileName(x), y =>
+            {
+                var geometries = new Dictionary<string, Stream>();
+
+                var files = Directory.GetFiles(y);
+                foreach (var file in files)
+                {
+                    var fileName = Path.GetFileName(file);
+
+                    geometries.Add(fileName, File.OpenRead(file));
+                }
+
+                return geometries;
+            })
+        };
+
+        new FileHandler().CreateContainerFile(cache, targetZipPath);
+    }
+
     [TearDown]
     public void Deinit()
     {
@@ -106,7 +140,7 @@ public class FileHandlerTests
     {
         var fileHandler = new FileHandler();
 
-        var action = () => fileHandler.LoadModelFiles(null!, Guid.NewGuid().ToString(), new ContainerCache());
+        var action = () => fileHandler.AddModelFilesToCache(null!, Guid.NewGuid().ToString(), new ContainerCache());
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -116,7 +150,7 @@ public class FileHandlerTests
     {
         var fileHandler = new FileHandler();
 
-        var action = () => fileHandler.LoadModelFiles(Substitute.For<IModel3D>(), Guid.NewGuid().ToString(), new ContainerCache());
+        var action = () => fileHandler.AddModelFilesToCache(Substitute.For<IModel3D>(), Guid.NewGuid().ToString(), new ContainerCache());
 
         action.Should().Throw<ArgumentException>();
     }
@@ -127,7 +161,7 @@ public class FileHandlerTests
     {
         var fileHandler = new FileHandler();
 
-        var action = () => fileHandler.LoadModelFiles(CreateFakeModel3D(), geometryId!, new ContainerCache());
+        var action = () => fileHandler.AddModelFilesToCache(CreateFakeModel3D(), geometryId!, new ContainerCache());
 
         action.Should().Throw<ArgumentException>();
     }
@@ -143,7 +177,7 @@ public class FileHandlerTests
         model3D.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]> { [path ?? string.Empty] = Array.Empty<byte>() });
 
         var fileHandler = new FileHandler();
-        var action = () => fileHandler.LoadModelFiles(model3D, "someId", new ContainerCache());
+        var action = () => fileHandler.AddModelFilesToCache(model3D, "someId", new ContainerCache());
 
         action.Should().Throw<ArgumentException>().WithMessage("The given model has null or empty material library paths");
     }
@@ -160,7 +194,7 @@ public class FileHandlerTests
         model3D.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]> { [path ?? string.Empty] = Array.Empty<byte>() });
 
         var fileHandler = new FileHandler();
-        var action = () => fileHandler.LoadModelFiles(model3D, "someId", new ContainerCache());
+        var action = () => fileHandler.AddModelFilesToCache(model3D, "someId", new ContainerCache());
 
         action.Should().Throw<ArgumentException>().WithMessage("The given model has null or empty texture paths");
     }
@@ -219,5 +253,67 @@ public class FileHandlerTests
         var textureBytes = fileHandler.GetTextureBytes(cache, geomId, textureName);
 
         textureBytes.Should().BeEquivalentTo(expectedBytes);
+    }
+
+    [Test]
+    public void ExtractContainerOrThrow_ShouldThrow_WhenPathIsInvalid()
+    {
+        var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
+        var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
+        var fileHandler = new FileHandler();
+        var act = () => fileHandler.ExtractContainerOrThrow(sourceXml);
+        act.Should().Throw<InvalidDataException>();
+    }
+
+    [Test]
+    public void ExtractContainerOrThrow_ShouldThrow_WhenBytesAreInvalid()
+    {
+        var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
+        var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
+        var fileHandler = new FileHandler();
+        var act = () => fileHandler.ExtractContainerOrThrow(File.ReadAllBytes(sourceXml));
+        act.Should().Throw<InvalidDataException>();
+    }
+
+    [Test]
+    public void ExtractContainerOrThrow_ShouldThrow_WhenStreamIsInvalid()
+    {
+        var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
+        var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
+        var fileHandler = new FileHandler();
+        using var fs = File.OpenRead(sourceXml);
+        var act = () => fileHandler.ExtractContainerOrThrow(fs);
+        act.Should().Throw<InvalidDataException>();
+    }
+
+    [Test]
+    public void ExtractContainer_ShouldNotThrow_WhenPathIsInvalid()
+    {
+        var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
+        var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
+        var fileHandler = new FileHandler();
+        var act = () => fileHandler.ExtractContainer(sourceXml);
+        act.Should().NotThrow();
+    }
+
+    [Test]
+    public void ExtractContainer_ShouldNotThrow_WhenBytesAreInvalid()
+    {
+        var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
+        var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
+        var fileHandler = new FileHandler();
+        var act = () => fileHandler.ExtractContainer(File.ReadAllBytes(sourceXml));
+        act.Should().NotThrow();
+    }
+
+    [Test]
+    public void ExtractContainer_ShouldNotThrow_WhenStreamIsInvalid()
+    {
+        var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
+        var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
+        var fileHandler = new FileHandler();
+        using var fs = File.OpenRead(sourceXml);
+        var act = () => fileHandler.ExtractContainer(fs);
+        act.Should().NotThrow();
     }
 }

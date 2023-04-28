@@ -56,6 +56,8 @@ namespace L3D.Net.XML.V0_11_0
             geometryFileDefinition.Units = source.Units;
             geometryFileDefinition.FileName = source.FileName;
 
+            source.Model = geometryFileDefinition.Model;
+
             return geometryFileDefinition;
         }
 

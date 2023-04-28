@@ -20,7 +20,7 @@ namespace L3D.Net.Mapper.V0_11_0
             JointPartDto jointPart => new JointPart
             {
                 Name = jointPart.Name,
-                DefaultRotation = Vector3DMapper.Instance.ConvertNullable(jointPart.DefaultRotation),
+                DefaultRotation = jointPart.DefaultRotation == null ? null : Vector3DMapper.Instance.Convert(jointPart.DefaultRotation),
                 Position = Vector3DMapper.Instance.Convert(jointPart.Position),
                 Rotation = Vector3DMapper.Instance.Convert(jointPart.Rotation),
                 XAxis = AxisRotationMapper.Instance.ConvertNullable(jointPart.XAxis),
@@ -91,16 +91,16 @@ namespace L3D.Net.Mapper.V0_11_0
             GeometryPart geometryPart => new GeometryPartDto
             {
                 Name = geometryPart.Name,
-                ElectricalConnectors = geometryPart.ElectricalConnectors?.Select(x => Vector3DMapper.Instance.Convert(x)).ToList(),
+                ElectricalConnectors = geometryPart.ElectricalConnectors?.Select(x => Vector3DMapper.Instance.Convert(x)).ToArray(),
                 GeometryReference = GeometryReferenceMapper.Instance.Convert(geometryPart.GeometryReference),
                 Position = Vector3DMapper.Instance.Convert(geometryPart.Position),
                 Rotation = Vector3DMapper.Instance.Convert(geometryPart.Rotation),
                 IncludedInMeasurement = geometryPart.IncludedInMeasurement,
-                Joints = geometryPart.Joints?.Select(ConvertData).Cast<JointPartDto>().ToList(),
-                LightEmittingObjects = geometryPart.LightEmittingObjects?.Select(ConvertData).Cast<LightEmittingPartDto>().ToList(),
-                LightEmittingSurfaces = geometryPart.LightEmittingSurfaces?.Select(ConvertData).Cast<LightEmittingSurfacePartDto>().ToList(),
-                PendulumConnectors = geometryPart.PendulumConnectors?.Select(Vector3DMapper.Instance.Convert).ToList(),
-                Sensors = geometryPart.Sensors?.Select(ConvertData).Cast<SensorPartDto>().ToList()
+                Joints = geometryPart.Joints?.Select(ConvertData).Cast<JointPartDto>().ToArray(),
+                LightEmittingObjects = geometryPart.LightEmittingObjects?.Select(ConvertData).Cast<LightEmittingPartDto>().ToArray(),
+                LightEmittingSurfaces = geometryPart.LightEmittingSurfaces?.Select(ConvertData).Cast<LightEmittingSurfacePartDto>().ToArray(),
+                PendulumConnectors = geometryPart.PendulumConnectors?.Select(Vector3DMapper.Instance.Convert).ToArray(),
+                Sensors = geometryPart.Sensors?.Select(ConvertData).Cast<SensorPartDto>().ToArray()
             },
             SensorPart sensorObjectDto => new SensorPartDto
             {

@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using L3D.Net.Extensions;
+
 // ReSharper disable ConvertToUsingDeclaration
 #pragma warning disable IDE0063
 
@@ -110,7 +112,7 @@ internal class FileHandler : IFileHandler
                     {
                         var memStream = new MemoryStream();
                         entryStream.CopyTo(memStream);
-                        files.Add(Path.GetFileName(entry.Name), memStream);
+                        files.Add(entry.Name, memStream);
                     }
                 }
             }
@@ -174,14 +176,12 @@ internal class FileHandler : IFileHandler
         if (!files.TryGetValue(textureName, out var stream))
             return Array.Empty<byte>();
 
-        stream.Seek(0, SeekOrigin.Begin);
-        var buffer = new byte[stream.Length];
-        _ = stream.Read(buffer, 0, buffer.Length);
+        var buffer = stream.ToArray();
 
         return buffer;
     }
 
-    public void LoadModelFiles(IModel3D model3D, string geometryId, ContainerCache cache)
+    public void AddModelFilesToCache(IModel3D model3D, string geometryId, ContainerCache cache)
     {
         if (string.IsNullOrWhiteSpace(geometryId))
             throw new ArgumentException(@$"'{nameof(geometryId)}' cannot be null or whitespace.", nameof(geometryId));

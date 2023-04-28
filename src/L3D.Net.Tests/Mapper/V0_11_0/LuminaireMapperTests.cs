@@ -40,9 +40,9 @@ namespace L3D.Net.Tests.Mapper.V0_11_0
                                 Position = new Vector3Dto { X = 0.1f, Y = 0.2f, Z = 0.3f },
                                 Rotation = new Vector3Dto { X = 0.4f, Y = 0.5f, Z = 0.6f },
                                 IncludedInMeasurement = true,
-                                ElectricalConnectors = new List<Vector3Dto> { new(){ X =  0.7f, Y = 0.8f, Z = 0.9f } },
+                                ElectricalConnectors = new Vector3Dto[] { new(){ X =  0.7f, Y = 0.8f, Z = 0.9f } },
                                 GeometryReference = new GeometryReferenceDto { GeometryId = "id" },
-                                LightEmittingObjects = new List<LightEmittingPartDto>
+                                LightEmittingObjects = new LightEmittingPartDto[]
                                 {
                                     new(new RectangleDto
                                     {
@@ -62,7 +62,7 @@ namespace L3D.Net.Tests.Mapper.V0_11_0
                                         }
                                     }
                                 },
-                                LightEmittingSurfaces = new List<LightEmittingSurfacePartDto>
+                                LightEmittingSurfaces = new LightEmittingSurfacePartDto[]
                                 {
                                     new()
                                     {
@@ -86,7 +86,7 @@ namespace L3D.Net.Tests.Mapper.V0_11_0
                                         }
                                     }
                                 },
-                                Joints = new List<JointPartDto>
+                                Joints = new JointPartDto[]
                                 {
                                     new()
                                     {
@@ -99,7 +99,7 @@ namespace L3D.Net.Tests.Mapper.V0_11_0
                                         ZAxis = new AxisRotationDto { Min = 3.1, Max = 3.2, Step = 3.3 }
                                     }
                                 },
-                                PendulumConnectors = new List<Vector3Dto>
+                                PendulumConnectors = new Vector3Dto[]
                                 {
                                     new()
                                     {
@@ -108,7 +108,7 @@ namespace L3D.Net.Tests.Mapper.V0_11_0
                                         Z = 3.6f
                                     }
                                 },
-                                Sensors = new List<SensorPartDto>
+                                Sensors = new SensorPartDto[]
                                 {
                                     new()
                                     {
@@ -239,9 +239,9 @@ namespace L3D.Net.Tests.Mapper.V0_11_0
                                 Position = new Vector3Dto { X = 0.1f, Y = 0.2f, Z = 0.3f },
                                 Rotation = new Vector3Dto { X = 0.4f, Y = 0.5f, Z = 0.6f },
                                 IncludedInMeasurement = true,
-                                ElectricalConnectors = new List<Vector3Dto> { new(){ X =  0.7f, Y = 0.8f, Z = 0.9f } },
+                                ElectricalConnectors = new Vector3Dto[] { new(){ X =  0.7f, Y = 0.8f, Z = 0.9f } },
                                 GeometryReference = new GeometryReferenceDto { GeometryId = "id" },
-                                LightEmittingObjects = new List<LightEmittingPartDto>
+                                LightEmittingObjects = new LightEmittingPartDto[]
                                 {
                                     new(new RectangleDto
                                     {
@@ -261,7 +261,7 @@ namespace L3D.Net.Tests.Mapper.V0_11_0
                                         }
                                     }
                                 },
-                                LightEmittingSurfaces = new List<LightEmittingSurfacePartDto>
+                                LightEmittingSurfaces = new LightEmittingSurfacePartDto[]
                                 {
                                     new()
                                     {
@@ -285,7 +285,7 @@ namespace L3D.Net.Tests.Mapper.V0_11_0
                                         }
                                     }
                                 },
-                                Joints = new List<JointPartDto>
+                                Joints = new JointPartDto[]
                                 {
                                     new()
                                     {
@@ -298,7 +298,7 @@ namespace L3D.Net.Tests.Mapper.V0_11_0
                                         ZAxis = new AxisRotationDto { Min = 3.1, Max = 3.2, Step = 3.3 }
                                     }
                                 },
-                                PendulumConnectors = new List<Vector3Dto>
+                                PendulumConnectors = new Vector3Dto[]
                                 {
                                     new()
                                     {
@@ -307,7 +307,7 @@ namespace L3D.Net.Tests.Mapper.V0_11_0
                                         Z = 3.6f
                                     }
                                 },
-                                Sensors = new List<SensorPartDto>
+                                Sensors = new SensorPartDto[]
                                 {
                                     new()
                                     {

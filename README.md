@@ -42,7 +42,7 @@ luminaire.Header = new Header
 
 var geometryDefinition = new GeometryFileDefinition
 {
-    GeometryId = "PN." + Guid.NewGuid(),
+    GeometryId = "PN.Ab12",
     Units = GeometricUnits.m,
     Model = ObjParser.Parse(cubeObjPath, NullLogger.Instance),
     FileName = cubeObjPath

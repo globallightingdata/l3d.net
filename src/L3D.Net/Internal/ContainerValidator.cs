@@ -29,7 +29,7 @@ internal class ContainerValidator : IContainerValidator
 
         using var cache = _fileHandler.ExtractContainer(containerPath);
 
-        return ValidateCache(cache, flags);
+        return ValidateCache(cache, flags).ToArray();
     }
 
     public IEnumerable<ValidationHint> Validate(byte[] containerBytes, Validation flags)
@@ -39,7 +39,7 @@ internal class ContainerValidator : IContainerValidator
 
         using var cache = _fileHandler.ExtractContainer(containerBytes);
 
-        return ValidateCache(cache, flags);
+        return ValidateCache(cache, flags).ToArray();
     }
 
     public IEnumerable<ValidationHint> Validate(Stream containerStream, Validation flags)
@@ -49,7 +49,7 @@ internal class ContainerValidator : IContainerValidator
 
         using var cache = _fileHandler.ExtractContainer(containerStream);
 
-        return ValidateCache(cache, flags);
+        return ValidateCache(cache, flags).ToArray();
     }
 
     private IEnumerable<ValidationHint> ValidateCache(ContainerCache? cache, Validation flags)

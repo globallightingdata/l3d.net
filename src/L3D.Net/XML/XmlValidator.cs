@@ -31,7 +31,7 @@ public class XmlValidator : IXmlValidator
 
         var versionInformation = document.XPathSelectElement(Constants.L3dFormatVersionPath)?.Attributes().ToDictionary(d => d.Name.LocalName, d => d.Value);
 
-        if (versionInformation == null || Constants.L3dFormatVersionRequiredFields.Except(versionInformation.Keys).Any() || !TryGetVersion(versionInformation, out var version) || !GlobalXmlDefinitions.IsParseable(version!))
+        if (versionInformation == null || Constants.L3dFormatVersionRequiredFields.Except(versionInformation.Keys).Any() || !TryGetVersion(versionInformation, out var version))
         {
             yield return new StructureXmlValidationHint(ErrorMessages.StructureXmlVersionNotReadable, attribute!.Value);
             yield break;
@@ -39,7 +39,7 @@ public class XmlValidator : IXmlValidator
 
         version = GlobalXmlDefinitions.GetNextMatchingVersion(version!);
 
-        if (!TryLoadXsd(version!, out var scheme))
+        if (!TryLoadXsd(version, out var scheme))
         {
             yield return new StructureXmlValidationHint(ErrorMessages.StructureXsdVersionNotKnown, $"Version: {version}");
             yield break;
@@ -117,7 +117,7 @@ public class XmlValidator : IXmlValidator
         return true;
     }
 
-    private static bool TryGetVersion(Dictionary<string, string> fields, out Version? version)
+    private static bool TryGetVersion(IReadOnlyDictionary<string, string> fields, out Version? version)
     {
         if (!fields.TryGetValue(Constants.L3dFormatVersionMajor, out var majorValue) || !int.TryParse(majorValue, out var major) || major < 0)
         {
@@ -130,8 +130,13 @@ public class XmlValidator : IXmlValidator
             return false;
         }
 
-        if (!fields.TryGetValue(Constants.L3dFormatVersionPreRelease, out var preReleaseValue) || !int.TryParse(preReleaseValue, out var preRelease) || preRelease < 0)
-            preRelease = 0;
+        var preRelease = 0;
+
+        if (fields.TryGetValue(Constants.L3dFormatVersionPreRelease, out var preReleaseValue) && (!int.TryParse(preReleaseValue, out preRelease) || preRelease < 0))
+        {
+            version = null;
+            return false;
+        }
 
         version = new Version(major, minor, preRelease);
         return true;

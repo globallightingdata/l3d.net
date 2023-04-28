@@ -25,7 +25,6 @@ namespace L3D.Net.XML.V0_11_0.Dto
 
         [XmlIgnore]
         public bool PreReleaseSpecified { get; set; }
-
-        public override string ToString() => $"v{Major}.{Minor}-rc{PreRelease}";
+        public override string ToString() => $"v{Major}.{Minor}" + (PreReleaseSpecified ? $"-rc{PreRelease}" : string.Empty);
     }
 }

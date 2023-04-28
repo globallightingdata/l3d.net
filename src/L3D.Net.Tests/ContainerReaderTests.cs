@@ -8,6 +8,10 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using L3D.Net.Geometry;
+using System.Linq;
+using L3D.Net.Abstract;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace L3D.Net.Tests;
 
@@ -149,5 +153,71 @@ public class ContainerReaderTests
         };
 
         act.Should().Throw<InvalidL3DException>().WithMessage("No L3D could be read");
+    }
+
+    private static List<string> ExampleFiles()
+    {
+        Setup.Initialize();
+        return Setup.ExampleObjFiles.ToList();
+    }
+
+    [Test]
+    [TestCaseSource(nameof(ExampleFiles))]
+    public void ReadWrite_ShouldReturnSameData(string modelPath)
+    {
+        var objParser = new ObjParser();
+        var geo = new GeometryFileDefinition
+        {
+            GeometryId = "PN.Ab12",
+            Units = GeometricUnits.m,
+            Model = objParser.Parse(modelPath, NullLogger.Instance),
+            FileName = Path.GetFileName(modelPath)
+        }; 
+        var luminaire = new Luminaire
+        {
+            Header = new Header
+            {
+                CreatedWithApplication = "Example-Tool"
+            },
+            GeometryDefinitions = new List<GeometryFileDefinition>
+            {
+                geo
+            }, 
+            Parts = new List<GeometryPart>
+            {
+                new()
+                {
+                    Name = "luminaire", 
+                    LightEmittingObjects = new List<LightEmittingPart>
+                    {
+                        new(new Rectangle
+                        {
+                            SizeX = 0.5, SizeY = 0.25
+                        })
+                        {
+                            Name = "leo"
+                        }
+                    }, 
+                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
+                    {
+                        new()
+                        {
+                            Name = "les", FaceAssignments = new List<FaceAssignment>
+                            {
+                                new SingleFaceAssignment { FaceIndex = 3 }
+                            }, 
+                            LightEmittingPartIntensityMapping = new Dictionary<string, double>
+                            {
+                                ["leo"] = 1
+                            }
+                        }
+                    }, 
+                    GeometryReference = geo
+                }
+            }
+        }; 
+        var written = new Writer().WriteToByteArray(luminaire);
+        var read = new Reader().ReadContainer(written); 
+        luminaire.Should().BeEquivalentTo(read);
     }
 }
