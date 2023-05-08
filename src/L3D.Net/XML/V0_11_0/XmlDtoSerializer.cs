@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Xml.Serialization;
+using L3D.Net.Abstract;
 
 namespace L3D.Net.XML.V0_11_0;
 
@@ -21,6 +22,7 @@ internal class XmlDtoSerializer : IXmlDtoSerializer
     {
         if (dto == null) throw new ArgumentNullException(nameof(dto));
         if (stream == null) throw new ArgumentNullException(nameof(stream));
+        dto.Scheme = Constants.CurrentSchemeUri;
 
         _serializer.Serialize(stream, dto, _namespaces);
     }

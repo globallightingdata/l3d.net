@@ -9,9 +9,7 @@ namespace L3D.Net.XML.V0_11_0.Dto;
 public class LuminaireDto
 {
     [XmlAttribute("noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
-#pragma warning disable S1104 // Fields should not have public accessibility
-    public string Scheme = Constants.CurrentSchemeUri;
-#pragma warning restore S1104 // Fields should not have public accessibility
+    public string Scheme { get; set; } = Constants.CurrentSchemeUri;
 
     /// <remarks/>
     public HeaderDto Header { get; set; } = new();
