@@ -3,11 +3,11 @@ using L3D.Net.Abstract;
 using L3D.Net.Data;
 using L3D.Net.Internal;
 using L3D.Net.Internal.Abstract;
+using L3D.Net.XML.V0_11_0;
 using NSubstitute;
 using NUnit.Framework;
 using System;
 using System.IO;
-using L3D.Net.XML.V0_11_0;
 
 // ReSharper disable ObjectCreationAsStatement
 

@@ -9,7 +9,7 @@
 		<GeometryFileDefinition id="cube" filename="cube.obj" units="m" />
 	</GeometryDefinitions>
 	<Structure>
-		<Geometry partName="luminaire">
+		<Geometry partName="luminaire" includedInMeasurement="true">
 			<Position x="0" y="0" z="0" />
 			<Rotation x="0" y="0" z="0" />
 			<GeometryReference geometryId="cube" />

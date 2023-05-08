@@ -102,10 +102,9 @@ internal class ContainerValidator : IContainerValidator
 
         if (flags.HasFlag(Validation.DoesReferencedObjectsExist))
         {
-            foreach (var geometryPart in geometryParts)
+            foreach (var geometryPart in geometryParts.Where(geometryPart => geometryPart.GeometryReference.Model == null))
             {
-                if (geometryPart.GeometryReference.Model == null)
-                    yield return new MissingGeometryReferenceValidationHint(geometryPart.GeometryReference.GeometryId);
+                yield return new MissingGeometryReferenceValidationHint(geometryPart.GeometryReference.GeometryId);
             }
         }
 
@@ -160,18 +159,7 @@ internal class ContainerValidator : IContainerValidator
 
         foreach (var part in allParts)
         {
-            var validationHints = part switch
-            {
-                LightEmittingSurfacePart lightEmittingSurfacePart => ValidateLightEmittingSurfacePart(lightEmittingSurfacePart,
-                    flags,
-                    allParts.OfType<LightEmittingPart>().ToArray(),
-                    allParts.OfType<GeometryPart>().First(d => d.LightEmittingSurfaces?.Contains(lightEmittingSurfacePart) ?? false).GeometryReference.Model),
-                JointPart jointPart => ValidateJointPart(jointPart, flags),
-                LightEmittingPart lightEmittingPart => ValidateLightEmittingPart(lightEmittingPart, flags),
-                GeometryPart geometryPart => ValidateGeometryPart(geometryPart, flags),
-                SensorPart sensorPart => ValidateSensorPart(sensorPart, flags),
-                _ => throw new ArgumentOutOfRangeException(nameof(part))
-            };
+            var validationHints = ValidatePart(part, allParts, flags);
 
             foreach (var validationHint in validationHints)
             {
@@ -207,6 +195,19 @@ internal class ContainerValidator : IContainerValidator
             yield return new L3DContentValidationHint(
                 $"{nameof(Luminaire.Parts)} of {nameof(Luminaire)} must not be empty");
     }
+
+    private static IEnumerable<ValidationHint> ValidatePart(Part part, Part[] allParts, Validation flags) => part switch
+    {
+        LightEmittingSurfacePart lightEmittingSurfacePart => ValidateLightEmittingSurfacePart(lightEmittingSurfacePart,
+            flags,
+            allParts.OfType<LightEmittingPart>().ToArray(),
+            allParts.OfType<GeometryPart>().First(d => d.LightEmittingSurfaces?.Contains(lightEmittingSurfacePart) ?? false).GeometryReference.Model),
+        JointPart jointPart => ValidateJointPart(jointPart, flags),
+        LightEmittingPart lightEmittingPart => ValidateLightEmittingPart(lightEmittingPart, flags),
+        GeometryPart geometryPart => ValidateGeometryPart(geometryPart, flags),
+        SensorPart sensorPart => ValidateSensorPart(sensorPart, flags),
+        _ => throw new ArgumentOutOfRangeException(nameof(part), part, "is not a known part")
+    };
 
     private static bool TryValidatePartName(Part part, Validation flags, out ValidationHint? validationHint)
     {

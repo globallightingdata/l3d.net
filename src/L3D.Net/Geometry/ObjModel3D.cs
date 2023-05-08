@@ -1,6 +1,6 @@
-﻿using System;
-using L3D.Net.Data;
+﻿using L3D.Net.Data;
 using L3D.Net.Internal.Abstract;
+using System;
 using System.Collections.Generic;
 
 namespace L3D.Net.Geometry;

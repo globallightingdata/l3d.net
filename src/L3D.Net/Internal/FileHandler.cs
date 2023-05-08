@@ -1,12 +1,12 @@
 ﻿using L3D.Net.Abstract;
 using L3D.Net.Exceptions;
+using L3D.Net.Extensions;
 using L3D.Net.Internal.Abstract;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using L3D.Net.Extensions;
 
 // ReSharper disable ConvertToUsingDeclaration
 #pragma warning disable IDE0063

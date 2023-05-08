@@ -1,5 +1,6 @@
 ﻿using JeremyAnsel.Media.WavefrontObj;
 using L3D.Net.Data;
+using L3D.Net.Extensions;
 using L3D.Net.Internal.Abstract;
 using Microsoft.Extensions.Logging;
 using System;
@@ -7,7 +8,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using L3D.Net.Extensions;
 
 namespace L3D.Net.Geometry;
 
@@ -39,7 +39,7 @@ public class ObjParser : IObjParser
 
     public IModel3D Parse(string filePath, ILogger? logger = null)
     {
-        var directory = Path.GetDirectoryName(filePath) ?? 
+        var directory = Path.GetDirectoryName(filePath) ??
             throw new ArgumentException($"The file directory of '{filePath}' could not be determined");
 
         using var fs = File.OpenRead(filePath);
@@ -76,6 +76,7 @@ public class ObjParser : IObjParser
             }
             catch (Exception e)
             {
+                // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
                 logger?.Log(LogLevel.Warning, e.Message);
                 return null;
             }

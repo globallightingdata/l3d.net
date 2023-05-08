@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using FluentAssertions;
+﻿using FluentAssertions;
 using L3D.Net.Geometry;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
+using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Numerics;
 
@@ -231,7 +230,7 @@ public class ObjParserTest
         var parser = new ObjParser();
 
         var model = parser.Parse("textured_cube.obj", new Dictionary<string, Stream>(), Substitute.For<ILogger>());
-        
+
         model.Should().BeNull();
     }
 

@@ -1,9 +1,8 @@
-﻿namespace L3D.Net.Abstract
-{
-    public sealed class InvalidZipValidationHint : ValidationHint
-    {
-        public override Severity Severity => Severity.Error;
+﻿namespace L3D.Net.Abstract;
 
-        public override string Message => ErrorMessages.InvalidZip;
-    }
+public sealed class InvalidZipValidationHint : ValidationHint
+{
+    public override Severity Severity => Severity.Error;
+
+    public override string Message => ErrorMessages.InvalidZip;
 }

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using FluentAssertions;
 
 namespace L3D.Net.Tests;
 
@@ -102,7 +101,7 @@ public static class Setup
         };
     }
 
-    public static readonly Dictionary<string, Func<Luminaire, Luminaire>> ExampleBuilderMapping =
+    public static Dictionary<string, Func<Luminaire, Luminaire>> ExampleBuilderMapping { get; } =
         new()
         {
             {"example_000", luminaire => luminaire.BuildExample000()},

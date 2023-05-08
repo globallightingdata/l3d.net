@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using L3D.Net.Abstract;
+using System.Collections.Generic;
 using System.Xml.Serialization;
-using L3D.Net.Abstract;
 
 namespace L3D.Net.XML.V0_11_0.Dto;
 
@@ -9,7 +9,9 @@ namespace L3D.Net.XML.V0_11_0.Dto;
 public class LuminaireDto
 {
     [XmlAttribute("noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
+#pragma warning disable S1104 // Fields should not have public accessibility
     public string Scheme = Constants.CurrentSchemeUri;
+#pragma warning restore S1104 // Fields should not have public accessibility
 
     /// <remarks/>
     public HeaderDto Header { get; set; } = new();

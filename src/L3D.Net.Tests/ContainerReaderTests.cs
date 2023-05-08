@@ -1,17 +1,16 @@
 ﻿using FluentAssertions;
 using L3D.Net.Data;
 using L3D.Net.Exceptions;
+using L3D.Net.Geometry;
 using L3D.Net.Internal;
 using L3D.Net.Internal.Abstract;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using L3D.Net.Geometry;
 using System.Linq;
-using L3D.Net.Abstract;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace L3D.Net.Tests;
 
@@ -149,7 +148,7 @@ public class ContainerReaderTests
                 _reader.Read(stream);
             }
             ,
-            _ => () => throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null)
         };
 
         act.Should().Throw<InvalidL3DException>().WithMessage("No L3D could be read");
@@ -172,7 +171,7 @@ public class ContainerReaderTests
             Units = GeometricUnits.m,
             Model = objParser.Parse(modelPath, NullLogger.Instance),
             FileName = Path.GetFileName(modelPath)
-        }; 
+        };
         var luminaire = new Luminaire
         {
             Header = new Header
@@ -182,12 +181,12 @@ public class ContainerReaderTests
             GeometryDefinitions = new List<GeometryFileDefinition>
             {
                 geo
-            }, 
+            },
             Parts = new List<GeometryPart>
             {
                 new()
                 {
-                    Name = "luminaire", 
+                    Name = "luminaire",
                     LightEmittingObjects = new List<LightEmittingPart>
                     {
                         new(new Rectangle
@@ -197,7 +196,7 @@ public class ContainerReaderTests
                         {
                             Name = "leo"
                         }
-                    }, 
+                    },
                     LightEmittingSurfaces = new List<LightEmittingSurfacePart>
                     {
                         new()
@@ -205,19 +204,19 @@ public class ContainerReaderTests
                             Name = "les", FaceAssignments = new List<FaceAssignment>
                             {
                                 new SingleFaceAssignment { FaceIndex = 3 }
-                            }, 
+                            },
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leo"] = 1
                             }
                         }
-                    }, 
+                    },
                     GeometryReference = geo
                 }
             }
-        }; 
+        };
         var written = new Writer().WriteToByteArray(luminaire);
-        var read = new Reader().ReadContainer(written); 
+        var read = new Reader().ReadContainer(written);
         luminaire.Should().BeEquivalentTo(read);
     }
 }

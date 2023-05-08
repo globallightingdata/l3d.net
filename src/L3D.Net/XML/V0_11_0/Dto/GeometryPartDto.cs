@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Xml.Serialization;
 
@@ -39,7 +38,20 @@ public class GeometryPartDto : TransformablePartDto
 
     /// <remarks/>
     [XmlAttribute("includedInMeasurement")]
-    public bool IncludedInMeasurement { get; set; } = true;
+    public bool IncludedInMeasurement
+    {
+        get => _includedInMeasurement;
+        set
+        {
+            _includedInMeasurement = value;
+            IncludedInMeasurementSpecified = true;
+        }
+    }
+
+    private bool _includedInMeasurement = true;
+
+    [XmlIgnore]
+    public bool IncludedInMeasurementSpecified { get; set; }
 
     // ReSharper disable UnusedMember.Global
     [ExcludeFromCodeCoverage] public bool ShouldSerializeLightEmittingObjects() => LightEmittingObjects is { Length: > 0 };
@@ -49,6 +61,6 @@ public class GeometryPartDto : TransformablePartDto
     [ExcludeFromCodeCoverage] public bool ShouldSerializeElectricalConnectors() => ElectricalConnectors is { Length: > 0 };
     [ExcludeFromCodeCoverage] public bool ShouldSerializePendulumConnectors() => PendulumConnectors is { Length: > 0 };
     [ExcludeFromCodeCoverage] public bool ShouldSerializeLightEmittingSurfaces() => LightEmittingSurfaces is { Length: > 0 };
-    [ExcludeFromCodeCoverage] public bool ShouldSerializeIncludedInMeasurement() => !IncludedInMeasurement;
+    [ExcludeFromCodeCoverage] public bool ShouldSerializeIncludedInMeasurement() => IncludedInMeasurementSpecified;
     // ReSharper restore UnusedMember.Global
 }

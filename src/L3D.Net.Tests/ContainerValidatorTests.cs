@@ -53,7 +53,7 @@ public class ContainerValidatorTests
     }
 
     private static IEnumerable<ContainerTypeToTest> ContainerTypeToTestEnumValues => Enum.GetValues<ContainerTypeToTest>();
-    private static IEnumerable<string?> EmptyStringValues => new []{ null, "",  string.Empty, " ", "    "};
+    private static IEnumerable<string?> EmptyStringValues => new[] { null, "", string.Empty, " ", "    " };
 
     private static IEnumerable<TestCaseData> ContainerTypeToTestEnumValuesAndEmptyStrings()
     {
@@ -295,7 +295,7 @@ public class ContainerValidatorTests
             case ContainerTypeToTest.Stream:
                 using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
                 {
-                    context.ContainerValidator.Validate(ms, Validation.All).ToArray().Should().ContainSingle(d => d.Message == ErrorMessages.StructureXmlMissing);
+                    context.ContainerValidator.Validate(ms, Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.StructureXmlMissing);
                 }
                 break;
             default:
@@ -351,7 +351,7 @@ public class ContainerValidatorTests
             case ContainerTypeToTest.Stream:
                 using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
                 {
-                    context.ContainerValidator.Validate(ms, Validation.All).ToArray().Should().ContainSingle(d => d.Message == ErrorMessages.InvalidZip);
+                    context.ContainerValidator.Validate(ms, Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.InvalidZip);
                 }
                 break;
             default:
@@ -530,7 +530,7 @@ public class ContainerValidatorTests
             case ContainerTypeToTest.Stream:
                 using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
                 {
-                    context.ContainerValidator.Validate(ms, Validation.All).ToArray().Should()
+                    context.ContainerValidator.Validate(ms, Validation.All).Should()
                         .ContainSingle(d => d.Message == ErrorMessages.NotAL3D);
                 }
                 break;
@@ -1045,10 +1045,7 @@ public class ContainerValidatorTests
         model1.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>());
 
         var model2 = Substitute.For<IModel3D?>();
-        model2!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>
-        {
-            ["mtl1"] = Array.Empty<byte>()
-        });
+        model2!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
         model2.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>
         {
             ["tex1"] = Array.Empty<byte>()
