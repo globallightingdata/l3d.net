@@ -91,25 +91,25 @@ public class ReaderExampleTests
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
         }
 
-        Action action = containerTypeToTest switch
+        Func<Luminaire> readAction = containerTypeToTest switch
         {
             ContainerTypeToTest.Path => () => new Reader().ReadContainer(containerPath),
             ContainerTypeToTest.Bytes => () =>
             {
                 var containerBytes = File.ReadAllBytes(containerPath);
-                new Reader().ReadContainer(containerBytes);
+                return new Reader().ReadContainer(containerBytes);
             }
             ,
             ContainerTypeToTest.Stream => () =>
             {
                 using var stream = File.OpenRead(containerPath);
-                new Reader().ReadContainer(stream);
+                return new Reader().ReadContainer(stream);
             }
-
             ,
             _ => throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null)
         };
 
-        action.Should().NotThrow<Exception>();
+        var result = readAction();
+        result.Should().BeEquivalentTo(luminaire, opt => opt.AllowingInfiniteRecursion());
     }
 }

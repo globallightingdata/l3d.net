@@ -1,5 +1,6 @@
 ﻿using JeremyAnsel.Media.WavefrontObj;
 using L3D.Net.Data;
+using L3D.Net.Extensions;
 using L3D.Net.Internal.Abstract;
 using Microsoft.Extensions.Logging;
 using System;
@@ -19,52 +20,54 @@ public class ObjParser : IObjParser
         if (!files.TryGetValue(fileName, out var stream))
             return null;
 
-        using var copy = new MemoryStream();
-        stream.CopyTo(copy);
-        copy.Seek(0, SeekOrigin.Begin);
-        var objFile = ObjFile.FromStream(copy);
+        stream.Seek(0, SeekOrigin.Begin);
+        var objFile = ObjFile.FromStream(stream);
 
-        var objMaterialLibraries = CollectAvailableMaterialLibraries(logger, objFile, files);
+        var objMaterialLibraries = CollectAvailableMaterialLibraries(logger, objFile, files).ToList();
 
-        var textures = CollectAvailableTextures(files, objMaterialLibraries);
+        List<string> textures = CollectAvailableTextures(objMaterialLibraries).Distinct().Where(x => !string.IsNullOrWhiteSpace(x)).Where(files.ContainsKey!).ToList()!;
 
         return new ObjModel3D
         {
             FileName = fileName,
-            ReferencedMaterialLibraryFiles = objMaterialLibraries.Select(tuple => tuple.Item1).ToDictionary(d => d, d => files[d]),
-            ReferencedTextureFiles = textures.ToDictionary(d => d, d => files[d]),
-            Data = ConvertGeometry(objFile, objMaterialLibraries.Select(tuple => tuple.Item2).ToList())
+            ReferencedMaterialLibraryFiles = objMaterialLibraries.Select(tuple => tuple.Item1).ToDictionary(d => d, d => files[d].ToArray()),
+            ReferencedTextureFiles = textures.ToDictionary(d => d, d => files[d].ToArray()),
+            Data = ConvertGeometry(objFile, objMaterialLibraries.Select(tuple => tuple.Item2).ToList(), files.ToDictionary(d => d.Key, d => d.Value.ToArray())),
+            ObjFile = stream.ToArray()
         };
     }
 
     public IModel3D Parse(string filePath, ILogger? logger = null)
     {
         var directory = Path.GetDirectoryName(filePath) ??
-                        throw new Exception($"The file directory of '{filePath}' could not be determined!");
+            throw new ArgumentException($"The file directory of '{filePath}' could not be determined");
 
-        var objFile = ObjFile.FromFile(filePath);
+        using var fs = File.OpenRead(filePath);
 
-        var objMaterialLibraries = CollectAvailableMaterialLibraries(objFile, directory, logger);
+        var objFile = ObjFile.FromStream(fs);
 
-        var textures = CollectAvailableTextures(objMaterialLibraries);
+        var objMaterialLibraries = CollectAvailableMaterialLibraries(objFile, directory, logger).ToList();
+
+        List<string> textures = CollectAvailableTextures(objMaterialLibraries).Distinct().Where(x => !string.IsNullOrWhiteSpace(x)).ToList()!;
 
         var filePaths = objMaterialLibraries.Select(x => x.Item1).Union(textures).ToList();
         filePaths.Add(filePath);
 
-        var files = filePaths.ToDictionary<string, string, Stream>(Path.GetFileName, d => File.OpenRead(Path.Combine(directory, d)));
+        var files = filePaths.ToDictionary<string, string, byte[]>(Path.GetFileName, d => File.ReadAllBytes(Path.Combine(directory, d)));
 
         return new ObjModel3D
         {
             FileName = Path.GetFileName(filePath),
             ReferencedMaterialLibraryFiles = objMaterialLibraries.Select(tuple => tuple.Item1).ToDictionary(d => d, d => files[d]),
             ReferencedTextureFiles = textures.ToDictionary(d => d, d => files[d]),
-            Data = ConvertGeometry(objFile, objMaterialLibraries.Select(tuple => tuple.Item2).ToList())
+            Data = ConvertGeometry(objFile, objMaterialLibraries.Select(tuple => tuple.Item2).ToList(), files),
+            ObjFile = fs.ToArray()
         };
     }
 
-    private static List<Tuple<string, ObjMaterialFile>> CollectAvailableMaterialLibraries(ObjFile objFile, string directory, ILogger? logger = null)
+    private static IEnumerable<Tuple<string, ObjMaterialFile>> CollectAvailableMaterialLibraries(ObjFile objFile, string directory, ILogger? logger = null)
     {
-        List<Tuple<string, ObjMaterialFile>> objMaterials = objFile.MaterialLibraries.Select(mtl =>
+        return objFile.MaterialLibraries.Select(mtl =>
         {
             try
             {
@@ -73,111 +76,65 @@ public class ObjParser : IObjParser
             }
             catch (Exception e)
             {
+                // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
                 logger?.Log(LogLevel.Warning, e.Message);
                 return null;
             }
-        }).Where(mtl => mtl != null).ToList();
-        return objMaterials;
+        }).Where(x => x != null)!;
     }
 
-    private static List<Tuple<string, ObjMaterialFile>> CollectAvailableMaterialLibraries(ILogger? logger,
+    private static IEnumerable<Tuple<string, ObjMaterialFile>> CollectAvailableMaterialLibraries(ILogger? logger,
         ObjFile objFile, IReadOnlyDictionary<string, Stream> files)
     {
-        var objMaterials = objFile.MaterialLibraries.Select(mtl =>
+        return objFile.MaterialLibraries.Select(mtl =>
         {
             try
             {
                 var materialFile = files[mtl];
-                using var copy = new MemoryStream();
-                materialFile.CopyTo(copy);
-                copy.Seek(0, SeekOrigin.Begin);
-                return Tuple.Create(mtl, ObjMaterialFile.FromStream(copy));
+                materialFile.Seek(0, SeekOrigin.Begin);
+                return Tuple.Create(mtl, ObjMaterialFile.FromStream(materialFile));
             }
             catch (Exception e)
             {
                 logger?.LogWarning(e, "Material could not be loaded");
-                return null!;
+                return null;
             }
-        }).Where(mtl => mtl != null).ToList();
-        return objMaterials;
+        }).Where(x => x != null)!;
     }
 
-    private static List<string> CollectAvailableTextures(List<Tuple<string, ObjMaterialFile>> objMaterials)
+    private static IEnumerable<string?> CollectAvailableTextures(IEnumerable<Tuple<string, ObjMaterialFile>> objMaterials)
     {
-        var textures = new List<string?>();
-
-        foreach (var materialFile in objMaterials)
+        foreach (var objMaterial in objMaterials.SelectMany(materialFile => materialFile.Item2.Materials))
         {
-            foreach (var objMaterial in materialFile.Item2.Materials)
-            {
-                textures.Add(objMaterial?.AmbientMap?.FileName);
-                textures.Add(objMaterial?.BumpMap?.FileName);
-                textures.Add(objMaterial?.DecalMap?.FileName);
-                textures.Add(objMaterial?.DiffuseMap?.FileName);
-                textures.Add(objMaterial?.DispMap?.FileName);
-                textures.Add(objMaterial?.DissolveMap?.FileName);
-                textures.Add(objMaterial?.ReflectionMap?.CubeBack?.FileName);
-                textures.Add(objMaterial?.ReflectionMap?.CubeBottom?.FileName);
-                textures.Add(objMaterial?.ReflectionMap?.CubeFront?.FileName);
-                textures.Add(objMaterial?.ReflectionMap?.CubeLeft?.FileName);
-                textures.Add(objMaterial?.ReflectionMap?.CubeRight?.FileName);
-                textures.Add(objMaterial?.ReflectionMap?.CubeTop?.FileName);
-                textures.Add(objMaterial?.EmissiveMap?.FileName);
-                textures.Add(objMaterial?.SpecularMap?.FileName);
-                textures.Add(objMaterial?.SpecularExponentMap?.FileName);
-            }
+            yield return objMaterial?.AmbientMap?.FileName;
+            yield return objMaterial?.BumpMap?.FileName;
+            yield return objMaterial?.DecalMap?.FileName;
+            yield return objMaterial?.DiffuseMap?.FileName;
+            yield return objMaterial?.DispMap?.FileName;
+            yield return objMaterial?.DissolveMap?.FileName;
+            yield return objMaterial?.ReflectionMap?.CubeBack?.FileName;
+            yield return objMaterial?.ReflectionMap?.CubeBottom?.FileName;
+            yield return objMaterial?.ReflectionMap?.CubeFront?.FileName;
+            yield return objMaterial?.ReflectionMap?.CubeLeft?.FileName;
+            yield return objMaterial?.ReflectionMap?.CubeRight?.FileName;
+            yield return objMaterial?.ReflectionMap?.CubeTop?.FileName;
+            yield return objMaterial?.EmissiveMap?.FileName;
+            yield return objMaterial?.SpecularMap?.FileName;
+            yield return objMaterial?.SpecularExponentMap?.FileName;
         }
-
-        textures = textures
-            .Where(texture => texture != null)
-            .Distinct()
-            .ToList();
-        return textures!;
     }
 
-    private static IEnumerable<string> CollectAvailableTextures(IReadOnlyDictionary<string, Stream> files,
-        List<Tuple<string, ObjMaterialFile>> objMaterials)
-    {
-        var textures = new List<string?>();
-
-        foreach (var materialFile in objMaterials)
-        {
-            foreach (var objMaterial in materialFile.Item2.Materials)
-            {
-                textures.Add(objMaterial?.AmbientMap?.FileName);
-                textures.Add(objMaterial?.BumpMap?.FileName);
-                textures.Add(objMaterial?.DecalMap?.FileName);
-                textures.Add(objMaterial?.DiffuseMap?.FileName);
-                textures.Add(objMaterial?.DispMap?.FileName);
-                textures.Add(objMaterial?.DissolveMap?.FileName);
-                textures.Add(objMaterial?.ReflectionMap?.CubeBack?.FileName);
-                textures.Add(objMaterial?.ReflectionMap?.CubeBottom?.FileName);
-                textures.Add(objMaterial?.ReflectionMap?.CubeFront?.FileName);
-                textures.Add(objMaterial?.ReflectionMap?.CubeLeft?.FileName);
-                textures.Add(objMaterial?.ReflectionMap?.CubeRight?.FileName);
-                textures.Add(objMaterial?.ReflectionMap?.CubeTop?.FileName);
-                textures.Add(objMaterial?.EmissiveMap?.FileName);
-                textures.Add(objMaterial?.SpecularMap?.FileName);
-                textures.Add(objMaterial?.SpecularExponentMap?.FileName);
-            }
-        }
-
-        textures = textures
-            .Where(texture => texture != null)
-            .Where(files.ContainsKey!)
-            .Distinct()
-            .ToList();
-        return textures!;
-    }
-
-
-    private static ModelData ConvertGeometry(ObjFile objFile, IEnumerable<ObjMaterialFile> objMaterialFiles)
+    private static ModelData ConvertGeometry(ObjFile objFile, IEnumerable<ObjMaterialFile> objMaterialFiles, IReadOnlyDictionary<string, byte[]> files)
     {
         var vertices = objFile.Vertices
             .Select(vertex => new Vector3(vertex.Position.X, vertex.Position.Y, vertex.Position.Z)).ToList();
         var normals = objFile.VertexNormals.Select(normal => new Vector3(normal.X, normal.Y, normal.Z)).ToList();
         var texCoords = objFile.TextureVertices.Select(texture => new Vector2(texture.X, texture.Y)).ToList();
-        var materials = objMaterialFiles.SelectMany(file => file.Materials).Distinct().Select(Convert).ToList();
+        var materials = objMaterialFiles
+            .SelectMany(file => file.Materials)
+            .Distinct()
+            .Select(x => Convert(x, files.ContainsKey(x.DiffuseMap?.FileName ?? string.Empty) ? files[x.DiffuseMap?.FileName!] : Array.Empty<byte>()))
+            .ToList();
         var faceGroups = objFile.Groups.Any()
             ? objFile.Groups.Select(group => ConvertGroup(group, materials)).ToList()
             : new List<ModelFaceGroup> { CreateDefaultFaceGroup(objFile, materials) };
@@ -234,14 +191,15 @@ public class ObjParser : IObjParser
         };
     }
 
-    private static ModelMaterial Convert(ObjMaterial objMaterial)
+    private static ModelMaterial Convert(ObjMaterial objMaterial, byte[] bytes)
     {
         var color = objMaterial.DiffuseColor;
         return new ModelMaterial
         {
             Color = new Vector3(color.Color.X, color.Color.Y, color.Color.Z),
             Name = objMaterial.Name,
-            TextureName = objMaterial.DiffuseMap?.FileName ?? string.Empty
+            TextureName = objMaterial.DiffuseMap?.FileName ?? string.Empty,
+            TextureBytes = bytes
         };
     }
 }

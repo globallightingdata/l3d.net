@@ -3,7 +3,7 @@ using L3D.Net.Abstract;
 using L3D.Net.Data;
 using L3D.Net.Internal;
 using L3D.Net.Internal.Abstract;
-using L3D.Net.XML.V0_10_0;
+using L3D.Net.XML.V0_11_0;
 using NSubstitute;
 using NUnit.Framework;
 using System;
@@ -118,12 +118,12 @@ public class ContainerBuilderTests
         {
             var expectedModel = geometryDefinition.Model;
 
-            context.FileHandler.Received(1).LoadModelFiles(Arg.Is(expectedModel!), Arg.Is(geometryDefinition.GeometryId), Arg.Any<ContainerCache>());
+            context.FileHandler.Received(1).AddModelFilesToCache(Arg.Is(expectedModel!), Arg.Is(geometryDefinition.GeometryId), Arg.Any<ContainerCache>());
         }
 
         luminaire.GeometryDefinitions.Count.Should().BePositive();
         context.FileHandler.Received(luminaire.GeometryDefinitions.Count)
-            .LoadModelFiles(Arg.Any<IModel3D>(), Arg.Any<string>(), Arg.Any<ContainerCache>());
+            .AddModelFilesToCache(Arg.Any<IModel3D>(), Arg.Any<string>(), Arg.Any<ContainerCache>());
     }
 
     [Test]
@@ -188,12 +188,12 @@ public class ContainerBuilderTests
         {
             var expectedModel = geometryDefinition.Model;
 
-            context.FileHandler.Received(1).LoadModelFiles(Arg.Is(expectedModel!), Arg.Is(geometryDefinition.GeometryId), Arg.Any<ContainerCache>());
+            context.FileHandler.Received(1).AddModelFilesToCache(Arg.Is(expectedModel!), Arg.Is(geometryDefinition.GeometryId), Arg.Any<ContainerCache>());
         }
 
         luminaire.GeometryDefinitions.Count.Should().BePositive();
         context.FileHandler.Received(luminaire.GeometryDefinitions.Count)
-            .LoadModelFiles(Arg.Any<IModel3D>(), Arg.Any<string>(), Arg.Any<ContainerCache>());
+            .AddModelFilesToCache(Arg.Any<IModel3D>(), Arg.Any<string>(), Arg.Any<ContainerCache>());
     }
 
     [Test]

@@ -1,31 +1,30 @@
-﻿namespace L3D.Net.Abstract
+﻿namespace L3D.Net.Abstract;
+
+public sealed class StructureXmlValidationHint : ValidationHint
 {
-    public sealed class StructureXmlValidationHint : ValidationHint
+    public override Severity Severity { get; }
+
+    public override string Message { get; }
+
+    public string AdditionalInfo { get; } = string.Empty;
+
+    public StructureXmlValidationHint(string message)
     {
-        public override Severity Severity { get; }
+        Message = message;
+        Severity = Severity.Error;
+    }
 
-        public override string Message { get; }
+    public StructureXmlValidationHint(string message, string additionalInfo)
+    {
+        Message = message;
+        AdditionalInfo = additionalInfo;
+        Severity = Severity.Error;
+    }
 
-        public string AdditionalInfo { get; } = string.Empty;
-
-        public StructureXmlValidationHint(string message)
-        {
-            Message = message;
-            Severity = Severity.Error;
-        }
-
-        public StructureXmlValidationHint(string message, string additionalInfo)
-        {
-            Message = message;
-            AdditionalInfo = additionalInfo;
-            Severity = Severity.Error;
-        }
-
-        public StructureXmlValidationHint(string message, string additionalInfo, Severity severity)
-        {
-            Message = message;
-            AdditionalInfo = additionalInfo;
-            Severity = severity;
-        }
+    public StructureXmlValidationHint(string message, string additionalInfo, Severity severity)
+    {
+        Message = message;
+        AdditionalInfo = additionalInfo;
+        Severity = severity;
     }
 }

@@ -1,12 +1,15 @@
-﻿using L3D.Net.Data;
+﻿using L3D.Net.Abstract;
+using L3D.Net.Data;
 using L3D.Net.Exceptions;
 using L3D.Net.Internal.Abstract;
 using L3D.Net.Mapper.V0_11_0;
-using L3D.Net.XML.V0_10_0;
+using L3D.Net.XML.V0_11_0;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using System.Xml.XPath;
 
 namespace L3D.Net.XML;
 
@@ -34,22 +37,60 @@ internal class L3DXmlReader : IL3DXmlReader
 
     private static Version GetVersion(Stream stream)
     {
-        stream.Seek(0, SeekOrigin.Begin);
-        var xmlDocument = XDocument.Load(stream);
-        var root = xmlDocument.Root ?? throw new InvalidL3DException($"Unable to read XML content");
+        try
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+            var xmlDocument = XDocument.Load(stream);
+            var root = xmlDocument.Root ?? throw new InvalidL3DException($"Unable to read XML content");
 
-        var schemeAttribute = root.Attributes().FirstOrDefault(attribute =>
-            attribute.Name is { NamespaceName: @"http://www.w3.org/2001/XMLSchema-instance", LocalName: @"noNamespaceSchemaLocation" }) ?? throw new InvalidL3DException(
-                "XML document does not reference a valid XSD scheme in namespace (http://www.w3.org/2001/XMLSchema-instance)!");
-        var match = GlobalXmlDefinitions.VersionRegex.Match(schemeAttribute.Value);
+            if (root.Attributes().All(attribute => attribute.Name is not
+                {
+                    NamespaceName: @"http://www.w3.org/2001/XMLSchema-instance", LocalName: @"noNamespaceSchemaLocation"
+                }))
+                throw new InvalidL3DException(
+                    "XML document does not reference a valid XSD scheme in namespace (http://www.w3.org/2001/XMLSchema-instance)!");
 
-        if (!match.Success || !Version.TryParse(match.Groups[1].Value, out var version) || !GlobalXmlDefinitions.IsParseable(version))
-            throw new InvalidL3DException(
-                $"The scheme ({schemeAttribute.Value}) is not known!");
+            var versionInformation = xmlDocument.XPathSelectElement(Constants.L3dFormatVersionPath)?.Attributes()
+                .ToDictionary(d => d.Name.LocalName, d => d.Value);
 
-        version = GlobalXmlDefinitions.GetNextMatchingVersion(version);
+            if (versionInformation == null ||
+                Constants.L3dFormatVersionRequiredFields.Except(versionInformation.Keys).Any() ||
+                !TryGetVersion(versionInformation, out var version))
+                throw new InvalidL3DException("The version is not known");
 
-        return version;
+            version = GlobalXmlDefinitions.GetNextMatchingVersion(version!);
+
+            return version;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidL3DException("Unable to load version from l3d xml, see inner exception", ex);
+        }
+    }
+
+    private static bool TryGetVersion(IReadOnlyDictionary<string, string> fields, out Version? version)
+    {
+        if (!fields.TryGetValue(Constants.L3dFormatVersionMajor, out var majorValue) || !int.TryParse(majorValue, out var major))
+        {
+            version = null;
+            return false;
+        }
+        if (!fields.TryGetValue(Constants.L3dFormatVersionMinor, out var minorValue) || !int.TryParse(minorValue, out var minor))
+        {
+            version = null;
+            return false;
+        }
+
+        var preRelease = 0;
+
+        if (fields.TryGetValue(Constants.L3dFormatVersionPreRelease, out var preReleaseValue) && (!int.TryParse(preReleaseValue, out preRelease) || preRelease < 0))
+        {
+            version = null;
+            return false;
+        }
+
+        version = new Version(major, minor, preRelease);
+        return true;
     }
 
     private Luminaire? ReadV0(ContainerCache cache)

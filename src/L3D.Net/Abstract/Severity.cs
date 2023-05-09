@@ -1,9 +1,8 @@
-﻿namespace L3D.Net.Abstract
+﻿namespace L3D.Net.Abstract;
+
+public enum Severity
 {
-    public enum Severity
-    {
-        Information,
-        Warning,
-        Error
-    }
+    Information,
+    Warning,
+    Error
 }

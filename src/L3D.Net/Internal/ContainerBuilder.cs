@@ -3,7 +3,7 @@ using L3D.Net.Data;
 using L3D.Net.Exceptions;
 using L3D.Net.Internal.Abstract;
 using L3D.Net.Mapper.V0_11_0;
-using L3D.Net.XML.V0_10_0;
+using L3D.Net.XML.V0_11_0;
 using System;
 using System.IO;
 using System.Linq;
@@ -58,10 +58,12 @@ internal class ContainerBuilder : IContainerBuilder
 
     private void PrepareFiles(Luminaire luminaire, ContainerCache cache)
     {
+        if (luminaire.GeometryDefinitions.Any(x => x.Model == null))
+            throw new InvalidL3DException("All geometry definitions must have a model");
+
         foreach (var geometryDefinition in luminaire.GeometryDefinitions)
         {
-            if (geometryDefinition.Model != null)
-                _fileHandler.LoadModelFiles(geometryDefinition.Model, geometryDefinition.GeometryId, cache);
+            _fileHandler.AddModelFilesToCache(geometryDefinition.Model!, geometryDefinition.GeometryId, cache);
         }
 
         var dto = LuminaireMapper.Instance.Convert(luminaire);

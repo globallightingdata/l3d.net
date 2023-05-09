@@ -1,11 +1,13 @@
 ﻿using L3D.Net.Abstract;
 using L3D.Net.Exceptions;
+using L3D.Net.Extensions;
 using L3D.Net.Internal.Abstract;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+
 // ReSharper disable ConvertToUsingDeclaration
 #pragma warning disable IDE0063
 
@@ -79,14 +81,14 @@ internal class FileHandler : IFileHandler
 
             var entries = archive.Entries;
 
-            if (canThrow && !entries.Any(e => e.Name.Equals(Constants.L3dXmlFilename)))
+            if (canThrow && !entries.Any(e => e.FullName.Equals(Constants.L3dXmlFilename)))
                 throw new InvalidL3DException("StructureXml could not be found");
 
             var cache = new ContainerCache();
 
             foreach (var entry in entries)
             {
-                if (entry.Name.Equals(Constants.L3dXmlFilename, StringComparison.Ordinal))
+                if (entry.FullName.Equals(Constants.L3dXmlFilename, StringComparison.Ordinal))
                 {
                     using (var entryStream = entry.Open())
                     {
@@ -96,20 +98,21 @@ internal class FileHandler : IFileHandler
                 }
                 else
                 {
-                    var directoryName = Path.GetDirectoryName(entry.Name);
-                    if (string.IsNullOrWhiteSpace(directoryName)) continue;
+                    if (string.IsNullOrWhiteSpace(entry.Name)) continue;
 
-                    if (!cache.Geometries.TryGetValue(directoryName, out var files))
+                    var geometryName = entry.FullName.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries)[0];
+
+                    if (!cache.Geometries.TryGetValue(geometryName, out var files))
                     {
                         files = new Dictionary<string, Stream>();
-                        cache.Geometries.Add(directoryName, files);
+                        cache.Geometries.Add(geometryName, files);
                     }
 
                     using (var entryStream = entry.Open())
                     {
                         var memStream = new MemoryStream();
                         entryStream.CopyTo(memStream);
-                        files.Add(Path.GetFileName(entry.Name), memStream);
+                        files.Add(entry.Name, memStream);
                     }
                 }
             }
@@ -173,20 +176,19 @@ internal class FileHandler : IFileHandler
         if (!files.TryGetValue(textureName, out var stream))
             return Array.Empty<byte>();
 
-        var buffer = new byte[stream.Length];
-        _ = stream.Read(buffer, 0, buffer.Length);
+        var buffer = stream.ToArray();
 
         return buffer;
     }
 
-    public void LoadModelFiles(IModel3D model3D, string geometryId, ContainerCache cache)
+    public void AddModelFilesToCache(IModel3D model3D, string geometryId, ContainerCache cache)
     {
         if (string.IsNullOrWhiteSpace(geometryId))
             throw new ArgumentException(@$"'{nameof(geometryId)}' cannot be null or whitespace.", nameof(geometryId));
 
         ThrowWhenModelIsInvalid(model3D);
 
-        CopyFile(model3D.FileName, model3D.Stream, geometryId, cache);
+        CopyFile(model3D.FileName, model3D.ObjFile, geometryId, cache);
 
         foreach (var materialLibraryFile in model3D.ReferencedMaterialLibraryFiles)
         {
@@ -199,7 +201,7 @@ internal class FileHandler : IFileHandler
         }
     }
 
-    private static void CopyFile(string fileName, Stream file, string geometryId, ContainerCache cache)
+    private static void CopyFile(string fileName, byte[] file, string geometryId, ContainerCache cache)
     {
         if (!cache.Geometries.TryGetValue(geometryId, out var files))
         {
@@ -207,7 +209,8 @@ internal class FileHandler : IFileHandler
             cache.Geometries.Add(geometryId, files);
         }
 
-        files.Add(fileName, file);
+        var copy = new MemoryStream(file);
+        files.Add(fileName, copy);
     }
 
     private static void ThrowWhenModelIsInvalid(IModel3D model3D)

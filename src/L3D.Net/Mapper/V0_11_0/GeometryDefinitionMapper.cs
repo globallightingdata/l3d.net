@@ -1,30 +1,29 @@
 ﻿using L3D.Net.Data;
-using L3D.Net.XML.V0_10_0.Dto;
+using L3D.Net.XML.V0_11_0.Dto;
 using System;
 
-namespace L3D.Net.Mapper.V0_11_0
+namespace L3D.Net.Mapper.V0_11_0;
+
+public class GeometryDefinitionMapper : DtoMapperBase<GeometryFileDefinition, GeometryDefinitionDto>
 {
-    public class GeometryDefinitionMapper : DtoMapperBase<GeometryFileDefinition, GeometryDefinitionDto>
+    public static readonly GeometryDefinitionMapper Instance = new();
+
+    protected override GeometryFileDefinition ConvertData(GeometryDefinitionDto element) => element switch
     {
-        public static readonly GeometryDefinitionMapper Instance = new();
-
-        protected override GeometryFileDefinition ConvertData(GeometryDefinitionDto element) => element switch
+        GeometryFileDefinitionDto geometryFileDefinition => new GeometryFileDefinition
         {
-            GeometryFileDefinitionDto geometryFileDefinition => new GeometryFileDefinition
-            {
-                GeometryId = geometryFileDefinition.GeometryId,
-                FileName = geometryFileDefinition.FileName,
-                Units = GeometricUnitsMapper.Instance.Convert(geometryFileDefinition.Units)
-            },
-            _ => throw new ArgumentOutOfRangeException(nameof(element))
-        };
+            GeometryId = geometryFileDefinition.GeometryId,
+            FileName = geometryFileDefinition.FileName,
+            Units = GeometricUnitsMapper.Instance.Convert(geometryFileDefinition.Units)
+        },
+        _ => throw new ArgumentOutOfRangeException(nameof(element))
+    };
 
-        protected override GeometryDefinitionDto ConvertData(GeometryFileDefinition element) =>
-            new GeometryFileDefinitionDto
-            {
-                GeometryId = element.GeometryId,
-                FileName = element.FileName,
-                Units = GeometricUnitsMapper.Instance.Convert(element.Units)
-            };
-    }
+    protected override GeometryDefinitionDto ConvertData(GeometryFileDefinition element) =>
+        new GeometryFileDefinitionDto
+        {
+            GeometryId = element.GeometryId,
+            FileName = element.FileName,
+            Units = GeometricUnitsMapper.Instance.Convert(element.Units)
+        };
 }

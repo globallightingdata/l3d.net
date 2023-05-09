@@ -1,14 +1,13 @@
 ﻿// ReSharper disable InconsistentNaming
-namespace L3D.Net.Data
+namespace L3D.Net.Data;
+
+public enum GeometricUnits
 {
-    public enum GeometricUnits
-    {
-        m,
-        dm,
-        cm,
-        mm,
-        yard,
-        foot,
-        inch
-    }
+    m,
+    dm,
+    cm,
+    mm,
+    yard,
+    foot,
+    inch
 }
