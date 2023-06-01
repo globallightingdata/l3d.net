@@ -4,12 +4,14 @@ using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
+using L3D.Net.XML.V0_11_0;
 
 namespace L3D.Net.Tests;
 
 public static class ExamplesExtensions
 {
     private static readonly IObjParser ObjParser = Geometry.ObjParser.Instance;
+    private static readonly ILuminaireResolver Resolver = LuminaireResolver.Instance;
 
     public static Luminaire BuildExample000(this Luminaire luminaire)
     {
@@ -74,7 +76,7 @@ public static class ExamplesExtensions
             }
         };
 
-        return luminaire;
+        return Resolver.Resolve(luminaire, cache)!;
     }
 
     public static Luminaire BuildExample001(this Luminaire luminaire)
@@ -152,7 +154,7 @@ public static class ExamplesExtensions
             }
         };
 
-        return luminaire;
+        return Resolver.Resolve(luminaire, cache)!;
     }
 
     public static Luminaire BuildExample002(this Luminaire luminaire)
@@ -424,7 +426,7 @@ public static class ExamplesExtensions
             }
         };
 
-        return luminaire;
+        return Resolver.Resolve(luminaire, cache)!;
     }
 
     public static Luminaire BuildExample003(this Luminaire luminaire)
@@ -490,7 +492,7 @@ public static class ExamplesExtensions
             }
         };
 
-        return luminaire;
+        return Resolver.Resolve(luminaire, cache)!;
     }
 
     public static Luminaire BuildExample004(this Luminaire luminaire)
@@ -635,7 +637,7 @@ public static class ExamplesExtensions
             }
         };
 
-        return luminaire;
+        return Resolver.Resolve(luminaire, cache)!;
     }
 
     public static Luminaire BuildExample005(this Luminaire luminaire)
@@ -772,7 +774,7 @@ public static class ExamplesExtensions
             }
         };
 
-        return luminaire;
+        return Resolver.Resolve(luminaire, cache)!;
     }
 
     public static Luminaire BuildExample006(this Luminaire luminaire)
@@ -929,7 +931,7 @@ public static class ExamplesExtensions
             }
         };
 
-        return luminaire;
+        return Resolver.Resolve(luminaire, cache)!;
     }
 
     public static Luminaire BuildExample007(this Luminaire luminaire)
@@ -1218,7 +1220,7 @@ public static class ExamplesExtensions
             }
         };
 
-        return luminaire;
+        return Resolver.Resolve(luminaire, cache)!;
     }
 
     public static Luminaire BuildExample008(this Luminaire luminaire)
@@ -1284,6 +1286,6 @@ public static class ExamplesExtensions
             }
         };
 
-        return luminaire;
+        return Resolver.Resolve(luminaire, cache)!;
     }
 }

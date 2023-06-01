@@ -52,7 +52,7 @@ internal class LuminaireResolver : ILuminaireResolver
         if (model == null)
             return geometryFileDefinition;
 
-        geometryFileDefinition.Model = ScaleModel(model, GetScale(geometryFileDefinition.Units), source.GeometryId, cache);
+        geometryFileDefinition.Model = ScaleModel(model, GetScale(source.Units), source.GeometryId, cache);
         geometryFileDefinition.Units = source.Units;
         geometryFileDefinition.FileName = source.FileName;
 
