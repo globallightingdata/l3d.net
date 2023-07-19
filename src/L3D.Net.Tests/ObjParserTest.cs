@@ -59,7 +59,7 @@ public class ObjParserTest
     }
 
     [Test]
-    public void Parse_ShouldParseMaterialCorrectly()
+    public void Parse_Example008_ShouldParseMaterialCorrectly()
     {
         var examplePath = Path.Combine(Setup.ExamplesDirectory, "example_008");
         var objPath = Path.Combine(examplePath, "cube", "textured_cube.obj");
@@ -84,6 +84,177 @@ public class ObjParserTest
         modelMaterial.Color.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
         modelMaterial.Name.Should().Be("CubeMaterial");
         modelMaterial.TextureName.Should().Be("CubeTexture.png");
+
+        foreach (var modelPart in model.Data.FaceGroups)
+        {
+            foreach (var modelFace in modelPart.Faces)
+            {
+                modelFace.MaterialIndex.Should().Be(0);
+            }
+        }
+    }
+
+    [Test]
+    public void ParseFromFile_Example008_ShouldParseMaterialCorrectly()
+    {
+        var examplePath = Path.Combine(Setup.ExamplesDirectory, "example_008");
+        var objPath = Path.Combine(examplePath, "cube", "textured_cube.obj");
+        var mtlPath = Path.Combine(examplePath, "cube", "textured_cube.mtl");
+        var textureFile = Path.Combine(examplePath, "cube", "CubeTexture.png");
+
+        var parser = new ObjParser();
+
+        var model = parser.Parse(objPath, Substitute.For<ILogger>());
+
+        model.FileName.Should().BeEquivalentTo(Path.GetFileName(objPath));
+        model.ReferencedMaterialLibraryFiles.Should().HaveCount(1);
+        model.ReferencedMaterialLibraryFiles.Should().ContainKey(Path.GetFileName(mtlPath));
+        model.ReferencedTextureFiles.Should().HaveCount(1);
+        model.ReferencedTextureFiles.First().Key.Should().Be(Path.GetFileName(textureFile));
+        model.Data!.FaceGroups.Should().HaveCount(1);
+        model.Data.Materials.Should().HaveCount(1);
+        var modelMaterial = model.Data.Materials.First();
+        modelMaterial.Color.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
+        modelMaterial.Name.Should().Be("CubeMaterial");
+        modelMaterial.TextureName.Should().Be("CubeTexture.png");
+
+        foreach (var modelPart in model.Data.FaceGroups)
+        {
+            foreach (var modelFace in modelPart.Faces)
+            {
+                modelFace.MaterialIndex.Should().Be(0);
+            }
+        }
+    }
+
+    [Test]
+    public void Parse_Example009_ShouldParseMaterialCorrectly()
+    {
+        var examplePath = Path.Combine(Setup.ExamplesDirectory, "example_009");
+        var objPath = Path.Combine(examplePath, "cube", "textured_cube.obj");
+        var mtlPath = Path.Combine(examplePath, "cube", "textured_cube.mtl");
+        var textureFile = Path.Combine(examplePath, "cube", "CubeTexture.png");
+
+        using var cache = examplePath.ToCache();
+
+        var parser = new ObjParser();
+
+        var fileName = Path.GetFileName(objPath);
+        var model = parser.Parse(fileName, cache.Geometries["cube"], Substitute.For<ILogger>());
+
+        model!.FileName.Should().Be(fileName);
+        model.ReferencedMaterialLibraryFiles.Should().HaveCount(1);
+        model.ReferencedMaterialLibraryFiles.Should().Contain(d => d.Key == Path.GetFileName(mtlPath));
+        model.ReferencedTextureFiles.Should().HaveCount(1);
+        model.ReferencedTextureFiles.Should().Contain(d => d.Key == Path.GetFileName(textureFile));
+        model.Data!.FaceGroups.Should().HaveCount(1);
+        model.Data.Materials.Should().HaveCount(1);
+        var modelMaterial = model.Data.Materials.First();
+        modelMaterial.Color.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
+        modelMaterial.Name.Should().Be("CubeMaterial");
+        modelMaterial.TextureName.Should().Be("./CubeTexture.png");
+
+        foreach (var modelPart in model.Data.FaceGroups)
+        {
+            foreach (var modelFace in modelPart.Faces)
+            {
+                modelFace.MaterialIndex.Should().Be(0);
+            }
+        }
+    }
+
+    [Test]
+    public void ParseFromFile_Example009_ShouldParseMaterialCorrectly()
+    {
+        var examplePath = Path.Combine(Setup.ExamplesDirectory, "example_009");
+        var objPath = Path.Combine(examplePath, "cube", "textured_cube.obj");
+        var mtlPath = Path.Combine(examplePath, "cube", "textured_cube.mtl");
+        var textureFile = Path.Combine(examplePath, "cube", "CubeTexture.png");
+
+        var parser = new ObjParser();
+
+        var model = parser.Parse(objPath, Substitute.For<ILogger>());
+
+        model.FileName.Should().BeEquivalentTo(Path.GetFileName(objPath));
+        model.ReferencedMaterialLibraryFiles.Should().HaveCount(1);
+        model.ReferencedMaterialLibraryFiles.Should().ContainKey(Path.GetFileName(mtlPath));
+        model.ReferencedTextureFiles.Should().HaveCount(1);
+        model.ReferencedTextureFiles.First().Key.Should().Be(Path.GetFileName(textureFile));
+        model.Data!.FaceGroups.Should().HaveCount(1);
+        model.Data.Materials.Should().HaveCount(1);
+        var modelMaterial = model.Data.Materials.First();
+        modelMaterial.Color.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
+        modelMaterial.Name.Should().Be("CubeMaterial");
+        modelMaterial.TextureName.Should().Be("./CubeTexture.png");
+
+        foreach (var modelPart in model.Data.FaceGroups)
+        {
+            foreach (var modelFace in modelPart.Faces)
+            {
+                modelFace.MaterialIndex.Should().Be(0);
+            }
+        }
+    }
+
+    [Test]
+    public void Parse_Example010_ShouldParseMaterialCorrectly()
+    {
+        var examplePath = Path.Combine(Setup.ExamplesDirectory, "example_010");
+        var objPath = Path.Combine(examplePath, "cube", "textured_cube.obj");
+        var mtlPath = Path.Combine(examplePath, "cube", "textured_cube.mtl");
+        var textureFile = Path.Combine(examplePath, "cube", "CubeTexture.png");
+
+        using var cache = examplePath.ToCache();
+
+        var parser = new ObjParser();
+
+        var fileName = Path.GetFileName(objPath);
+        var model = parser.Parse(fileName, cache.Geometries["cube"], Substitute.For<ILogger>());
+
+        model!.FileName.Should().Be(fileName);
+        model.ReferencedMaterialLibraryFiles.Should().HaveCount(1);
+        model.ReferencedMaterialLibraryFiles.Should().Contain(d => d.Key == Path.GetFileName(mtlPath));
+        model.ReferencedTextureFiles.Should().HaveCount(1);
+        model.ReferencedTextureFiles.Should().Contain(d => d.Key == Path.GetFileName(textureFile));
+        model.Data!.FaceGroups.Should().HaveCount(1);
+        model.Data.Materials.Should().HaveCount(1);
+        var modelMaterial = model.Data.Materials.First();
+        modelMaterial.Color.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
+        modelMaterial.Name.Should().Be("CubeMaterial");
+        modelMaterial.TextureName.Should().Be("D:\\CubeTexture.png");
+
+        foreach (var modelPart in model.Data.FaceGroups)
+        {
+            foreach (var modelFace in modelPart.Faces)
+            {
+                modelFace.MaterialIndex.Should().Be(0);
+            }
+        }
+    }
+
+    [Test]
+    public void ParseFromFile_Example010_ShouldParseMaterialCorrectly()
+    {
+        var examplePath = Path.Combine(Setup.ExamplesDirectory, "example_010");
+        var objPath = Path.Combine(examplePath, "cube", "textured_cube.obj");
+        var mtlPath = Path.Combine(examplePath, "cube", "textured_cube.mtl");
+        var textureFile = Path.Combine(examplePath, "cube", "CubeTexture.png");
+
+        var parser = new ObjParser();
+
+        var model = parser.Parse(objPath, Substitute.For<ILogger>());
+
+        model.FileName.Should().BeEquivalentTo(Path.GetFileName(objPath));
+        model.ReferencedMaterialLibraryFiles.Should().HaveCount(1);
+        model.ReferencedMaterialLibraryFiles.Should().ContainKey(Path.GetFileName(mtlPath));
+        model.ReferencedTextureFiles.Should().HaveCount(1);
+        model.ReferencedTextureFiles.First().Key.Should().Be(Path.GetFileName(textureFile));
+        model.Data!.FaceGroups.Should().HaveCount(1);
+        model.Data.Materials.Should().HaveCount(1);
+        var modelMaterial = model.Data.Materials.First();
+        modelMaterial.Color.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
+        modelMaterial.Name.Should().Be("CubeMaterial");
+        modelMaterial.TextureName.Should().Be("D:\\CubeTexture.png");
 
         foreach (var modelPart in model.Data.FaceGroups)
         {
@@ -132,39 +303,6 @@ public class ObjParserTest
                     faceVertex.TextureCoordinateIndex.Should().BePositive();
                     faceVertex.TextureCoordinateIndex.Should().BeLessOrEqualTo(model.Data.TextureCoordinates.Count);
                 }
-            }
-        }
-    }
-
-    [Test]
-    public void ParseFromFile_ShouldParseMaterialCorrectly()
-    {
-        var examplePath = Path.Combine(Setup.ExamplesDirectory, "example_008");
-        var objPath = Path.Combine(examplePath, "cube", "textured_cube.obj");
-        var mtlPath = Path.Combine(examplePath, "cube", "textured_cube.mtl");
-        var textureFile = Path.Combine(examplePath, "cube", "CubeTexture.png");
-
-        var parser = new ObjParser();
-
-        var model = parser.Parse(objPath, Substitute.For<ILogger>());
-
-        model.FileName.Should().BeEquivalentTo(Path.GetFileName(objPath));
-        model.ReferencedMaterialLibraryFiles.Should().HaveCount(1);
-        model.ReferencedMaterialLibraryFiles.Should().ContainKey(Path.GetFileName(mtlPath));
-        model.ReferencedTextureFiles.Should().HaveCount(1);
-        model.ReferencedTextureFiles.First().Key.Should().Be(Path.GetFileName(textureFile));
-        model.Data!.FaceGroups.Should().HaveCount(1);
-        model.Data.Materials.Should().HaveCount(1);
-        var modelMaterial = model.Data.Materials.First();
-        modelMaterial.Color.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
-        modelMaterial.Name.Should().Be("CubeMaterial");
-        modelMaterial.TextureName.Should().Be("CubeTexture.png");
-
-        foreach (var modelPart in model.Data.FaceGroups)
-        {
-            foreach (var modelFace in modelPart.Faces)
-            {
-                modelFace.MaterialIndex.Should().Be(0);
             }
         }
     }

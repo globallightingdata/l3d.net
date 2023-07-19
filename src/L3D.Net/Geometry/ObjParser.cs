@@ -25,7 +25,7 @@ public class ObjParser : IObjParser
 
         var objMaterialLibraries = CollectAvailableMaterialLibraries(logger, objFile, files).ToList();
 
-        List<string> textures = CollectAvailableTextures(objMaterialLibraries).Distinct().Where(x => !string.IsNullOrWhiteSpace(x)).Where(files.ContainsKey!).ToList()!;
+        List<string> textures = CollectAvailableTextures(objMaterialLibraries).Distinct().Where(x => !string.IsNullOrWhiteSpace(x)).Select(Path.GetFileName).Where(files.ContainsKey).ToList()!;
 
         return new ObjModel3D
         {
@@ -48,7 +48,7 @@ public class ObjParser : IObjParser
 
         var objMaterialLibraries = CollectAvailableMaterialLibraries(objFile, directory, logger).ToList();
 
-        List<string> textures = CollectAvailableTextures(objMaterialLibraries).Distinct().Where(x => !string.IsNullOrWhiteSpace(x)).ToList()!;
+        List<string> textures = CollectAvailableTextures(objMaterialLibraries).Distinct().Where(x => !string.IsNullOrWhiteSpace(x)).Select(Path.GetFileName).ToList();
 
         var filePaths = objMaterialLibraries.Select(x => x.Item1).Union(textures).ToList();
         filePaths.Add(filePath);
@@ -71,6 +71,7 @@ public class ObjParser : IObjParser
         {
             try
             {
+                mtl = Path.GetFileName(mtl);
                 var materialFile = Path.Combine(directory, mtl);
                 return Tuple.Create(mtl, ObjMaterialFile.FromFile(materialFile));
             }
@@ -90,6 +91,7 @@ public class ObjParser : IObjParser
         {
             try
             {
+                mtl = Path.GetFileName(mtl);
                 var materialFile = files[mtl];
                 materialFile.Seek(0, SeekOrigin.Begin);
                 return Tuple.Create(mtl, ObjMaterialFile.FromStream(materialFile));
