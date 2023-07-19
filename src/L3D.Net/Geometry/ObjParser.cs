@@ -64,7 +64,7 @@ public IModel3D? Parse(string fileName, Dictionary<string, Stream> files, ILogge
         var filePaths = objMaterialLibraries.Select(x => x.Item1).Union(textures).ToList();
         filePaths.Add(filePath);
 
-        var files = filePaths.ToDictionary<string, string, byte[]>(Path.GetFileName, d => File.ReadAllBytes(Path.Combine(directory, d)));
+        var files = filePaths.ToDictionary(GetFileName, d => File.ReadAllBytes(Path.Combine(directory, d)));
 
         return new ObjModel3D
         {
@@ -102,7 +102,7 @@ public IModel3D? Parse(string fileName, Dictionary<string, Stream> files, ILogge
         {
             try
             {
-                mtl = Path.GetFileName(mtl);
+                mtl = GetFileName(mtl);
                 var materialFile = files[mtl];
                 materialFile.Seek(0, SeekOrigin.Begin);
                 return Tuple.Create(mtl, ObjMaterialFile.FromStream(materialFile));
