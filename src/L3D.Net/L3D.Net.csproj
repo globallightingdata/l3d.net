@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>10</LangVersion>
+    <LangVersion>12</LangVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Company>DIAL GmbH</Company>
     <Authors>DIAL GmbH</Authors>
-    <Copyright>DIAL GmbH © 2023</Copyright>
+    <Copyright>DIAL GmbH © 2024</Copyright>
     <Description>L3D XML serializer, validator, builder and .l3d container reader</Description>
     <PackageId>L3D.Net</PackageId>
     <PackageTags>global lighting data format gldf l3d xml serializier parser validator</PackageTags>
@@ -25,10 +25,10 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="JeremyAnsel.Media.WavefrontObj" Version="3.0.29" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
-    <PackageReference Include="MinVer" PrivateAssets="all" Version="4.3.0" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="JeremyAnsel.Media.WavefrontObj" Version="3.0.36" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
+    <PackageReference Include="MinVer" PrivateAssets="all" Version="5.0.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
   
   <ItemGroup>
