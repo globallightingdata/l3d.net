@@ -26,7 +26,7 @@ public class ReadXmlExamplesTest
         var serilizer = new XmlDtoSerializer();
         var luminaire = serilizer.Deserialize(stream);
 
-        luminaire.Should().BeNull();
+        luminaire.Should().NotBeNull();
     }
 
     [Test]
