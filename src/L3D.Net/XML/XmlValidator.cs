@@ -17,6 +17,7 @@ public class XmlValidator : IXmlValidator
 {
     public IEnumerable<ValidationHint> ValidateStream(Stream xmlStream)
     {
+        xmlStream.Seek(0, SeekOrigin.Begin);
         if (!TryLoadDocument(xmlStream, out var document) || document!.Root == null)
         {
             yield return new StructureXmlValidationHint(ErrorMessages.StructureXmlNotReadable);

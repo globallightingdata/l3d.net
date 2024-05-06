@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using FluentAssertions;
 
 namespace L3D.Net.Tests;
 
@@ -25,7 +26,7 @@ public class ReadXmlExamplesTest
         var serilizer = new XmlDtoSerializer();
         var luminaire = serilizer.Deserialize(stream);
 
-        Assert.NotNull(luminaire);
+        luminaire.Should().NotBeNull();
     }
 
     [Test]
@@ -49,7 +50,7 @@ public class ReadXmlExamplesTest
                 stopwatch.Start();
                 var serilizer = new XmlDtoSerializer();
                 var luminaire = serilizer.Deserialize(stream);
-                Assert.NotNull(luminaire);
+                luminaire.Should().BeNull();
 
                 if (filesIndex == 0)
                 {

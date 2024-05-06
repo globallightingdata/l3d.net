@@ -1288,4 +1288,136 @@ public static class ExamplesExtensions
 
         return Resolver.Resolve(luminaire, cache)!;
     }
+
+    public static Luminaire BuildExample009(this Luminaire luminaire)
+    {
+        var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_009");
+        var cubeObjPath = Path.Combine(exampleDirectory, "cube", "textured_cube.obj");
+        var cache = exampleDirectory.ToCache();
+        var fileName = Path.GetFileName(cubeObjPath);
+
+        luminaire.Header = new Header
+        {
+            CreatedWithApplication = "Example-Tool"
+        };
+
+        var baseDefinition = new GeometryFileDefinition
+        {
+            GeometryId = "cube",
+            Units = GeometricUnits.m,
+            Model = ObjParser.Parse(fileName, cache.Geometries["cube"], NullLogger.Instance),
+            FileName = fileName
+        };
+
+        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
+        {
+            baseDefinition
+        };
+
+        luminaire.Parts = new List<GeometryPart>
+        {
+            new()
+            {
+                Name = "luminaire",
+                GeometryReference = baseDefinition,
+                LightEmittingObjects = new List<LightEmittingPart>
+                {
+                    new(new Rectangle
+                    {
+                        SizeX = 0.5,
+                        SizeY = 0.25
+                    })
+                    {
+                        Name = "leo"
+                    }
+                },
+                LightEmittingSurfaces = new List<LightEmittingSurfacePart>
+                {
+                    new()
+                    {
+                        Name = "les",
+                        FaceAssignments = new List<FaceAssignment>
+                        {
+                            new SingleFaceAssignment
+                            {
+                                FaceIndex = 3
+                            }
+                        },
+                        LightEmittingPartIntensityMapping = new Dictionary<string, double>
+                        {
+                            ["leo"] = 1
+                        }
+                    }
+                }
+            }
+        };
+
+        return Resolver.Resolve(luminaire, cache)!;
+    }
+
+    public static Luminaire BuildExample010(this Luminaire luminaire)
+    {
+        var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_010");
+        var cubeObjPath = Path.Combine(exampleDirectory, "cube", "textured_cube.obj");
+        var cache = exampleDirectory.ToCache();
+        var fileName = Path.GetFileName(cubeObjPath);
+
+        luminaire.Header = new Header
+        {
+            CreatedWithApplication = "Example-Tool"
+        };
+
+        var baseDefinition = new GeometryFileDefinition
+        {
+            GeometryId = "cube",
+            Units = GeometricUnits.m,
+            Model = ObjParser.Parse(fileName, cache.Geometries["cube"], NullLogger.Instance),
+            FileName = fileName
+        };
+
+        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
+        {
+            baseDefinition
+        };
+
+        luminaire.Parts = new List<GeometryPart>
+        {
+            new()
+            {
+                Name = "luminaire",
+                GeometryReference = baseDefinition,
+                LightEmittingObjects = new List<LightEmittingPart>
+                {
+                    new(new Rectangle
+                    {
+                        SizeX = 0.5,
+                        SizeY = 0.25
+                    })
+                    {
+                        Name = "leo"
+                    }
+                },
+                LightEmittingSurfaces = new List<LightEmittingSurfacePart>
+                {
+                    new()
+                    {
+                        Name = "les",
+                        FaceAssignments = new List<FaceAssignment>
+                        {
+                            new SingleFaceAssignment
+                            {
+                                FaceIndex = 3
+                            }
+                        },
+                        LightEmittingPartIntensityMapping = new Dictionary<string, double>
+                        {
+                            ["leo"] = 1
+                        }
+                    }
+                }
+            }
+        };
+
+        return Resolver.Resolve(luminaire, cache)!;
+    }
 }
