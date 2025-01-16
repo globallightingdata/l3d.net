@@ -7,6 +7,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "L3D.Net", "L3D.Net\L3D.Net.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "L3D.Net.Tests", "L3D.Net.Tests\L3D.Net.Tests.csproj", "{AEA0AB06-5AD5-4E6E-905D-5EAB69671C43}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{0BFF607A-2BAB-4145-A82C-63F71BD4B3B2}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
