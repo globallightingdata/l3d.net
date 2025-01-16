@@ -3,15 +3,15 @@ using System.Xml.Serialization;
 
 namespace L3D.Net.XML.V0_11_0.Dto;
 
-/// <remarks/>
+/// <remarks />
 [Serializable]
 public class FaceRangeAssignmentDto : FaceAssignmentDto
 {
-    /// <remarks/>
+    /// <remarks />
     [XmlAttribute("faceIndexBegin")]
     public int FaceIndexBegin { get; set; }
 
-    /// <remarks/>
+    /// <remarks />
     [XmlAttribute("faceIndexEnd")]
     public int FaceIndexEnd { get; set; }
 }

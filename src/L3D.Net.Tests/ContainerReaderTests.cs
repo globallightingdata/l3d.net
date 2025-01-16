@@ -91,20 +91,21 @@ public class ContainerReaderTests
                     .ExtractContainerOrThrow(Arg.Is(containerPath));
                 break;
             case ContainerTypeToTest.Bytes:
-                var containerBytes = new byte[] { 0, 1, 2, 3, 4 };
+                var containerBytes = new byte[] {0, 1, 2, 3, 4};
                 _reader.Read(containerBytes);
 
                 _fileHandler.Received(1)
                     .ExtractContainerOrThrow(Arg.Is(containerBytes));
                 break;
             case ContainerTypeToTest.Stream:
-                using (var stream = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var stream = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     _reader.Read(stream);
 
                     _fileHandler.Received(1)
                         .ExtractContainerOrThrow(Arg.Is(stream));
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -120,10 +121,10 @@ public class ContainerReaderTests
                 _reader.Read(Guid.NewGuid().ToString());
                 break;
             case ContainerTypeToTest.Bytes:
-                _reader.Read(new byte[] { 0, 1, 2, 3, 4 });
+                _reader.Read(new byte[] {0, 1, 2, 3, 4});
                 break;
             case ContainerTypeToTest.Stream:
-                using (var stream = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var stream = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                     _reader.Read(stream);
                 break;
             default:
@@ -136,18 +137,17 @@ public class ContainerReaderTests
     [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
     public void Read_ShouldThrow_IfNothingCouldBeRead(ContainerTypeToTest containerTypeToTest)
     {
-        _l3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns((Luminaire)null!);
+        _l3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns((Luminaire) null!);
 
         Action act = containerTypeToTest switch
         {
             ContainerTypeToTest.Path => () => _reader.Read(Guid.NewGuid().ToString()),
-            ContainerTypeToTest.Bytes => () => _reader.Read(new byte[] { 0, 1, 2, 3, 4 }),
+            ContainerTypeToTest.Bytes => () => _reader.Read(new byte[] {0, 1, 2, 3, 4}),
             ContainerTypeToTest.Stream => () =>
             {
-                using var stream = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 });
+                using var stream = new MemoryStream(new byte[] {0, 1, 2, 3, 4});
                 _reader.Read(stream);
-            }
-            ,
+            },
             _ => throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null)
         };
 
@@ -203,7 +203,7 @@ public class ContainerReaderTests
                         {
                             Name = "les", FaceAssignments = new List<FaceAssignment>
                             {
-                                new SingleFaceAssignment { FaceIndex = 3 }
+                                new SingleFaceAssignment {FaceIndex = 3}
                             },
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {

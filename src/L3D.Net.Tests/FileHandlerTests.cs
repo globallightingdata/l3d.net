@@ -174,7 +174,7 @@ public class FileHandlerTests
         _directoriesToDelete.Add(targetTestDirectory);
         var model3D = CreateFakeModel3D();
 
-        model3D.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]> { [path ?? string.Empty] = Array.Empty<byte>() });
+        model3D.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]> {[path ?? string.Empty] = Array.Empty<byte>()});
 
         var fileHandler = new FileHandler();
         var action = () => fileHandler.AddModelFilesToCache(model3D, "someId", new ContainerCache());
@@ -190,8 +190,8 @@ public class FileHandlerTests
         _directoriesToDelete.Add(targetTestDirectory);
         var model3D = CreateFakeModel3D();
 
-        model3D.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]> { ["someId"] = Array.Empty<byte>() });
-        model3D.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]> { [path ?? string.Empty] = Array.Empty<byte>() });
+        model3D.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]> {["someId"] = Array.Empty<byte>()});
+        model3D.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]> {[path ?? string.Empty] = Array.Empty<byte>()});
 
         var fileHandler = new FileHandler();
         var action = () => fileHandler.AddModelFilesToCache(model3D, "someId", new ContainerCache());
@@ -244,7 +244,7 @@ public class FileHandlerTests
         var memStream = new MemoryStream(expectedBytes);
         var files = new Dictionary<string, Stream>
         {
-            { textureName, memStream }
+            {textureName, memStream}
         };
 
         cache.Geometries.Add(geomId, files);

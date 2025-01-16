@@ -18,16 +18,16 @@ public class GeometryDefinitionMapperTests : MapperTestBase
                 new GeometryFileDefinition())
             .SetArgDisplayNames("<new()>", "<new()>");
         yield return new TestCaseData(
-                new GeometryFileDefinitionDto { GeometryId = "id" },
-                new GeometryFileDefinition { GeometryId = "id" })
+                new GeometryFileDefinitionDto {GeometryId = "id"},
+                new GeometryFileDefinition {GeometryId = "id"})
             .SetArgDisplayNames(nameof(GeometryFileDefinitionDto.GeometryId), nameof(GeometryFileDefinition.GeometryId));
         yield return new TestCaseData(
-                new GeometryFileDefinitionDto { FileName = "name" },
-                new GeometryFileDefinition { FileName = "name" })
+                new GeometryFileDefinitionDto {FileName = "name"},
+                new GeometryFileDefinition {FileName = "name"})
             .SetArgDisplayNames(nameof(GeometryFileDefinitionDto.FileName), nameof(GeometryFileDefinition.FileName));
         yield return new TestCaseData(
-                new GeometryFileDefinitionDto { Units = GeometricUnitsDto.foot },
-                new GeometryFileDefinition { Units = GeometricUnits.foot })
+                new GeometryFileDefinitionDto {Units = GeometricUnitsDto.foot},
+                new GeometryFileDefinition {Units = GeometricUnits.foot})
             .SetArgDisplayNames(nameof(GeometryFileDefinitionDto.Units), nameof(GeometryFileDefinition.Units));
         yield return new TestCaseData(
                 new GeometryFileDefinitionDto

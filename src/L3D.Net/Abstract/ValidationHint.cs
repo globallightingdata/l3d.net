@@ -3,5 +3,6 @@
 public abstract class ValidationHint
 {
     public abstract Severity Severity { get; }
+
     public abstract string Message { get; }
 }

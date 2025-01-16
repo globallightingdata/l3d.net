@@ -37,7 +37,8 @@ internal class LuminaireResolver : ILuminaireResolver
         return luminaire;
     }
 
-    private GeometryFileDefinition ResolveGeometrySource(GeometryFileDefinition geometryFileDefinition, IEnumerable<GeometryFileDefinition> geometrySources, ContainerCache cache, ILogger? logger)
+    private GeometryFileDefinition ResolveGeometrySource(GeometryFileDefinition geometryFileDefinition, IEnumerable<GeometryFileDefinition> geometrySources, ContainerCache cache,
+        ILogger? logger)
     {
         var source = geometrySources.FirstOrDefault(x => x.GeometryId.Equals(geometryFileDefinition.GeometryId, StringComparison.Ordinal));
 

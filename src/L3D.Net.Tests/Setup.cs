@@ -17,14 +17,21 @@ public static class Setup
     private static readonly MemoryStream Stream = new();
 
     public static string TestDataDirectory { get; private set; } = null!;
+
     public static string ExamplesDirectory { get; private set; } = null!;
+
     public static string ValidVersionsDirectory { get; private set; } = null!;
+
     public static string InvalidVersionsDirectory { get; private set; } = null!;
 
     public static IEnumerable<Stream> ExampleXmlStreams { get; private set; } = Array.Empty<Stream>();
+
     public static IEnumerable<string> ExampleXmlFiles { get; private set; } = Array.Empty<string>();
+
     public static IEnumerable<string> ExampleObjFiles { get; private set; } = Array.Empty<string>();
+
     public static IEnumerable<string> ValidVersionXmlFiles { get; private set; } = Array.Empty<string>();
+
     public static IEnumerable<string> InvalidVersionXmlFiles { get; private set; } = Array.Empty<string>();
 
     [OneTimeSetUp]

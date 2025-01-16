@@ -5,11 +5,11 @@ namespace L3D.Net.XML.V0_11_0.Dto;
 
 public class LightEmittingSurfacePartDto : PartDto
 {
-    /// <remarks/>
+    /// <remarks />
     [XmlElement("LightEmittingObjectReference", Type = typeof(LightEmittingObjectReferenceDto))]
     public List<LightEmittingObjectReferenceDto> LightEmittingPartIntensityMapping { get; set; } = new();
 
-    /// <remarks/>
+    /// <remarks />
     [XmlArrayItem("FaceAssignment", Type = typeof(SingleFaceAssignmentDto))]
     [XmlArrayItem("FaceRangeAssignment", Type = typeof(FaceRangeAssignmentDto))]
     public List<FaceAssignmentDto> FaceAssignments { get; set; } = new();

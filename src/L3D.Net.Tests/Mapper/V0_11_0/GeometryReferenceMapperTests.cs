@@ -18,8 +18,8 @@ public class GeometryReferenceMapperTests : MapperTestBase
                 new GeometryFileDefinition())
             .SetArgDisplayNames("<new()>", "<new()>");
         yield return new TestCaseData(
-                new GeometryReferenceDto { GeometryId = "id" },
-                new GeometryFileDefinition { GeometryId = "id" })
+                new GeometryReferenceDto {GeometryId = "id"},
+                new GeometryFileDefinition {GeometryId = "id"})
             .SetArgDisplayNames(nameof(GeometryReferenceDto.GeometryId), nameof(GeometryFileDefinition.GeometryId));
         yield return new TestCaseData(
                 new GeometryReferenceDto

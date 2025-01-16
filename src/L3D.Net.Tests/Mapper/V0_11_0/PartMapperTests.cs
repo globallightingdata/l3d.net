@@ -27,8 +27,8 @@ public class PartMapperTests : MapperTestBase
                 new JointPart())
             .SetArgDisplayNames("<new JointPartDto()>", "<new JointPart()>");
         yield return new TestCaseData(
-                new LightEmittingPartDto(new CircleDto { Diameter = 0.1 }),
-                new LightEmittingPart(new Circle { Diameter = 0.1 }))
+                new LightEmittingPartDto(new CircleDto {Diameter = 0.1}),
+                new LightEmittingPart(new Circle {Diameter = 0.1}))
             .SetArgDisplayNames("<new LightEmittingPartDto()>", "<new LightEmittingPart()>");
         yield return new TestCaseData(
                 new SensorPartDto(),
@@ -78,11 +78,11 @@ public class PartMapperTests : MapperTestBase
                 new GeometryPartDto
                 {
                     Name = "name2",
-                    Position = new Vector3Dto { X = 0.1f, Y = 0.2f, Z = 0.3f },
-                    Rotation = new Vector3Dto { X = 0.4f, Y = 0.5f, Z = 0.6f },
+                    Position = new Vector3Dto {X = 0.1f, Y = 0.2f, Z = 0.3f},
+                    Rotation = new Vector3Dto {X = 0.4f, Y = 0.5f, Z = 0.6f},
                     IncludedInMeasurement = true,
-                    ElectricalConnectors = new Vector3Dto[] { new() { X = 0.7f, Y = 0.8f, Z = 0.9f } },
-                    GeometryReference = new GeometryReferenceDto { GeometryId = "id" },
+                    ElectricalConnectors = new Vector3Dto[] {new() {X = 0.7f, Y = 0.8f, Z = 0.9f}},
+                    GeometryReference = new GeometryReferenceDto {GeometryId = "id"},
                     LightEmittingObjects = new LightEmittingPartDto[]
                     {
                         new(new RectangleDto
@@ -92,8 +92,8 @@ public class PartMapperTests : MapperTestBase
                         })
                         {
                             Name = "name3",
-                            Rotation = new Vector3Dto { X = 1.0f, Y = 1.1f, Z = 1.2f },
-                            Position = new Vector3Dto { X = 1.3f, Y = 1.4f, Z = 1.5f },
+                            Rotation = new Vector3Dto {X = 1.0f, Y = 1.1f, Z = 1.2f},
+                            Position = new Vector3Dto {X = 1.3f, Y = 1.4f, Z = 1.5f},
                             LuminousHeights = new LuminousHeightsDto
                             {
                                 C0 = 10,
@@ -132,12 +132,12 @@ public class PartMapperTests : MapperTestBase
                         new()
                         {
                             Name = "name5",
-                            Rotation = new Vector3Dto { X = 1.6f, Y = 1.7f, Z = 1.8f },
-                            Position = new Vector3Dto { X = 1.9f, Y = 2.0f, Z = 2.1f },
-                            DefaultRotation = new Vector3Dto { X = 2.2f, Y = 2.3f, Z = 2.4f },
-                            XAxis = new AxisRotationDto { Min = 2.5, Max = 2.6, Step = 2.7 },
-                            YAxis = new AxisRotationDto { Min = 2.8, Max = 2.9, Step = 3.0 },
-                            ZAxis = new AxisRotationDto { Min = 3.1, Max = 3.2, Step = 3.3 },
+                            Rotation = new Vector3Dto {X = 1.6f, Y = 1.7f, Z = 1.8f},
+                            Position = new Vector3Dto {X = 1.9f, Y = 2.0f, Z = 2.1f},
+                            DefaultRotation = new Vector3Dto {X = 2.2f, Y = 2.3f, Z = 2.4f},
+                            XAxis = new AxisRotationDto {Min = 2.5, Max = 2.6, Step = 2.7},
+                            YAxis = new AxisRotationDto {Min = 2.8, Max = 2.9, Step = 3.0},
+                            ZAxis = new AxisRotationDto {Min = 3.1, Max = 3.2, Step = 3.3},
                             Geometries = new List<GeometryPartDto>
                             {
                                 new()
@@ -179,11 +179,11 @@ public class PartMapperTests : MapperTestBase
                 new GeometryPart
                 {
                     Name = "name2",
-                    Position = new Vector3 { X = 0.1f, Y = 0.2f, Z = 0.3f },
-                    Rotation = new Vector3 { X = 0.4f, Y = 0.5f, Z = 0.6f },
+                    Position = new Vector3 {X = 0.1f, Y = 0.2f, Z = 0.3f},
+                    Rotation = new Vector3 {X = 0.4f, Y = 0.5f, Z = 0.6f},
                     IncludedInMeasurement = true,
-                    ElectricalConnectors = new List<Vector3> { new() { X = 0.7f, Y = 0.8f, Z = 0.9f } },
-                    GeometryReference = new GeometryFileDefinition { GeometryId = "id" },
+                    ElectricalConnectors = new List<Vector3> {new() {X = 0.7f, Y = 0.8f, Z = 0.9f}},
+                    GeometryReference = new GeometryFileDefinition {GeometryId = "id"},
                     LightEmittingObjects = new List<LightEmittingPart>
                     {
                         new(new Rectangle
@@ -193,8 +193,8 @@ public class PartMapperTests : MapperTestBase
                         })
                         {
                             Name = "name3",
-                            Rotation = new Vector3 { X = 1.0f, Y = 1.1f, Z = 1.2f },
-                            Position = new Vector3 { X = 1.3f, Y = 1.4f, Z = 1.5f },
+                            Rotation = new Vector3 {X = 1.0f, Y = 1.1f, Z = 1.2f},
+                            Position = new Vector3 {X = 1.3f, Y = 1.4f, Z = 1.5f},
                             LuminousHeights = new LuminousHeights
                             {
                                 C0 = 10,
@@ -229,12 +229,12 @@ public class PartMapperTests : MapperTestBase
                         new()
                         {
                             Name = "name5",
-                            Rotation = new Vector3 { X = 1.6f, Y = 1.7f, Z = 1.8f },
-                            Position = new Vector3 { X = 1.9f, Y = 2.0f, Z = 2.1f },
-                            DefaultRotation = new Vector3 { X = 2.2f, Y = 2.3f, Z = 2.4f },
-                            XAxis = new AxisRotation { Min = 2.5, Max = 2.6, Step = 2.7 },
-                            YAxis = new AxisRotation { Min = 2.8, Max = 2.9, Step = 3.0 },
-                            ZAxis = new AxisRotation { Min = 3.1, Max = 3.2, Step = 3.3 },
+                            Rotation = new Vector3 {X = 1.6f, Y = 1.7f, Z = 1.8f},
+                            Position = new Vector3 {X = 1.9f, Y = 2.0f, Z = 2.1f},
+                            DefaultRotation = new Vector3 {X = 2.2f, Y = 2.3f, Z = 2.4f},
+                            XAxis = new AxisRotation {Min = 2.5, Max = 2.6, Step = 2.7},
+                            YAxis = new AxisRotation {Min = 2.8, Max = 2.9, Step = 3.0},
+                            ZAxis = new AxisRotation {Min = 3.1, Max = 3.2, Step = 3.3},
                             Geometries = new List<GeometryPart>
                             {
                                 new()
@@ -278,12 +278,12 @@ public class PartMapperTests : MapperTestBase
                 new JointPartDto
                 {
                     Name = "name5",
-                    Rotation = new Vector3Dto { X = 1.6f, Y = 1.7f, Z = 1.8f },
-                    Position = new Vector3Dto { X = 1.9f, Y = 2.0f, Z = 2.1f },
-                    DefaultRotation = new Vector3Dto { X = 2.2f, Y = 2.3f, Z = 2.4f },
-                    XAxis = new AxisRotationDto { Min = 2.5, Max = 2.6, Step = 2.7 },
-                    YAxis = new AxisRotationDto { Min = 2.8, Max = 2.9, Step = 3.0 },
-                    ZAxis = new AxisRotationDto { Min = 3.1, Max = 3.2, Step = 3.3 },
+                    Rotation = new Vector3Dto {X = 1.6f, Y = 1.7f, Z = 1.8f},
+                    Position = new Vector3Dto {X = 1.9f, Y = 2.0f, Z = 2.1f},
+                    DefaultRotation = new Vector3Dto {X = 2.2f, Y = 2.3f, Z = 2.4f},
+                    XAxis = new AxisRotationDto {Min = 2.5, Max = 2.6, Step = 2.7},
+                    YAxis = new AxisRotationDto {Min = 2.8, Max = 2.9, Step = 3.0},
+                    ZAxis = new AxisRotationDto {Min = 3.1, Max = 3.2, Step = 3.3},
                     Geometries = new List<GeometryPartDto>
                     {
                         new()
@@ -295,12 +295,12 @@ public class PartMapperTests : MapperTestBase
                 new JointPart
                 {
                     Name = "name5",
-                    Rotation = new Vector3 { X = 1.6f, Y = 1.7f, Z = 1.8f },
-                    Position = new Vector3 { X = 1.9f, Y = 2.0f, Z = 2.1f },
-                    DefaultRotation = new Vector3 { X = 2.2f, Y = 2.3f, Z = 2.4f },
-                    XAxis = new AxisRotation { Min = 2.5, Max = 2.6, Step = 2.7 },
-                    YAxis = new AxisRotation { Min = 2.8, Max = 2.9, Step = 3.0 },
-                    ZAxis = new AxisRotation { Min = 3.1, Max = 3.2, Step = 3.3 },
+                    Rotation = new Vector3 {X = 1.6f, Y = 1.7f, Z = 1.8f},
+                    Position = new Vector3 {X = 1.9f, Y = 2.0f, Z = 2.1f},
+                    DefaultRotation = new Vector3 {X = 2.2f, Y = 2.3f, Z = 2.4f},
+                    XAxis = new AxisRotation {Min = 2.5, Max = 2.6, Step = 2.7},
+                    YAxis = new AxisRotation {Min = 2.8, Max = 2.9, Step = 3.0},
+                    ZAxis = new AxisRotation {Min = 3.1, Max = 3.2, Step = 3.3},
                     Geometries = new List<GeometryPart>
                     {
                         new()
@@ -318,8 +318,8 @@ public class PartMapperTests : MapperTestBase
                 })
                 {
                     Name = "name3",
-                    Rotation = new Vector3Dto { X = 1.0f, Y = 1.1f, Z = 1.2f },
-                    Position = new Vector3Dto { X = 1.3f, Y = 1.4f, Z = 1.5f },
+                    Rotation = new Vector3Dto {X = 1.0f, Y = 1.1f, Z = 1.2f},
+                    Position = new Vector3Dto {X = 1.3f, Y = 1.4f, Z = 1.5f},
                     LuminousHeights = new LuminousHeightsDto
                     {
                         C0 = 10,
@@ -335,8 +335,8 @@ public class PartMapperTests : MapperTestBase
                 })
                 {
                     Name = "name3",
-                    Rotation = new Vector3 { X = 1.0f, Y = 1.1f, Z = 1.2f },
-                    Position = new Vector3 { X = 1.3f, Y = 1.4f, Z = 1.5f },
+                    Rotation = new Vector3 {X = 1.0f, Y = 1.1f, Z = 1.2f},
+                    Position = new Vector3 {X = 1.3f, Y = 1.4f, Z = 1.5f},
                     LuminousHeights = new LuminousHeights
                     {
                         C0 = 10,

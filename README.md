@@ -4,14 +4,15 @@
 [![OnPush develop](https://github.com/globallightingdata/l3d.net/actions/workflows/OnPushDevelop.yml/badge.svg)](https://github.com/globallightingdata/l3d.net/actions/workflows/OnPushDevelop.yml)  
 [![NuGet Status](https://img.shields.io/nuget/v/L3D.Net.svg)](https://www.nuget.org/packages/L3D.Net/) [![L3D.Net on fuget.org](https://www.fuget.org/packages/L3D.Net/badge.svg)](https://www.fuget.org/packages/L3D.Net)
 
-
 ## Intro
 
 .NET Standard 2.0 library for the Luminaire 3D [L3D](https://gldf.io/docs/geometry/l3d-intro)
 
-With the library it is possible to read and build L3D container files. For that the library exposes two classes 'Builder' and 'Reader'.
+With the library it is possible to read and build L3D container files. For that the library exposes two classes '
+Builder' and 'Reader'.
 The Builder has a fluent API for defining all the luminaire parts and build the target container file.
-With the Reader is is possible to read the content of a L3D container and to parse the containing .obj files at once. So there is no other .obj parser needed.
+With the Reader is is possible to read the content of a L3D container and to parse the containing .obj files at once. So
+there is no other .obj parser needed.
 
 ## How to get started
 
@@ -99,6 +100,7 @@ var bytes = writer.WriteToByteArray(luminaire);
 ### Reading a L3D container
 
 Read an L3D container from disk:
+
 ```CSharp
 var reader = new Reader();
 var container = reader.ReadContainer("path/to/container.l3d");
@@ -124,6 +126,7 @@ foreach (var geometryPartDto in container.Parts)
 ```
 
 Read an L3D container already read from disk in byte array (byte[]) format:
+
 ```CSharp
 var reader = new Reader();
 byte[] l3dContainer = // Get a byte[] representation of an L3D container;
@@ -139,6 +142,7 @@ foreach (var geometryPartDto in container.Parts)
 ### Validating a L3D container
 
 Validation of an L3D container from disk:
+
 ```CSharp
 var validator = new Validator();
 var validationHints = validator.ValidateContainer("path/to/container.l3d");
@@ -150,6 +154,7 @@ else
 ```
 
 Validation of an L3D container already read from disk in byte array (byte[]) format:
+
 ```CSharp
 var validator = new Validator();
 byte[] l3dContainer = // Get a byte[] representation of an L3D container;
@@ -166,17 +171,18 @@ else
 L3D.NET is able to read old and new unknown versions, with the exception of a new major version.
 
 When a new minor version is read, it is possible that optional information is not read.
-If the L3D is saved again, this information is not written either and the version is set to the latest version of the L3D.NET component.
+If the L3D is saved again, this information is not written either and the version is set to the latest version of the
+L3D.NET component.
 
 The following table explains this behaviour summarized:
 
-File version | L3D.NET version | Can read | Can write | Read and write changes the file
------------- | --------------- | -------- | --------- | ----------------------------
-1.0.0.0      | 0.9.0.0         | no       | no        | N/A
-0.9.0.0      | 1.0.0.0         | yes      | yes*      | yes - the version is updated and the content accordingly too
-1.0.0.0      | 1.0.0.0         | yes      | yes       | no
-0.9.2.0      | 0.9.0.0         | yes*     | yes*      | yes - some optional information may not be read or written
-0.9.0.0      | 0.9.2.0         | yes      | yes*      | yes - the version is updated and the content accordingly too
+ File version | L3D.NET version | Can read | Can write | Read and write changes the file                              
+--------------|-----------------|----------|-----------|--------------------------------------------------------------
+ 1.0.0.0      | 0.9.0.0         | no       | no        | N/A                                                          
+ 0.9.0.0      | 1.0.0.0         | yes      | yes*      | yes - the version is updated and the content accordingly too 
+ 1.0.0.0      | 1.0.0.0         | yes      | yes       | no                                                           
+ 0.9.2.0      | 0.9.0.0         | yes*     | yes*      | yes - some optional information may not be read or written   
+ 0.9.0.0      | 0.9.2.0         | yes      | yes*      | yes - the version is updated and the content accordingly too 
 
 ---
 

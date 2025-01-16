@@ -3,7 +3,7 @@ using System.Xml.Serialization;
 
 namespace L3D.Net.XML.V0_11_0.Dto;
 
-/// <remarks/>
+/// <remarks />
 [Serializable]
 [XmlInclude(typeof(TransformablePartDto))]
 [XmlInclude(typeof(LightEmittingPartDto))]
@@ -11,7 +11,7 @@ namespace L3D.Net.XML.V0_11_0.Dto;
 [XmlInclude(typeof(GeometryPartDto))]
 public class PartDto
 {
-    /// <remarks/>
+    /// <remarks />
     [XmlAttribute("partName")]
     public string Name { get; set; } = string.Empty;
 }

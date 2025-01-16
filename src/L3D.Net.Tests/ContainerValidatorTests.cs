@@ -21,8 +21,11 @@ public class ContainerValidatorTests
     private class Context
     {
         public IFileHandler FileHandler { get; }
+
         public IXmlValidator XmlValidator { get; }
+
         public IL3DXmlReader L3DXmlReader { get; }
+
         public ContainerValidator ContainerValidator { get; }
 
         public Context()
@@ -31,9 +34,9 @@ public class ContainerValidatorTests
             XmlValidator = Substitute.For<IXmlValidator>();
             L3DXmlReader = Substitute.For<IL3DXmlReader>();
             ContainerValidator = new ContainerValidator(FileHandler, XmlValidator, L3DXmlReader);
-            FileHandler.ExtractContainer(Arg.Any<Stream>()).Returns(new ContainerCache { StructureXml = Stream.Null });
-            FileHandler.ExtractContainer(Arg.Any<byte[]>()).Returns(new ContainerCache { StructureXml = Stream.Null });
-            FileHandler.ExtractContainer(Arg.Any<string>()).Returns(new ContainerCache { StructureXml = Stream.Null });
+            FileHandler.ExtractContainer(Arg.Any<Stream>()).Returns(new ContainerCache {StructureXml = Stream.Null});
+            FileHandler.ExtractContainer(Arg.Any<byte[]>()).Returns(new ContainerCache {StructureXml = Stream.Null});
+            FileHandler.ExtractContainer(Arg.Any<string>()).Returns(new ContainerCache {StructureXml = Stream.Null});
             L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire());
         }
     }
@@ -53,7 +56,8 @@ public class ContainerValidatorTests
     }
 
     private static IEnumerable<ContainerTypeToTest> ContainerTypeToTestEnumValues => Enum.GetValues<ContainerTypeToTest>();
-    private static IEnumerable<string?> EmptyStringValues => new[] { null, "", string.Empty, " ", "    " };
+
+    private static IEnumerable<string?> EmptyStringValues => new[] {null, "", string.Empty, " ", "    "};
 
     private static IEnumerable<TestCaseData> ContainerTypeToTestEnumValuesAndEmptyStrings()
     {
@@ -142,20 +146,21 @@ public class ContainerValidatorTests
                     .ExtractContainer(Arg.Is(containerPath));
                 break;
             case ContainerTypeToTest.Bytes:
-                var containerBytes = new byte[] { 0, 1, 2, 3, 4 };
+                var containerBytes = new byte[] {0, 1, 2, 3, 4};
                 _ = context.ContainerValidator.Validate(containerBytes, Validation.All).ToArray();
 
                 context.FileHandler.Received(1)
                     .ExtractContainer(Arg.Is(containerBytes));
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     _ = context.ContainerValidator.Validate(ms, Validation.All).ToArray();
 
                     context.FileHandler.Received(1)
                         .ExtractContainer(Arg.Is(ms));
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -167,7 +172,7 @@ public class ContainerValidatorTests
     {
         var context = CreateContext();
 
-        context.XmlValidator.ValidateStream(Arg.Any<Stream>()).Returns(new List<ValidationHint> { new StructureXmlValidationHint("Test") });
+        context.XmlValidator.ValidateStream(Arg.Any<Stream>()).Returns(new List<ValidationHint> {new StructureXmlValidationHint("Test")});
 
         switch (containerTypeToTest)
         {
@@ -175,13 +180,14 @@ public class ContainerValidatorTests
                 _ = context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.All).ToArray();
                 break;
             case ContainerTypeToTest.Bytes:
-                _ = context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.All).ToArray();
+                _ = context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.All).ToArray();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     _ = context.ContainerValidator.Validate(ms, Validation.All).ToArray();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -200,13 +206,14 @@ public class ContainerValidatorTests
                 _ = context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.DoesReferencedObjectsExist).ToArray();
                 break;
             case ContainerTypeToTest.Bytes:
-                _ = context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.DoesReferencedObjectsExist).ToArray();
+                _ = context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.DoesReferencedObjectsExist).ToArray();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     _ = context.ContainerValidator.Validate(ms, Validation.DoesReferencedObjectsExist).ToArray();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -220,9 +227,9 @@ public class ContainerValidatorTests
     {
         var context = CreateContext();
 
-        context.FileHandler.ExtractContainer(Arg.Any<Stream>()).Returns((ContainerCache)null!);
-        context.FileHandler.ExtractContainer(Arg.Any<byte[]>()).Returns((ContainerCache)null!);
-        context.FileHandler.ExtractContainer(Arg.Any<string>()).Returns((ContainerCache)null!);
+        context.FileHandler.ExtractContainer(Arg.Any<Stream>()).Returns((ContainerCache) null!);
+        context.FileHandler.ExtractContainer(Arg.Any<byte[]>()).Returns((ContainerCache) null!);
+        context.FileHandler.ExtractContainer(Arg.Any<string>()).Returns((ContainerCache) null!);
 
         switch (containerTypeToTest)
         {
@@ -230,13 +237,14 @@ public class ContainerValidatorTests
                 _ = context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.All).ToArray();
                 break;
             case ContainerTypeToTest.Bytes:
-                _ = context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.All).ToArray();
+                _ = context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.All).ToArray();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     _ = context.ContainerValidator.Validate(ms, Validation.All).ToArray();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -260,13 +268,14 @@ public class ContainerValidatorTests
                 _ = context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.All).ToArray();
                 break;
             case ContainerTypeToTest.Bytes:
-                _ = context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.All).ToArray();
+                _ = context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.All).ToArray();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     _ = context.ContainerValidator.Validate(ms, Validation.All).ToArray();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -290,13 +299,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.StructureXmlMissing);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.StructureXmlMissing);
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.StructureXmlMissing);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.StructureXmlMissing);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -318,13 +328,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.DoesReferencedObjectsExist).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.DoesReferencedObjectsExist).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.DoesReferencedObjectsExist).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.DoesReferencedObjectsExist).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -336,9 +347,9 @@ public class ContainerValidatorTests
     {
         var context = CreateContext();
 
-        context.FileHandler.ExtractContainer(Arg.Any<Stream>()).Returns((ContainerCache)null!);
-        context.FileHandler.ExtractContainer(Arg.Any<byte[]>()).Returns((ContainerCache)null!);
-        context.FileHandler.ExtractContainer(Arg.Any<string>()).Returns((ContainerCache)null!);
+        context.FileHandler.ExtractContainer(Arg.Any<Stream>()).Returns((ContainerCache) null!);
+        context.FileHandler.ExtractContainer(Arg.Any<byte[]>()).Returns((ContainerCache) null!);
+        context.FileHandler.ExtractContainer(Arg.Any<string>()).Returns((ContainerCache) null!);
 
         switch (containerTypeToTest)
         {
@@ -346,13 +357,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.InvalidZip);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.InvalidZip);
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.InvalidZip);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.InvalidZip);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -364,9 +376,9 @@ public class ContainerValidatorTests
     {
         var context = CreateContext();
 
-        context.FileHandler.ExtractContainer(Arg.Any<Stream>()).Returns((ContainerCache)null!);
-        context.FileHandler.ExtractContainer(Arg.Any<byte[]>()).Returns((ContainerCache)null!);
-        context.FileHandler.ExtractContainer(Arg.Any<string>()).Returns((ContainerCache)null!);
+        context.FileHandler.ExtractContainer(Arg.Any<Stream>()).Returns((ContainerCache) null!);
+        context.FileHandler.ExtractContainer(Arg.Any<byte[]>()).Returns((ContainerCache) null!);
+        context.FileHandler.ExtractContainer(Arg.Any<string>()).Returns((ContainerCache) null!);
 
         switch (containerTypeToTest)
         {
@@ -374,13 +386,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.DoesReferencedObjectsExist).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.DoesReferencedObjectsExist).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.DoesReferencedObjectsExist).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.DoesReferencedObjectsExist).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -435,15 +448,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.MissingGeometryReference).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.DoesReferencedObjectsExist).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.DoesReferencedObjectsExist).Should()
                     .Contain(d => d.Message == ErrorMessages.MissingGeometryReference).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.DoesReferencedObjectsExist).Should()
                         .Contain(d => d.Message == ErrorMessages.MissingGeometryReference).And.HaveCount(2);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -497,13 +511,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -515,7 +530,7 @@ public class ContainerValidatorTests
     {
         var context = CreateContext();
 
-        context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns((Luminaire)null!);
+        context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns((Luminaire) null!);
 
         switch (containerTypeToTest)
         {
@@ -524,15 +539,16 @@ public class ContainerValidatorTests
                     .ContainSingle(d => d.Message == ErrorMessages.NotAL3D);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.All).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.All).Should()
                     .ContainSingle(d => d.Message == ErrorMessages.NotAL3D);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.All).Should()
                         .ContainSingle(d => d.Message == ErrorMessages.NotAL3D);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -544,7 +560,7 @@ public class ContainerValidatorTests
     {
         var context = CreateContext();
 
-        context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns((Luminaire)null!);
+        context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns((Luminaire) null!);
 
         switch (containerTypeToTest)
         {
@@ -553,15 +569,16 @@ public class ContainerValidatorTests
                     .BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.DoesReferencedObjectsExist).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.DoesReferencedObjectsExist).Should()
                     .BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.DoesReferencedObjectsExist).Should()
                         .BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -649,15 +666,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.UnusedFile).And.HaveCount(3);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.AreAllFileDefinitionsUsed).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.AreAllFileDefinitionsUsed).Should()
                     .Contain(d => d.Message == ErrorMessages.UnusedFile).And.HaveCount(3);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.AreAllFileDefinitionsUsed).Should()
                         .Contain(d => d.Message == ErrorMessages.UnusedFile).And.HaveCount(3);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -734,13 +752,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -829,15 +848,16 @@ public class ContainerValidatorTests
                     .ContainSingle(d => d.Message == ErrorMessages.MissingMaterial);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.HasAllMaterials).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.HasAllMaterials).Should()
                     .ContainSingle(d => d.Message == ErrorMessages.MissingMaterial);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.HasAllMaterials).Should()
                         .ContainSingle(d => d.Message == ErrorMessages.MissingMaterial);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -925,13 +945,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -1020,15 +1041,16 @@ public class ContainerValidatorTests
                     .ContainSingle(d => d.Message == ErrorMessages.MissingTexture);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.HasAllTextures).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.HasAllTextures).Should()
                     .ContainSingle(d => d.Message == ErrorMessages.MissingTexture);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.HasAllTextures).Should()
                         .ContainSingle(d => d.Message == ErrorMessages.MissingTexture);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -1113,13 +1135,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -1206,15 +1229,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.MandatoryField).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MandatoryField).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MandatoryField).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -1300,13 +1324,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -1393,15 +1418,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.NameConvention).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.NameConvention).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.NameConvention).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -1487,13 +1513,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -1570,15 +1597,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.MandatoryField).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MandatoryField).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MandatoryField).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -1654,13 +1682,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -1704,15 +1733,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.MandatoryField).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MandatoryField).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MandatoryField).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -1755,13 +1785,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -1819,15 +1850,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.HasLightEmittingPart).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.HasLightEmittingPart).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.HasLightEmittingPart).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -1884,13 +1916,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -1998,15 +2031,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(6);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.NameConvention).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.NameConvention).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(6);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.NameConvention).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(6);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -2113,13 +2147,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -2206,15 +2241,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.MinMaxRestriction).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MinMaxRestriction).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MinMaxRestriction).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -2300,13 +2336,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -2393,15 +2430,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.MinMaxRestriction).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MinMaxRestriction).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MinMaxRestriction).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -2487,13 +2525,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -2580,15 +2619,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.FaceReferences).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.FaceReferences).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.FaceReferences).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -2674,13 +2714,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -2767,15 +2808,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.MinMaxRestriction).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MinMaxRestriction).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MinMaxRestriction).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -2861,13 +2903,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -2955,15 +2998,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.MinMaxRestriction).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MinMaxRestriction).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MinMaxRestriction).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -3049,13 +3093,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -3143,15 +3188,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.FaceReferences).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.FaceReferences).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.FaceReferences).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -3238,13 +3284,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -3331,15 +3378,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.NameReferences).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.NameReferences).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.NameReferences).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -3425,13 +3473,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -3534,15 +3583,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.MinMaxRestriction).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MinMaxRestriction).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MinMaxRestriction).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -3644,13 +3694,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -3762,15 +3813,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(6);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.MinMaxRestriction).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MinMaxRestriction).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(6);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MinMaxRestriction).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(6);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -3881,13 +3933,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -3981,15 +4034,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.MandatoryField).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MandatoryField).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MandatoryField).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -4082,13 +4136,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -4183,15 +4238,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(3);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.MinMaxRestriction).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MinMaxRestriction).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(3);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MinMaxRestriction).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(3);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -4285,13 +4341,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -4378,15 +4435,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.GeometryReferences).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.GeometryReferences).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.GeometryReferences).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -4472,13 +4530,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -4564,15 +4623,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.GeometryReferences).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.GeometryReferences).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.GeometryReferences).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -4657,13 +4717,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -4748,15 +4809,16 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.GeometryReferences).Should()
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.GeometryReferences).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.GeometryReferences).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);
@@ -4840,13 +4902,14 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] { 0, 1, 2, 3, 4 }, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] { 0, 1, 2, 3, 4 }))
+                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null);

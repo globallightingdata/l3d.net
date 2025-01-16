@@ -19,8 +19,11 @@ public class ContainerBuilderTests
     private class Context
     {
         public IFileHandler FileHandler { get; }
+
         private IXmlDtoSerializer Serializer { get; }
+
         public IXmlValidator Validator { get; }
+
         public ContainerBuilder Builder { get; }
 
         public Context()

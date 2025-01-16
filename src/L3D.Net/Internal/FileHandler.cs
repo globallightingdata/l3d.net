@@ -100,7 +100,7 @@ internal class FileHandler : IFileHandler
                 {
                     if (string.IsNullOrWhiteSpace(entry.Name)) continue;
 
-                    var geometryName = entry.FullName.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries)[0];
+                    var geometryName = entry.FullName.Split(new[] {'/'}, StringSplitOptions.RemoveEmptyEntries)[0];
 
                     if (!cache.Geometries.TryGetValue(geometryName, out var files))
                     {

@@ -18,20 +18,20 @@ public class FormatVersionMapperTests : MapperTestBase
                 new FormatVersion())
             .SetArgDisplayNames("<new()>", "<new()>");
         yield return new TestCaseData(
-                new FormatVersionDto { Minor = 2 },
-                new FormatVersion { Minor = 2 })
+                new FormatVersionDto {Minor = 2},
+                new FormatVersion {Minor = 2})
             .SetArgDisplayNames(nameof(FormatVersion.Minor), nameof(FormatVersion.Minor));
         yield return new TestCaseData(
-                new FormatVersionDto { Major = 1 },
-                new FormatVersion { Major = 1 })
+                new FormatVersionDto {Major = 1},
+                new FormatVersion {Major = 1})
             .SetArgDisplayNames(nameof(FormatVersion.Major), nameof(FormatVersion.Major));
         yield return new TestCaseData(
-                new FormatVersionDto { PreRelease = 3, PreReleaseSpecified = true },
-                new FormatVersion { PreRelease = 3, PreReleaseSpecified = true })
+                new FormatVersionDto {PreRelease = 3, PreReleaseSpecified = true},
+                new FormatVersion {PreRelease = 3, PreReleaseSpecified = true})
             .SetArgDisplayNames(nameof(FormatVersion.PreRelease), nameof(FormatVersion.PreRelease));
         yield return new TestCaseData(
-                new FormatVersionDto { PreReleaseSpecified = true },
-                new FormatVersion { PreReleaseSpecified = true })
+                new FormatVersionDto {PreReleaseSpecified = true},
+                new FormatVersion {PreReleaseSpecified = true})
             .SetArgDisplayNames(nameof(FormatVersion.PreReleaseSpecified), nameof(FormatVersion.PreReleaseSpecified));
         yield return new TestCaseData(
                 new FormatVersionDto

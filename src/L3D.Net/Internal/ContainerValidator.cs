@@ -60,6 +60,7 @@ internal class ContainerValidator : IContainerValidator
             {
                 yield return new InvalidZipValidationHint();
             }
+
             yield break;
         }
 
@@ -69,6 +70,7 @@ internal class ContainerValidator : IContainerValidator
             {
                 yield return new StructureXmlMissingValidationHint();
             }
+
             yield break;
         }
 
@@ -216,12 +218,14 @@ internal class ContainerValidator : IContainerValidator
             validationHint = null;
             return false;
         }
+
         if (string.IsNullOrWhiteSpace(part.Name))
         {
             validationHint = new L3DContentValidationHint(
                 $"{nameof(Part.Name)} of {part.GetType().Name} has be not empty or whitespace");
             return true;
         }
+
         if (!Regex.IsMatch(part.Name, @"^[A-Za-z][\w\.\-]{2,}$"))
         {
             validationHint = new L3DContentValidationHint(
@@ -233,7 +237,8 @@ internal class ContainerValidator : IContainerValidator
         return false;
     }
 
-    private static IEnumerable<ValidationHint> ValidateLightEmittingSurfacePart(LightEmittingSurfacePart lightEmittingSurfacePart, Validation flags, LightEmittingPart[] leos, IModel3D? model)
+    private static IEnumerable<ValidationHint> ValidateLightEmittingSurfacePart(LightEmittingSurfacePart lightEmittingSurfacePart, Validation flags, LightEmittingPart[] leos,
+        IModel3D? model)
     {
         if (TryValidatePartName(lightEmittingSurfacePart, flags, out var nameHint))
             yield return nameHint!;
@@ -247,35 +252,35 @@ internal class ContainerValidator : IContainerValidator
             switch (faceAssignment)
             {
                 case SingleFaceAssignment singleFaceAssignment:
-                    {
-                        if (flags.HasFlag(Validation.MinMaxRestriction) && singleFaceAssignment.FaceIndex < 0)
-                            yield return new L3DContentValidationHint(
-                                $"{nameof(SingleFaceAssignment.FaceIndex)} of {nameof(SingleFaceAssignment)} '{lightEmittingSurfacePart.Name}' must be greater equals 0");
+                {
+                    if (flags.HasFlag(Validation.MinMaxRestriction) && singleFaceAssignment.FaceIndex < 0)
+                        yield return new L3DContentValidationHint(
+                            $"{nameof(SingleFaceAssignment.FaceIndex)} of {nameof(SingleFaceAssignment)} '{lightEmittingSurfacePart.Name}' must be greater equals 0");
 
-                        if (flags.HasFlag(Validation.FaceReferences) && !(model?.IsFaceIndexValid(singleFaceAssignment.GroupIndex, singleFaceAssignment.FaceIndex) ?? false))
-                            yield return new L3DContentValidationHint(
-                                $"{nameof(SingleFaceAssignment.GroupIndex)}, {nameof(SingleFaceAssignment.FaceIndex)} of {nameof(SingleFaceAssignment)} '{lightEmittingSurfacePart.Name}' must be defined within the parent model definition");
-                        break;
-                    }
+                    if (flags.HasFlag(Validation.FaceReferences) && !(model?.IsFaceIndexValid(singleFaceAssignment.GroupIndex, singleFaceAssignment.FaceIndex) ?? false))
+                        yield return new L3DContentValidationHint(
+                            $"{nameof(SingleFaceAssignment.GroupIndex)}, {nameof(SingleFaceAssignment.FaceIndex)} of {nameof(SingleFaceAssignment)} '{lightEmittingSurfacePart.Name}' must be defined within the parent model definition");
+                    break;
+                }
                 case FaceRangeAssignment faceRangeAssignment:
+                {
+                    if (flags.HasFlag(Validation.MinMaxRestriction) && faceRangeAssignment.FaceIndexBegin < 0)
+                        yield return new L3DContentValidationHint(
+                            $"{nameof(FaceRangeAssignment.FaceIndexBegin)} of {nameof(FaceRangeAssignment)} '{lightEmittingSurfacePart.Name}' must be greater equals 0");
+
+                    if (flags.HasFlag(Validation.MinMaxRestriction) && faceRangeAssignment.FaceIndexEnd <= faceRangeAssignment.FaceIndexBegin)
+                        yield return new L3DContentValidationHint(
+                            $"{nameof(FaceRangeAssignment.FaceIndexEnd)} of {nameof(FaceRangeAssignment)} '{lightEmittingSurfacePart.Name}' must be greater than {nameof(FaceRangeAssignment.FaceIndexBegin)}");
+
+                    for (var faceIndex = faceRangeAssignment.FaceIndexBegin; faceIndex <= faceRangeAssignment.FaceIndexEnd; faceIndex++)
                     {
-                        if (flags.HasFlag(Validation.MinMaxRestriction) && faceRangeAssignment.FaceIndexBegin < 0)
+                        if (flags.HasFlag(Validation.FaceReferences) && !(model?.IsFaceIndexValid(faceRangeAssignment.GroupIndex, faceIndex) ?? false))
                             yield return new L3DContentValidationHint(
-                                $"{nameof(FaceRangeAssignment.FaceIndexBegin)} of {nameof(FaceRangeAssignment)} '{lightEmittingSurfacePart.Name}' must be greater equals 0");
-
-                        if (flags.HasFlag(Validation.MinMaxRestriction) && faceRangeAssignment.FaceIndexEnd <= faceRangeAssignment.FaceIndexBegin)
-                            yield return new L3DContentValidationHint(
-                                $"{nameof(FaceRangeAssignment.FaceIndexEnd)} of {nameof(FaceRangeAssignment)} '{lightEmittingSurfacePart.Name}' must be greater than {nameof(FaceRangeAssignment.FaceIndexBegin)}");
-
-                        for (var faceIndex = faceRangeAssignment.FaceIndexBegin; faceIndex <= faceRangeAssignment.FaceIndexEnd; faceIndex++)
-                        {
-                            if (flags.HasFlag(Validation.FaceReferences) && !(model?.IsFaceIndexValid(faceRangeAssignment.GroupIndex, faceIndex) ?? false))
-                                yield return new L3DContentValidationHint(
-                                    $"{nameof(FaceRangeAssignment.GroupIndex)}, {nameof(faceIndex)} of {nameof(FaceRangeAssignment)} '{lightEmittingSurfacePart.Name}' must be defined within the parent model definition");
-                        }
-
-                        break;
+                                $"{nameof(FaceRangeAssignment.GroupIndex)}, {nameof(faceIndex)} of {nameof(FaceRangeAssignment)} '{lightEmittingSurfacePart.Name}' must be defined within the parent model definition");
                     }
+
+                    break;
+                }
             }
         }
 

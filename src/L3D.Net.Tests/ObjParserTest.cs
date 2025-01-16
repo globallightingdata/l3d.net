@@ -345,7 +345,8 @@ public class ObjParserTest
 
         var parser = new ObjParser();
 
-        var model = parser.Parse("textured_cube.obj", new Dictionary<string, Stream> { ["textured_cube.obj"] = cache.Geometries["cube"]["textured_cube.obj"] }, Substitute.For<ILogger>());
+        var model = parser.Parse("textured_cube.obj", new Dictionary<string, Stream> {["textured_cube.obj"] = cache.Geometries["cube"]["textured_cube.obj"]},
+            Substitute.For<ILogger>());
 
         model!.FileName.Should().BeEquivalentTo("textured_cube.obj");
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(0);

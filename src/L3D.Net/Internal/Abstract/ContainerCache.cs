@@ -10,6 +10,7 @@ public sealed class ContainerCache : IDisposable
     private bool _disposed;
 
     public Stream? StructureXml { get; set; }
+
     public Dictionary<string, Dictionary<string, Stream>> Geometries { get; set; } = new();
 
     public void Dispose()
@@ -20,6 +21,7 @@ public sealed class ContainerCache : IDisposable
         {
             stream?.Dispose();
         }
+
         _disposed = true;
     }
 }
