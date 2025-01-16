@@ -26,7 +26,7 @@ public class ObjParser : IObjParser
         return stage2;
     }
 
-public IModel3D? Parse(string fileName, Dictionary<string, Stream> files, ILogger? logger = null)
+    public IModel3D? Parse(string fileName, Dictionary<string, Stream> files, ILogger? logger = null)
     {
         if (!files.TryGetValue(fileName, out var stream))
             return null;
@@ -36,7 +36,8 @@ public IModel3D? Parse(string fileName, Dictionary<string, Stream> files, ILogge
 
         var objMaterialLibraries = CollectAvailableMaterialLibraries(logger, objFile, files).ToList();
 
-        List<string> textures = CollectAvailableTextures(objMaterialLibraries).Distinct().Where(x => !string.IsNullOrWhiteSpace(x)).Select(GetFileName!).Where(files.ContainsKey).ToList()!;
+        List<string> textures = CollectAvailableTextures(objMaterialLibraries).Distinct().Where(x => !string.IsNullOrWhiteSpace(x)).Select(GetFileName!).Where(files.ContainsKey)
+            .ToList()!;
 
         return new ObjModel3D
         {
@@ -51,7 +52,7 @@ public IModel3D? Parse(string fileName, Dictionary<string, Stream> files, ILogge
     public IModel3D Parse(string filePath, ILogger? logger = null)
     {
         var directory = Path.GetDirectoryName(filePath) ??
-            throw new ArgumentException($"The file directory of '{filePath}' could not be determined");
+                        throw new ArgumentException($"The file directory of '{filePath}' could not be determined");
 
         using var fs = File.OpenRead(filePath);
 
@@ -150,7 +151,7 @@ public IModel3D? Parse(string fileName, Dictionary<string, Stream> files, ILogge
             .ToList();
         var faceGroups = objFile.Groups.Any()
             ? objFile.Groups.Select(group => ConvertGroup(group, materials)).ToList()
-            : new List<ModelFaceGroup> { CreateDefaultFaceGroup(objFile, materials) };
+            : new List<ModelFaceGroup> {CreateDefaultFaceGroup(objFile, materials)};
 
         return new ModelData
         {
@@ -168,7 +169,7 @@ public IModel3D? Parse(string fileName, Dictionary<string, Stream> files, ILogge
         return new ModelFaceGroup
         {
             Name = "Default",
-            Faces = faces.ToList()
+            Faces = [..faces.ToArray()]
         };
     }
 
@@ -184,7 +185,7 @@ public IModel3D? Parse(string fileName, Dictionary<string, Stream> files, ILogge
 
     private static ModelFace ConvertFace(ObjFace face, List<ModelMaterial> materials)
     {
-        List<ModelFaceVertex> vertices = new();
+        List<ModelFaceVertex> vertices = [];
         var materialIndex = materials.FindIndex(material => material.Name == face.MaterialName);
 
         foreach (var vertex in face.Vertices)
@@ -206,13 +207,14 @@ public IModel3D? Parse(string fileName, Dictionary<string, Stream> files, ILogge
 
     private static ModelMaterial Convert(ObjMaterial objMaterial, byte[] bytes)
     {
-        var color = objMaterial.DiffuseColor;
-        return new ModelMaterial
+        var material = new ModelMaterial
         {
-            Color = new Vector3(color.Color.X, color.Color.Y, color.Color.Z),
-            Name = objMaterial.Name,
+            Name = objMaterial.Name ?? string.Empty,
             TextureName = objMaterial.DiffuseMap?.FileName ?? string.Empty,
             TextureBytes = bytes
         };
+        var color = objMaterial.DiffuseColor;
+        if (color is not null) material.Color = new Vector3(color.Color.X, color.Color.Y, color.Color.Z);
+        return material;
     }
 }
