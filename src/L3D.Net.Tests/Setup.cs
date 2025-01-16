@@ -76,51 +76,41 @@ public static class Setup
         }
     }
 
-    public static List<string> EmptyStringValues()
+    public static List<string> EmptyStringValues() =>
+    [
+        null!,
+        "",
+        " ",
+        "\t",
+        "\t ",
+        "\t \t",
+        Environment.NewLine
+    ];
+
+    public static IEnumerable<TestCaseData> EmptyByteArrayValues()
     {
-        return
-        [
-            null!,
-            "",
-            " ",
-            "\t",
-            "\t ",
-            "\t \t",
-            Environment.NewLine
-        ];
+        yield return new TestCaseData(null).SetArgDisplayNames("<null>");
+        yield return new TestCaseData(Array.Empty<byte>()).SetArgDisplayNames("<empty byte array>");
     }
 
-    public static List<byte[]> EmptyByteArrayValues()
+    public static IEnumerable<TestCaseData> EmptyStreamValues()
     {
-        return
-        [
-            null!,
-            Array.Empty<byte>()
-        ];
+        yield return new TestCaseData(null).SetArgDisplayNames("<null>");
+        yield return new TestCaseData(Stream).SetArgDisplayNames("<empty stream>");
     }
 
-    public static List<Stream> EmptyStreamValues()
+    public static Dictionary<string, Func<Luminaire, Luminaire>> ExampleBuilderMapping { get; } = new()
     {
-        return
-        [
-            null!,
-            Stream
-        ];
-    }
-
-    public static Dictionary<string, Func<Luminaire, Luminaire>> ExampleBuilderMapping { get; } =
-        new()
-        {
-            {"example_000", luminaire => luminaire.BuildExample000()},
-            {"example_001", luminaire => luminaire.BuildExample001()},
-            {"example_002", luminaire => luminaire.BuildExample002()},
-            {"example_003", luminaire => luminaire.BuildExample003()},
-            {"example_004", luminaire => luminaire.BuildExample004()},
-            {"example_005", luminaire => luminaire.BuildExample005()},
-            {"example_006", luminaire => luminaire.BuildExample006()},
-            {"example_007", luminaire => luminaire.BuildExample007()},
-            {"example_008", luminaire => luminaire.BuildExample008()},
-            {"example_009", luminaire => luminaire.BuildExample009()},
-            {"example_010", luminaire => luminaire.BuildExample010()}
-        };
+        ["example_000"] = luminaire => luminaire.BuildExample000(),
+        ["example_001"] = luminaire => luminaire.BuildExample001(),
+        ["example_002"] = luminaire => luminaire.BuildExample002(),
+        ["example_003"] = luminaire => luminaire.BuildExample003(),
+        ["example_004"] = luminaire => luminaire.BuildExample004(),
+        ["example_005"] = luminaire => luminaire.BuildExample005(),
+        ["example_006"] = luminaire => luminaire.BuildExample006(),
+        ["example_007"] = luminaire => luminaire.BuildExample007(),
+        ["example_008"] = luminaire => luminaire.BuildExample008(),
+        ["example_009"] = luminaire => luminaire.BuildExample009(),
+        ["example_010"] = luminaire => luminaire.BuildExample010()
+    };
 }
