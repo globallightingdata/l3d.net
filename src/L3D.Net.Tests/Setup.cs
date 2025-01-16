@@ -78,8 +78,8 @@ public static class Setup
 
     public static List<string> EmptyStringValues()
     {
-        return new List<string>
-        {
+        return
+        [
             null!,
             "",
             " ",
@@ -87,25 +87,25 @@ public static class Setup
             "\t ",
             "\t \t",
             Environment.NewLine
-        };
+        ];
     }
 
     public static List<byte[]> EmptyByteArrayValues()
     {
-        return new List<byte[]>
-        {
+        return
+        [
             null!,
             Array.Empty<byte>()
-        };
+        ];
     }
 
     public static List<Stream> EmptyStreamValues()
     {
-        return new List<Stream>
-        {
+        return
+        [
             null!,
             Stream
-        };
+        ];
     }
 
     public static Dictionary<string, Func<Luminaire, Luminaire>> ExampleBuilderMapping { get; } =

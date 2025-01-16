@@ -38,36 +38,36 @@ public class PartMapperTests : MapperTestBase
                 new LightEmittingSurfacePartDto
                 {
                     Name = "name",
-                    FaceAssignments = new List<FaceAssignmentDto>
-                    {
+                    FaceAssignments =
+                    [
                         new FaceRangeAssignmentDto
                         {
                             FaceIndexBegin = 1,
                             FaceIndexEnd = 2,
                             GroupIndex = 3
                         }
-                    },
-                    LightEmittingPartIntensityMapping = new List<LightEmittingObjectReferenceDto>
-                    {
+                    ],
+                    LightEmittingPartIntensityMapping =
+                    [
                         new()
                         {
                             Intensity = 0.8,
                             LightEmittingPartName = "name1"
                         }
-                    }
+                    ]
                 },
                 new LightEmittingSurfacePart
                 {
                     Name = "name",
-                    FaceAssignments = new List<FaceAssignment>
-                    {
+                    FaceAssignments =
+                    [
                         new FaceRangeAssignment
                         {
                             FaceIndexBegin = 1,
                             FaceIndexEnd = 2,
                             GroupIndex = 3
                         }
-                    },
+                    ],
                     LightEmittingPartIntensityMapping = new Dictionary<string, double>
                     {
                         ["name"] = 0.8
@@ -81,10 +81,10 @@ public class PartMapperTests : MapperTestBase
                     Position = new Vector3Dto {X = 0.1f, Y = 0.2f, Z = 0.3f},
                     Rotation = new Vector3Dto {X = 0.4f, Y = 0.5f, Z = 0.6f},
                     IncludedInMeasurement = true,
-                    ElectricalConnectors = new Vector3Dto[] {new() {X = 0.7f, Y = 0.8f, Z = 0.9f}},
+                    ElectricalConnectors = [new() {X = 0.7f, Y = 0.8f, Z = 0.9f}],
                     GeometryReference = new GeometryReferenceDto {GeometryId = "id"},
-                    LightEmittingObjects = new LightEmittingPartDto[]
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new RectangleDto
                         {
                             SizeX = 50,
@@ -102,33 +102,33 @@ public class PartMapperTests : MapperTestBase
                                 C270 = 40
                             }
                         }
-                    },
-                    LightEmittingSurfaces = new LightEmittingSurfacePartDto[]
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "name3",
-                            FaceAssignments = new List<FaceAssignmentDto>
-                            {
+                            FaceAssignments =
+                            [
                                 new FaceRangeAssignmentDto
                                 {
                                     FaceIndexBegin = 1,
                                     FaceIndexEnd = 2,
                                     GroupIndex = 3
                                 }
-                            },
-                            LightEmittingPartIntensityMapping = new List<LightEmittingObjectReferenceDto>
-                            {
+                            ],
+                            LightEmittingPartIntensityMapping =
+                            [
                                 new()
                                 {
                                     Intensity = 0.8,
                                     LightEmittingPartName = "name4"
                                 }
-                            }
+                            ]
                         }
-                    },
-                    Joints = new JointPartDto[]
-                    {
+                    ],
+                    Joints =
+                    [
                         new()
                         {
                             Name = "name5",
@@ -138,26 +138,26 @@ public class PartMapperTests : MapperTestBase
                             XAxis = new AxisRotationDto {Min = 2.5, Max = 2.6, Step = 2.7},
                             YAxis = new AxisRotationDto {Min = 2.8, Max = 2.9, Step = 3.0},
                             ZAxis = new AxisRotationDto {Min = 3.1, Max = 3.2, Step = 3.3},
-                            Geometries = new List<GeometryPartDto>
-                            {
+                            Geometries =
+                            [
                                 new()
                                 {
                                     Name = "nameX"
                                 }
-                            }
+                            ]
                         }
-                    },
-                    PendulumConnectors = new Vector3Dto[]
-                    {
+                    ],
+                    PendulumConnectors =
+                    [
                         new()
                         {
                             X = 3.4f,
                             Y = 3.5f,
                             Z = 3.6f
                         }
-                    },
-                    Sensors = new SensorPartDto[]
-                    {
+                    ],
+                    Sensors =
+                    [
                         new()
                         {
                             Name = "name6",
@@ -174,7 +174,7 @@ public class PartMapperTests : MapperTestBase
                                 Z = 3.9f
                             }
                         }
-                    }
+                    ]
                 },
                 new GeometryPart
                 {
@@ -182,10 +182,10 @@ public class PartMapperTests : MapperTestBase
                     Position = new Vector3 {X = 0.1f, Y = 0.2f, Z = 0.3f},
                     Rotation = new Vector3 {X = 0.4f, Y = 0.5f, Z = 0.6f},
                     IncludedInMeasurement = true,
-                    ElectricalConnectors = new List<Vector3> {new() {X = 0.7f, Y = 0.8f, Z = 0.9f}},
+                    ElectricalConnectors = [new() {X = 0.7f, Y = 0.8f, Z = 0.9f}],
                     GeometryReference = new GeometryFileDefinition {GeometryId = "id"},
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Rectangle
                         {
                             SizeX = 50,
@@ -203,29 +203,29 @@ public class PartMapperTests : MapperTestBase
                                 C270 = 40
                             }
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "name3",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new FaceRangeAssignment
                                 {
                                     FaceIndexBegin = 1,
                                     FaceIndexEnd = 2,
                                     GroupIndex = 3
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["name4"] = 0.8
                             }
                         }
-                    },
-                    Joints = new List<JointPart>
-                    {
+                    ],
+                    Joints =
+                    [
                         new()
                         {
                             Name = "name5",
@@ -235,26 +235,26 @@ public class PartMapperTests : MapperTestBase
                             XAxis = new AxisRotation {Min = 2.5, Max = 2.6, Step = 2.7},
                             YAxis = new AxisRotation {Min = 2.8, Max = 2.9, Step = 3.0},
                             ZAxis = new AxisRotation {Min = 3.1, Max = 3.2, Step = 3.3},
-                            Geometries = new List<GeometryPart>
-                            {
+                            Geometries =
+                            [
                                 new()
                                 {
                                     Name = "nameX"
                                 }
-                            }
+                            ]
                         }
-                    },
-                    PendulumConnectors = new List<Vector3>
-                    {
+                    ],
+                    PendulumConnectors =
+                    [
                         new()
                         {
                             X = 3.4f,
                             Y = 3.5f,
                             Z = 3.6f
                         }
-                    },
-                    Sensors = new List<SensorPart>
-                    {
+                    ],
+                    Sensors =
+                    [
                         new()
                         {
                             Name = "name6",
@@ -271,7 +271,7 @@ public class PartMapperTests : MapperTestBase
                                 Z = 3.9f
                             }
                         }
-                    }
+                    ]
                 })
             .SetArgDisplayNames("<filled GeometryPartDto>", "<filled GeometryPart>");
         yield return new TestCaseData(
@@ -284,13 +284,13 @@ public class PartMapperTests : MapperTestBase
                     XAxis = new AxisRotationDto {Min = 2.5, Max = 2.6, Step = 2.7},
                     YAxis = new AxisRotationDto {Min = 2.8, Max = 2.9, Step = 3.0},
                     ZAxis = new AxisRotationDto {Min = 3.1, Max = 3.2, Step = 3.3},
-                    Geometries = new List<GeometryPartDto>
-                    {
+                    Geometries =
+                    [
                         new()
                         {
                             Name = "nameX"
                         }
-                    }
+                    ]
                 },
                 new JointPart
                 {
@@ -301,13 +301,13 @@ public class PartMapperTests : MapperTestBase
                     XAxis = new AxisRotation {Min = 2.5, Max = 2.6, Step = 2.7},
                     YAxis = new AxisRotation {Min = 2.8, Max = 2.9, Step = 3.0},
                     ZAxis = new AxisRotation {Min = 3.1, Max = 3.2, Step = 3.3},
-                    Geometries = new List<GeometryPart>
-                    {
+                    Geometries =
+                    [
                         new()
                         {
                             Name = "nameX"
                         }
-                    }
+                    ]
                 })
             .SetArgDisplayNames("<filled JointPartDto>", "<filled JointPart>");
         yield return new TestCaseData(

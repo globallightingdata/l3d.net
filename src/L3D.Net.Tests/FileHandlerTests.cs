@@ -15,8 +15,8 @@ namespace L3D.Net.Tests;
 [TestFixture]
 public class FileHandlerTests
 {
-    private readonly List<string> _filesToDelete = new();
-    private readonly List<string> _directoriesToDelete = new();
+    private readonly List<string> _filesToDelete = [];
+    private readonly List<string> _directoriesToDelete = [];
 
     [SetUp]
     public void Init()
@@ -30,24 +30,9 @@ public class FileHandlerTests
         _filesToDelete.Add(targetZipPath);
         _directoriesToDelete.Add(testDirectory);
 
-        using var cache = new ContainerCache
-        {
-            StructureXml = File.OpenRead(sourceXml),
-            Geometries = geometryDirectories.ToDictionary(x => Path.GetFileName(x), y =>
-            {
-                var geometries = new Dictionary<string, Stream>();
-
-                var files = Directory.GetFiles(y);
-                foreach (var file in files)
-                {
-                    var fileName = Path.GetFileName(file);
-
-                    geometries.Add(fileName, File.OpenRead(file));
-                }
-
-                return geometries;
-            })
-        };
+        using var cache = new ContainerCache();
+        cache.StructureXml = File.OpenRead(sourceXml);
+        cache.Geometries = geometryDirectories.ToDictionary(x => Path.GetFileName(x), GetGeometriesFromDictionary);
 
         new FileHandler().CreateContainerFile(cache, targetZipPath);
     }
@@ -104,24 +89,9 @@ public class FileHandlerTests
         _filesToDelete.Add(targetZipPath);
         _directoriesToDelete.Add(testDirectory);
 
-        using var cache = new ContainerCache
-        {
-            StructureXml = File.OpenRead(sourceXml),
-            Geometries = geometryDirectories.ToDictionary(x => Path.GetFileName(x), y =>
-            {
-                var geometries = new Dictionary<string, Stream>();
-
-                var files = Directory.GetFiles(y);
-                foreach (var file in files)
-                {
-                    var fileName = Path.GetFileName(file);
-
-                    geometries.Add(fileName, File.OpenRead(file));
-                }
-
-                return geometries;
-            })
-        };
+        using var cache = new ContainerCache();
+        cache.StructureXml = File.OpenRead(sourceXml);
+        cache.Geometries = geometryDirectories.ToDictionary(x => Path.GetFileName(x), GetGeometriesFromDictionary);
 
         new FileHandler().CreateContainerFile(cache, targetZipPath);
 
@@ -174,7 +144,7 @@ public class FileHandlerTests
         _directoriesToDelete.Add(targetTestDirectory);
         var model3D = CreateFakeModel3D();
 
-        model3D.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]> {[path ?? string.Empty] = Array.Empty<byte>()});
+        model3D.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]> {[path ?? string.Empty] = []});
 
         var fileHandler = new FileHandler();
         var action = () => fileHandler.AddModelFilesToCache(model3D, "someId", new ContainerCache());
@@ -190,8 +160,8 @@ public class FileHandlerTests
         _directoriesToDelete.Add(targetTestDirectory);
         var model3D = CreateFakeModel3D();
 
-        model3D.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]> {["someId"] = Array.Empty<byte>()});
-        model3D.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]> {[path ?? string.Empty] = Array.Empty<byte>()});
+        model3D.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]> {["someId"] = []});
+        model3D.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]> {[path ?? string.Empty] = []});
 
         var fileHandler = new FileHandler();
         var action = () => fileHandler.AddModelFilesToCache(model3D, "someId", new ContainerCache());
@@ -282,6 +252,7 @@ public class FileHandlerTests
         var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
         var fileHandler = new FileHandler();
         using var fs = File.OpenRead(sourceXml);
+        // ReSharper disable once AccessToDisposedClosure
         var act = () => fileHandler.ExtractContainerOrThrow(fs);
         act.Should().Throw<InvalidDataException>();
     }
@@ -313,7 +284,23 @@ public class FileHandlerTests
         var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
         var fileHandler = new FileHandler();
         using var fs = File.OpenRead(sourceXml);
+        // ReSharper disable once AccessToDisposedClosure
         var act = () => fileHandler.ExtractContainer(fs);
         act.Should().NotThrow();
+    }
+
+    private static Dictionary<string, Stream> GetGeometriesFromDictionary(string directory)
+    {
+        var geometries = new Dictionary<string, Stream>();
+
+        var files = Directory.GetFiles(directory);
+        foreach (var file in files)
+        {
+            var fileName = Path.GetFileName(file);
+
+            geometries.Add(fileName, File.OpenRead(file));
+        }
+
+        return geometries;
     }
 }

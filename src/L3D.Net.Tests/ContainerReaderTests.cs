@@ -98,7 +98,7 @@ public class ContainerReaderTests
                     .ExtractContainerOrThrow(Arg.Is(containerBytes));
                 break;
             case ContainerTypeToTest.Stream:
-                using (var stream = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var stream = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     _reader.Read(stream);
 
@@ -121,10 +121,10 @@ public class ContainerReaderTests
                 _reader.Read(Guid.NewGuid().ToString());
                 break;
             case ContainerTypeToTest.Bytes:
-                _reader.Read(new byte[] {0, 1, 2, 3, 4});
+                _reader.Read([0, 1, 2, 3, 4]);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var stream = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var stream = new MemoryStream([0, 1, 2, 3, 4]))
                     _reader.Read(stream);
                 break;
             default:
@@ -142,10 +142,10 @@ public class ContainerReaderTests
         Action act = containerTypeToTest switch
         {
             ContainerTypeToTest.Path => () => _reader.Read(Guid.NewGuid().ToString()),
-            ContainerTypeToTest.Bytes => () => _reader.Read(new byte[] {0, 1, 2, 3, 4}),
+            ContainerTypeToTest.Bytes => () => _reader.Read([0, 1, 2, 3, 4]),
             ContainerTypeToTest.Stream => () =>
             {
-                using var stream = new MemoryStream(new byte[] {0, 1, 2, 3, 4});
+                using var stream = new MemoryStream([0, 1, 2, 3, 4]);
                 _reader.Read(stream);
             },
             _ => throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null)
@@ -178,17 +178,14 @@ public class ContainerReaderTests
             {
                 CreatedWithApplication = "Example-Tool"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
-                geo
-            },
-            Parts = new List<GeometryPart>
-            {
+            GeometryDefinitions = [geo],
+            Parts =
+            [
                 new()
                 {
                     Name = "luminaire",
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Rectangle
                         {
                             SizeX = 0.5, SizeY = 0.25
@@ -196,24 +193,21 @@ public class ContainerReaderTests
                         {
                             Name = "leo"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
-                            Name = "les", FaceAssignments = new List<FaceAssignment>
-                            {
-                                new SingleFaceAssignment {FaceIndex = 3}
-                            },
+                            Name = "les", FaceAssignments = [new SingleFaceAssignment {FaceIndex = 3}],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leo"] = 1
                             }
                         }
-                    },
+                    ],
                     GeometryReference = geo
                 }
-            }
+            ]
         };
         var written = new Writer().WriteToByteArray(luminaire);
         var read = new Reader().ReadContainer(written);

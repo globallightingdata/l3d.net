@@ -86,7 +86,7 @@ internal class ContainerValidator : IContainerValidator
             }
         }
 
-        if (xsdValidationHints.Any(d => d.Severity == Severity.Error))
+        if (Array.Exists(xsdValidationHints, d => d.Severity == Severity.Error))
             yield break;
 
         var luminaire = _l3dXmlReader.Read(cache);
@@ -159,14 +159,9 @@ internal class ContainerValidator : IContainerValidator
 
         var allParts = luminaire.Parts.SelectMany(GetParts).ToArray();
 
-        foreach (var part in allParts)
+        foreach (var validationHint in allParts.SelectMany(part => ValidatePart(part, allParts, flags)))
         {
-            var validationHints = ValidatePart(part, allParts, flags);
-
-            foreach (var validationHint in validationHints)
-            {
-                yield return validationHint;
-            }
+            yield return validationHint;
         }
 
         if (flags.HasFlag(Validation.NameConvention))
@@ -184,11 +179,11 @@ internal class ContainerValidator : IContainerValidator
                 yield return new L3DContentValidationHint(
                     $"{nameof(Header.CreatedWithApplication)} of {nameof(Header)} must not be null or whitespace");
 
-            if (!luminaire.GeometryDefinitions.Any())
+            if (luminaire.GeometryDefinitions.Count == 0)
                 yield return new L3DContentValidationHint(
                     $"{nameof(Luminaire.GeometryDefinitions)} of {nameof(Luminaire)} must not be empty");
 
-            if (!luminaire.Parts.Any())
+            if (luminaire.Parts.Count == 0)
                 yield return new L3DContentValidationHint(
                     $"{nameof(Luminaire.Parts)} of {nameof(Luminaire)} must not be empty");
         }
@@ -200,9 +195,7 @@ internal class ContainerValidator : IContainerValidator
 
     private static IEnumerable<ValidationHint> ValidatePart(Part part, Part[] allParts, Validation flags) => part switch
     {
-        LightEmittingSurfacePart lightEmittingSurfacePart => ValidateLightEmittingSurfacePart(lightEmittingSurfacePart,
-            flags,
-            allParts.OfType<LightEmittingPart>().ToArray(),
+        LightEmittingSurfacePart lightEmittingSurfacePart => ValidateLightEmittingSurfacePart(lightEmittingSurfacePart, flags, allParts.OfType<LightEmittingPart>().ToArray(),
             allParts.OfType<GeometryPart>().First(d => d.LightEmittingSurfaces?.Contains(lightEmittingSurfacePart) ?? false).GeometryReference.Model),
         JointPart jointPart => ValidateJointPart(jointPart, flags),
         LightEmittingPart lightEmittingPart => ValidateLightEmittingPart(lightEmittingPart, flags),
@@ -414,12 +407,10 @@ internal class ContainerValidator : IContainerValidator
     {
         yield return geometryPart;
 
-        foreach (var subGeometryPart in geometryPart.Joints?.SelectMany(x => x.Geometries) ?? Array.Empty<GeometryPart>())
+        if (geometryPart.Joints is null) yield break;
+        foreach (var part in geometryPart.Joints.SelectMany(x => x.Geometries).SelectMany(GetGeometryParts))
         {
-            foreach (var part in GetGeometryParts(subGeometryPart))
-            {
-                yield return part;
-            }
+            yield return part;
         }
     }
 
@@ -430,19 +421,16 @@ internal class ContainerValidator : IContainerValidator
         var parts = part switch
         {
             GeometryPart geometryPart => geometryPart.LightEmittingObjects?
-                .Concat<Part>(geometryPart.LightEmittingSurfaces ?? new())
-                .Concat(geometryPart.Joints ?? new())
-                .Concat(geometryPart.Sensors ?? new()) ?? Array.Empty<Part>(),
+                .Concat<Part>(geometryPart.LightEmittingSurfaces ?? [])
+                .Concat(geometryPart.Joints ?? [])
+                .Concat(geometryPart.Sensors ?? []) ?? [],
             JointPart jointPart => jointPart.Geometries,
             _ => Array.Empty<Part>()
         };
 
-        foreach (var innerPart in parts)
+        foreach (var nextPart in parts.SelectMany(GetParts))
         {
-            foreach (var nextPart in GetParts(innerPart))
-            {
-                yield return nextPart;
-            }
+            yield return nextPart;
         }
     }
 }

@@ -26,11 +26,11 @@ public class ObjModel3DTests
         {
             Data = new ModelData
             {
-                Normals = new(),
-                FaceGroups = new(),
-                Materials = new(),
-                TextureCoordinates = new(),
-                Vertices = new()
+                Normals = [],
+                FaceGroups = [],
+                Materials = [],
+                TextureCoordinates = [],
+                Vertices = []
             }
         };
 
@@ -46,18 +46,18 @@ public class ObjModel3DTests
         {
             Data = new ModelData
             {
-                FaceGroups = new()
-                {
+                FaceGroups =
+                [
                     new()
                     {
                         Name = Guid.NewGuid().ToString(),
-                        Faces = new()
+                        Faces = []
                     }
-                },
-                Materials = new(),
-                Normals = new(),
-                TextureCoordinates = new(),
-                Vertices = new()
+                ],
+                Materials = [],
+                Normals = [],
+                TextureCoordinates = [],
+                Vertices = []
             }
         };
 

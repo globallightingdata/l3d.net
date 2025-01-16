@@ -21,10 +21,10 @@ public static class PathExtensions
             Streams.Add(structureStream);
         }
 
-        return new()
+        return new ContainerCache
         {
             StructureXml = structureStream,
-            Geometries = Directory.GetDirectories(directory).ToDictionary(d => Path.GetFileName(d)!, y =>
+            Geometries = Directory.GetDirectories(directory).ToDictionary(d => Path.GetFileName(d), y =>
             {
                 var geometries = new Dictionary<string, Stream>();
 
@@ -57,10 +57,10 @@ public static class PathExtensions
             Streams.Add(structureStream);
         }
 
-        return new()
+        return new ContainerCache
         {
             StructureXml = structureStream,
-            Geometries = Directory.GetDirectories(directory).ToDictionary(d => Path.GetFileName(d)!, y =>
+            Geometries = Directory.GetDirectories(directory).ToDictionary(d => Path.GetFileName(d), y =>
             {
                 var geometries = new Dictionary<string, Stream>();
 

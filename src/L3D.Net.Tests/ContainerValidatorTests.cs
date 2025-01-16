@@ -57,7 +57,7 @@ public class ContainerValidatorTests
 
     private static IEnumerable<ContainerTypeToTest> ContainerTypeToTestEnumValues => Enum.GetValues<ContainerTypeToTest>();
 
-    private static IEnumerable<string?> EmptyStringValues => new[] {null, "", string.Empty, " ", "    "};
+    private static IEnumerable<string?> EmptyStringValues => [null, "", string.Empty, " ", "    "];
 
     private static IEnumerable<TestCaseData> ContainerTypeToTestEnumValuesAndEmptyStrings()
     {
@@ -153,7 +153,7 @@ public class ContainerValidatorTests
                     .ExtractContainer(Arg.Is(containerBytes));
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     _ = context.ContainerValidator.Validate(ms, Validation.All).ToArray();
 
@@ -180,10 +180,10 @@ public class ContainerValidatorTests
                 _ = context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.All).ToArray();
                 break;
             case ContainerTypeToTest.Bytes:
-                _ = context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.All).ToArray();
+                _ = context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.All).ToArray();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     _ = context.ContainerValidator.Validate(ms, Validation.All).ToArray();
                 }
@@ -206,10 +206,10 @@ public class ContainerValidatorTests
                 _ = context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.DoesReferencedObjectsExist).ToArray();
                 break;
             case ContainerTypeToTest.Bytes:
-                _ = context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.DoesReferencedObjectsExist).ToArray();
+                _ = context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.DoesReferencedObjectsExist).ToArray();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     _ = context.ContainerValidator.Validate(ms, Validation.DoesReferencedObjectsExist).ToArray();
                 }
@@ -237,10 +237,10 @@ public class ContainerValidatorTests
                 _ = context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.All).ToArray();
                 break;
             case ContainerTypeToTest.Bytes:
-                _ = context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.All).ToArray();
+                _ = context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.All).ToArray();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     _ = context.ContainerValidator.Validate(ms, Validation.All).ToArray();
                 }
@@ -268,10 +268,10 @@ public class ContainerValidatorTests
                 _ = context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.All).ToArray();
                 break;
             case ContainerTypeToTest.Bytes:
-                _ = context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.All).ToArray();
+                _ = context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.All).ToArray();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     _ = context.ContainerValidator.Validate(ms, Validation.All).ToArray();
                 }
@@ -299,10 +299,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.StructureXmlMissing);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.StructureXmlMissing);
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.StructureXmlMissing);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.StructureXmlMissing);
                 }
@@ -328,10 +328,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.DoesReferencedObjectsExist).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.DoesReferencedObjectsExist).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.DoesReferencedObjectsExist).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.DoesReferencedObjectsExist).Should().BeEmpty();
                 }
@@ -357,10 +357,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.InvalidZip);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.InvalidZip);
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.InvalidZip);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.All).Should().ContainSingle(d => d.Message == ErrorMessages.InvalidZip);
                 }
@@ -386,10 +386,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.DoesReferencedObjectsExist).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.DoesReferencedObjectsExist).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.DoesReferencedObjectsExist).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.DoesReferencedObjectsExist).Should().BeEmpty();
                 }
@@ -411,8 +411,8 @@ public class ContainerValidatorTests
 
         context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire
         {
-            Parts = new List<GeometryPart>
-            {
+            Parts =
+            [
                 new()
                 {
                     GeometryReference = new GeometryFileDefinition
@@ -420,12 +420,12 @@ public class ContainerValidatorTests
                         Model = model1,
                         GeometryId = "id1"
                     },
-                    Joints = new List<JointPart>
-                    {
+                    Joints =
+                    [
                         new()
                         {
-                            Geometries = new List<GeometryPart>
-                            {
+                            Geometries =
+                            [
                                 new()
                                 {
                                     GeometryReference = new GeometryFileDefinition
@@ -433,12 +433,13 @@ public class ContainerValidatorTests
                                         GeometryId = "id2"
                                     }
                                 },
+
                                 new()
-                            }
+                            ]
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -448,11 +449,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.MissingGeometryReference).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.DoesReferencedObjectsExist).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.DoesReferencedObjectsExist).Should()
                     .Contain(d => d.Message == ErrorMessages.MissingGeometryReference).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.DoesReferencedObjectsExist).Should()
                         .Contain(d => d.Message == ErrorMessages.MissingGeometryReference).And.HaveCount(2);
@@ -475,8 +476,8 @@ public class ContainerValidatorTests
 
         context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire
         {
-            Parts = new List<GeometryPart>
-            {
+            Parts =
+            [
                 new()
                 {
                     GeometryReference = new GeometryFileDefinition
@@ -484,12 +485,12 @@ public class ContainerValidatorTests
                         Model = model1,
                         GeometryId = "id1"
                     },
-                    Joints = new List<JointPart>
-                    {
+                    Joints =
+                    [
                         new()
                         {
-                            Geometries = new List<GeometryPart>
-                            {
+                            Geometries =
+                            [
                                 new()
                                 {
                                     GeometryReference = new GeometryFileDefinition
@@ -497,12 +498,13 @@ public class ContainerValidatorTests
                                         GeometryId = "id2"
                                     }
                                 },
+
                                 new()
-                            }
+                            ]
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -511,10 +513,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -539,11 +541,11 @@ public class ContainerValidatorTests
                     .ContainSingle(d => d.Message == ErrorMessages.NotAL3D);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.All).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.All).Should()
                     .ContainSingle(d => d.Message == ErrorMessages.NotAL3D);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.All).Should()
                         .ContainSingle(d => d.Message == ErrorMessages.NotAL3D);
@@ -569,11 +571,11 @@ public class ContainerValidatorTests
                     .BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.DoesReferencedObjectsExist).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.DoesReferencedObjectsExist).Should()
                     .BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.DoesReferencedObjectsExist).Should()
                         .BeEmpty();
@@ -597,11 +599,11 @@ public class ContainerValidatorTests
         var model3 = Substitute.For<IModel3D?>();
         model3!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["mtl1"] = Array.Empty<byte>()
+            ["mtl1"] = []
         });
         model3.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["tex1"] = Array.Empty<byte>()
+            ["tex1"] = []
         });
 
         var model4 = Substitute.For<IModel3D?>();
@@ -610,8 +612,8 @@ public class ContainerValidatorTests
 
         context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire
         {
-            Parts = new List<GeometryPart>
-            {
+            Parts =
+            [
                 new()
                 {
                     GeometryReference = new GeometryFileDefinition
@@ -619,12 +621,12 @@ public class ContainerValidatorTests
                         Model = model1,
                         GeometryId = "id1"
                     },
-                    Joints = new List<JointPart>
-                    {
+                    Joints =
+                    [
                         new()
                         {
-                            Geometries = new List<GeometryPart>
-                            {
+                            Geometries =
+                            [
                                 new()
                                 {
                                     GeometryReference = new GeometryFileDefinition
@@ -632,31 +634,34 @@ public class ContainerValidatorTests
                                         GeometryId = "id2"
                                     }
                                 },
+
                                 new()
-                            }
+                            ]
                         }
-                    }
+                    ]
                 }
-            },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            ],
+            GeometryDefinitions =
+            [
                 new()
                 {
                     GeometryId = "id1",
                     Model = model1
                 },
+
                 new()
                 {
                     GeometryId = "id3",
                     Model = model3
                 },
+
                 new()
                 {
                     GeometryId = "id4",
                     Model = model4,
                     FileName = "obj1"
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -666,11 +671,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.UnusedFile).And.HaveCount(3);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.AreAllFileDefinitionsUsed).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.AreAllFileDefinitionsUsed).Should()
                     .Contain(d => d.Message == ErrorMessages.UnusedFile).And.HaveCount(3);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.AreAllFileDefinitionsUsed).Should()
                         .Contain(d => d.Message == ErrorMessages.UnusedFile).And.HaveCount(3);
@@ -694,17 +699,17 @@ public class ContainerValidatorTests
         var model3 = Substitute.For<IModel3D?>();
         model3!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["mtl1"] = Array.Empty<byte>()
+            ["mtl1"] = []
         });
         model3.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["tex1"] = Array.Empty<byte>()
+            ["tex1"] = []
         });
 
         context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire
         {
-            Parts = new List<GeometryPart>
-            {
+            Parts =
+            [
                 new()
                 {
                     GeometryReference = new GeometryFileDefinition
@@ -712,12 +717,12 @@ public class ContainerValidatorTests
                         Model = model1,
                         GeometryId = "id1"
                     },
-                    Joints = new List<JointPart>
-                    {
+                    Joints =
+                    [
                         new()
                         {
-                            Geometries = new List<GeometryPart>
-                            {
+                            Geometries =
+                            [
                                 new()
                                 {
                                     GeometryReference = new GeometryFileDefinition
@@ -725,25 +730,27 @@ public class ContainerValidatorTests
                                         GeometryId = "id2"
                                     }
                                 },
+
                                 new()
-                            }
+                            ]
                         }
-                    }
+                    ]
                 }
-            },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            ],
+            GeometryDefinitions =
+            [
                 new()
                 {
                     GeometryId = "id1",
                     Model = model1
                 },
+
                 new()
                 {
                     GeometryId = "id3",
                     Model = model3
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -752,10 +759,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -778,11 +785,11 @@ public class ContainerValidatorTests
         var model2 = Substitute.For<IModel3D?>();
         model2!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["mtl1"] = Array.Empty<byte>()
+            ["mtl1"] = []
         }, new Dictionary<string, byte[]>());
         model2.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["tex1"] = Array.Empty<byte>()
+            ["tex1"] = []
         }, new Dictionary<string, byte[]>());
 
         var model4 = Substitute.For<IModel3D?>();
@@ -791,8 +798,8 @@ public class ContainerValidatorTests
 
         context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire
         {
-            Parts = new List<GeometryPart>
-            {
+            Parts =
+            [
                 new()
                 {
                     GeometryReference = new GeometryFileDefinition
@@ -800,12 +807,12 @@ public class ContainerValidatorTests
                         Model = model1,
                         GeometryId = "id1"
                     },
-                    Joints = new List<JointPart>
-                    {
+                    Joints =
+                    [
                         new()
                         {
-                            Geometries = new List<GeometryPart>
-                            {
+                            Geometries =
+                            [
                                 new()
                                 {
                                     GeometryReference = new GeometryFileDefinition
@@ -814,31 +821,34 @@ public class ContainerValidatorTests
                                         Model = model2
                                     }
                                 },
+
                                 new()
-                            }
+                            ]
                         }
-                    }
+                    ]
                 }
-            },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            ],
+            GeometryDefinitions =
+            [
                 new()
                 {
                     GeometryId = "id1",
                     Model = model1
                 },
+
                 new()
                 {
                     GeometryId = "id2",
                     Model = model2
                 },
+
                 new()
                 {
                     GeometryId = "id4",
                     Model = model4,
                     FileName = "obj1"
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -848,11 +858,11 @@ public class ContainerValidatorTests
                     .ContainSingle(d => d.Message == ErrorMessages.MissingMaterial);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.HasAllMaterials).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.HasAllMaterials).Should()
                     .ContainSingle(d => d.Message == ErrorMessages.MissingMaterial);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.HasAllMaterials).Should()
                         .ContainSingle(d => d.Message == ErrorMessages.MissingMaterial);
@@ -876,11 +886,11 @@ public class ContainerValidatorTests
         var model2 = Substitute.For<IModel3D?>();
         model2!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["mtl1"] = Array.Empty<byte>()
+            ["mtl1"] = []
         });
         model2.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["tex1"] = Array.Empty<byte>()
+            ["tex1"] = []
         });
 
         var model4 = Substitute.For<IModel3D?>();
@@ -889,8 +899,8 @@ public class ContainerValidatorTests
 
         context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire
         {
-            Parts = new List<GeometryPart>
-            {
+            Parts =
+            [
                 new()
                 {
                     GeometryReference = new GeometryFileDefinition
@@ -898,12 +908,12 @@ public class ContainerValidatorTests
                         Model = model1,
                         GeometryId = "id1"
                     },
-                    Joints = new List<JointPart>
-                    {
+                    Joints =
+                    [
                         new()
                         {
-                            Geometries = new List<GeometryPart>
-                            {
+                            Geometries =
+                            [
                                 new()
                                 {
                                     GeometryReference = new GeometryFileDefinition
@@ -912,31 +922,34 @@ public class ContainerValidatorTests
                                         Model = model2
                                     }
                                 },
+
                                 new()
-                            }
+                            ]
                         }
-                    }
+                    ]
                 }
-            },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            ],
+            GeometryDefinitions =
+            [
                 new()
                 {
                     GeometryId = "id1",
                     Model = model1
                 },
+
                 new()
                 {
                     GeometryId = "id2",
                     Model = model2
                 },
+
                 new()
                 {
                     GeometryId = "id4",
                     Model = model4,
                     FileName = "obj1"
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -945,10 +958,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -971,11 +984,11 @@ public class ContainerValidatorTests
         var model2 = Substitute.For<IModel3D?>();
         model2!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["mtl1"] = Array.Empty<byte>()
+            ["mtl1"] = []
         }, new Dictionary<string, byte[]>());
         model2.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["tex1"] = Array.Empty<byte>()
+            ["tex1"] = []
         }, new Dictionary<string, byte[]>());
 
         var model4 = Substitute.For<IModel3D?>();
@@ -984,8 +997,8 @@ public class ContainerValidatorTests
 
         context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire
         {
-            Parts = new List<GeometryPart>
-            {
+            Parts =
+            [
                 new()
                 {
                     GeometryReference = new GeometryFileDefinition
@@ -993,12 +1006,12 @@ public class ContainerValidatorTests
                         Model = model1,
                         GeometryId = "id1"
                     },
-                    Joints = new List<JointPart>
-                    {
+                    Joints =
+                    [
                         new()
                         {
-                            Geometries = new List<GeometryPart>
-                            {
+                            Geometries =
+                            [
                                 new()
                                 {
                                     GeometryReference = new GeometryFileDefinition
@@ -1007,31 +1020,34 @@ public class ContainerValidatorTests
                                         Model = model2
                                     }
                                 },
+
                                 new()
-                            }
+                            ]
                         }
-                    }
+                    ]
                 }
-            },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            ],
+            GeometryDefinitions =
+            [
                 new()
                 {
                     GeometryId = "id1",
                     Model = model1
                 },
+
                 new()
                 {
                     GeometryId = "id2",
                     Model = model2
                 },
+
                 new()
                 {
                     GeometryId = "id4",
                     Model = model4,
                     FileName = "obj1"
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -1041,11 +1057,11 @@ public class ContainerValidatorTests
                     .ContainSingle(d => d.Message == ErrorMessages.MissingTexture);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.HasAllTextures).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.HasAllTextures).Should()
                     .ContainSingle(d => d.Message == ErrorMessages.MissingTexture);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.HasAllTextures).Should()
                         .ContainSingle(d => d.Message == ErrorMessages.MissingTexture);
@@ -1070,7 +1086,7 @@ public class ContainerValidatorTests
         model2!.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]>());
         model2.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]>
         {
-            ["tex1"] = Array.Empty<byte>()
+            ["tex1"] = []
         });
 
         var model4 = Substitute.For<IModel3D?>();
@@ -1079,8 +1095,8 @@ public class ContainerValidatorTests
 
         context.L3DXmlReader.Read(Arg.Any<ContainerCache>()).Returns(new Luminaire
         {
-            Parts = new List<GeometryPart>
-            {
+            Parts =
+            [
                 new()
                 {
                     GeometryReference = new GeometryFileDefinition
@@ -1088,12 +1104,12 @@ public class ContainerValidatorTests
                         Model = model1,
                         GeometryId = "id1"
                     },
-                    Joints = new List<JointPart>
-                    {
+                    Joints =
+                    [
                         new()
                         {
-                            Geometries = new List<GeometryPart>
-                            {
+                            Geometries =
+                            [
                                 new()
                                 {
                                     GeometryReference = new GeometryFileDefinition
@@ -1102,31 +1118,34 @@ public class ContainerValidatorTests
                                         Model = model2
                                     }
                                 },
+
                                 new()
-                            }
+                            ]
                         }
-                    }
+                    ]
                 }
-            },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            ],
+            GeometryDefinitions =
+            [
                 new()
                 {
                     GeometryId = "id1",
                     Model = model1
                 },
+
                 new()
                 {
                     GeometryId = "id2",
                     Model = model2
                 },
+
                 new()
                 {
                     GeometryId = "id4",
                     Model = model4,
                     FileName = "obj1"
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -1135,10 +1154,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -1167,8 +1186,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = value!
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -1176,9 +1195,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -1189,8 +1208,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -1198,28 +1217,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -1229,11 +1248,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MandatoryField).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.MandatoryField).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MandatoryField).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
@@ -1263,8 +1282,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = value!
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -1272,9 +1291,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -1285,8 +1304,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -1294,28 +1313,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -1324,10 +1343,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -1356,8 +1375,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -1365,9 +1384,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -1378,8 +1397,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -1387,28 +1406,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "leoPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -1418,11 +1437,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.NameConvention).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.NameConvention).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.NameConvention).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
@@ -1452,8 +1471,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -1461,9 +1480,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -1474,8 +1493,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -1483,28 +1502,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "leoPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -1513,10 +1532,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -1545,8 +1564,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            Parts = new List<GeometryPart>
-            {
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -1557,8 +1576,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -1566,28 +1585,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -1597,11 +1616,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MandatoryField).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.MandatoryField).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MandatoryField).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
@@ -1631,8 +1650,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            Parts = new List<GeometryPart>
-            {
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -1643,8 +1662,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -1652,28 +1671,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -1682,10 +1701,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -1714,8 +1733,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -1723,7 +1742,7 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -1733,11 +1752,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MandatoryField).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.MandatoryField).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MandatoryField).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
@@ -1767,8 +1786,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -1776,7 +1795,7 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -1785,10 +1804,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -1817,8 +1836,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -1826,9 +1845,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -1840,7 +1859,7 @@ public class ContainerValidatorTests
                         Units = GeometricUnits.m
                     }
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -1850,11 +1869,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.HasLightEmittingPart).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.HasLightEmittingPart).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.HasLightEmittingPart).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
@@ -1884,8 +1903,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -1893,9 +1912,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -1907,7 +1926,7 @@ public class ContainerValidatorTests
                         Units = GeometricUnits.m
                     }
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -1916,10 +1935,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -1948,8 +1967,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -1957,9 +1976,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "1geoPart",
@@ -1970,8 +1989,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -1979,6 +1998,7 @@ public class ContainerValidatorTests
                         {
                             Name = "le"
                         },
+
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -1986,42 +2006,42 @@ public class ContainerValidatorTests
                         {
                             Name = invalid!
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "leoPart%",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["le"] = 0.8
                             }
                         }
-                    },
-                    Joints = new List<JointPart>
-                    {
+                    ],
+                    Joints =
+                    [
                         new()
                         {
                             Name = "j"
                         }
-                    },
-                    Sensors = new List<SensorPart>
-                    {
+                    ],
+                    Sensors =
+                    [
                         new()
                         {
                             Name = "%%%"
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -2031,11 +2051,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(6);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.NameConvention).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.NameConvention).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(6);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.NameConvention).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(6);
@@ -2065,8 +2085,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -2074,9 +2094,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "1geoPart",
@@ -2087,8 +2107,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -2096,6 +2116,7 @@ public class ContainerValidatorTests
                         {
                             Name = "le"
                         },
+
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -2103,42 +2124,42 @@ public class ContainerValidatorTests
                         {
                             Name = invalid!
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "leoPart%",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["le"] = 0.8
                             }
                         }
-                    },
-                    Joints = new List<JointPart>
-                    {
+                    ],
+                    Joints =
+                    [
                         new()
                         {
                             Name = "j"
                         }
-                    },
-                    Sensors = new List<SensorPart>
-                    {
+                    ],
+                    Sensors =
+                    [
                         new()
                         {
                             Name = "%%%"
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -2147,10 +2168,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -2179,8 +2200,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -2188,9 +2209,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -2201,8 +2222,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -2210,28 +2231,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = -1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -2241,11 +2262,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MinMaxRestriction).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.MinMaxRestriction).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MinMaxRestriction).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
@@ -2275,8 +2296,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -2284,9 +2305,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -2297,8 +2318,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -2306,28 +2327,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = -1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -2336,10 +2357,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -2368,8 +2389,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -2377,9 +2398,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -2390,8 +2411,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -2399,28 +2420,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = -1
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -2430,11 +2451,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MinMaxRestriction).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.MinMaxRestriction).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MinMaxRestriction).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
@@ -2464,8 +2485,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -2473,9 +2494,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -2486,8 +2507,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -2495,28 +2516,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = -1
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -2525,10 +2546,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -2557,8 +2578,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -2566,9 +2587,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -2579,8 +2600,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -2588,28 +2609,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 2,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -2619,11 +2640,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.FaceReferences).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.FaceReferences).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.FaceReferences).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
@@ -2653,8 +2674,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -2662,9 +2683,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -2675,8 +2696,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -2684,28 +2705,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 2,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -2714,10 +2735,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -2746,8 +2767,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -2755,9 +2776,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -2768,8 +2789,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -2777,28 +2798,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new FaceRangeAssignment()
                                 {
                                     GroupIndex = 1,
                                     FaceIndexBegin = -1
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -2808,11 +2829,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MinMaxRestriction).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.MinMaxRestriction).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MinMaxRestriction).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
@@ -2842,8 +2863,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -2851,9 +2872,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -2864,8 +2885,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -2873,28 +2894,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new FaceRangeAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndexBegin = -1
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -2903,10 +2924,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -2935,8 +2956,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -2944,9 +2965,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -2957,8 +2978,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -2966,29 +2987,29 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new FaceRangeAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndexBegin = 2,
                                     FaceIndexEnd = 1
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -2998,11 +3019,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MinMaxRestriction).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.MinMaxRestriction).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MinMaxRestriction).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
@@ -3032,8 +3053,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -3041,9 +3062,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -3054,8 +3075,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -3063,28 +3084,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -3093,10 +3114,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -3125,8 +3146,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -3134,9 +3155,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -3147,8 +3168,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -3156,29 +3177,29 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new FaceRangeAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndexBegin = 2,
                                     FaceIndexEnd = 3
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -3188,11 +3209,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.FaceReferences).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.FaceReferences).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.FaceReferences).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
@@ -3222,8 +3243,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -3231,9 +3252,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -3244,8 +3265,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -3253,29 +3274,29 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new FaceRangeAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndexBegin = 2,
                                     FaceIndexEnd = 3
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -3284,10 +3305,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -3316,8 +3337,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -3325,9 +3346,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -3338,8 +3359,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -3347,28 +3368,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 [invalid ?? string.Empty] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -3378,11 +3399,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.NameReferences).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.NameReferences).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.NameReferences).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
@@ -3412,8 +3433,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -3421,9 +3442,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -3434,8 +3455,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -3443,28 +3464,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 [invalid ?? string.Empty] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -3473,10 +3494,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -3505,8 +3526,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -3514,9 +3535,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -3527,8 +3548,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -3536,44 +3557,45 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart1",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = -0.1
                             }
                         },
+
                         new()
                         {
                             Name = "lesPart2",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 1.1
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -3583,11 +3605,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MinMaxRestriction).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.MinMaxRestriction).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MinMaxRestriction).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
@@ -3617,8 +3639,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -3626,9 +3648,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -3639,8 +3661,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -3648,44 +3670,45 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart1",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = -0.1
                             }
                         },
+
                         new()
                         {
                             Name = "lesPart2",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 1.1
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -3694,10 +3717,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -3726,8 +3749,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -3735,9 +3758,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -3748,8 +3771,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -3757,28 +3780,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    },
-                    Joints = new List<JointPart>
-                    {
+                    ],
+                    Joints =
+                    [
                         new()
                         {
                             Name = "joint",
@@ -3801,9 +3824,9 @@ public class ContainerValidatorTests
                                 Step = -2,
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -3813,11 +3836,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(6);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MinMaxRestriction).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.MinMaxRestriction).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(6);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MinMaxRestriction).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(6);
@@ -3847,8 +3870,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -3856,9 +3879,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -3869,8 +3892,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -3878,28 +3901,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    },
-                    Joints = new List<JointPart>
-                    {
+                    ],
+                    Joints =
+                    [
                         new()
                         {
                             Name = "joint",
@@ -3922,9 +3945,9 @@ public class ContainerValidatorTests
                                 Step = -2,
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -3933,10 +3956,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -3965,8 +3988,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -3974,9 +3997,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -3987,8 +4010,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -3996,35 +4019,35 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    },
-                    Joints = new List<JointPart>
-                    {
+                    ],
+                    Joints =
+                    [
                         new()
                         {
                             Name = "joint"
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -4034,11 +4057,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MandatoryField).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.MandatoryField).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MandatoryField).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
@@ -4068,8 +4091,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -4077,9 +4100,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -4090,8 +4113,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -4099,35 +4122,35 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    },
-                    Joints = new List<JointPart>
-                    {
+                    ],
+                    Joints =
+                    [
                         new()
                         {
                             Name = "joint"
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -4136,10 +4159,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -4168,8 +4191,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -4177,9 +4200,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -4190,8 +4213,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = -0.1
@@ -4199,6 +4222,7 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart1"
                         },
+
                         new(new Rectangle
                         {
                             SizeX = -0.1,
@@ -4207,28 +4231,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart2"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -4238,11 +4262,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(3);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.MinMaxRestriction).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.MinMaxRestriction).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(3);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.MinMaxRestriction).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(3);
@@ -4272,8 +4296,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -4281,9 +4305,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -4294,8 +4318,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = -0.1
@@ -4303,6 +4327,7 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart1"
                         },
+
                         new(new Rectangle
                         {
                             SizeX = -0.1,
@@ -4311,28 +4336,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart2"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -4341,10 +4366,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -4373,8 +4398,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -4382,9 +4407,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -4395,8 +4420,8 @@ public class ContainerValidatorTests
                         FileName = invalid!,
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -4404,28 +4429,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -4435,11 +4460,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.GeometryReferences).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.GeometryReferences).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.GeometryReferences).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
@@ -4469,8 +4494,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -4478,9 +4503,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -4491,8 +4516,8 @@ public class ContainerValidatorTests
                         FileName = invalid!,
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -4500,28 +4525,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -4530,10 +4555,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -4562,8 +4587,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -4571,9 +4596,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -4583,8 +4608,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -4592,28 +4617,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -4623,11 +4648,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.GeometryReferences).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.GeometryReferences).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.GeometryReferences).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(1);
@@ -4657,8 +4682,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -4666,9 +4691,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -4678,8 +4703,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -4687,28 +4712,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -4717,10 +4742,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }
@@ -4747,8 +4772,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -4756,9 +4781,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -4769,8 +4794,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -4778,28 +4803,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -4809,11 +4834,11 @@ public class ContainerValidatorTests
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.GeometryReferences).Should()
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.GeometryReferences).Should()
                     .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.GeometryReferences).Should()
                         .Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(2);
@@ -4841,8 +4866,8 @@ public class ContainerValidatorTests
             {
                 CreatedWithApplication = "test"
             },
-            GeometryDefinitions = new List<GeometryFileDefinition>
-            {
+            GeometryDefinitions =
+            [
                 new()
                 {
                     Model = model1,
@@ -4850,9 +4875,9 @@ public class ContainerValidatorTests
                     FileName = "file.obj",
                     Units = GeometricUnits.m
                 }
-            },
-            Parts = new List<GeometryPart>
-            {
+            ],
+            Parts =
+            [
                 new()
                 {
                     Name = "geoPart",
@@ -4863,8 +4888,8 @@ public class ContainerValidatorTests
                         FileName = "file.obj",
                         Units = GeometricUnits.m
                     },
-                    LightEmittingObjects = new List<LightEmittingPart>
-                    {
+                    LightEmittingObjects =
+                    [
                         new(new Circle
                         {
                             Diameter = 0.1
@@ -4872,28 +4897,28 @@ public class ContainerValidatorTests
                         {
                             Name = "leoPart"
                         }
-                    },
-                    LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                    {
+                    ],
+                    LightEmittingSurfaces =
+                    [
                         new()
                         {
                             Name = "lesPart",
-                            FaceAssignments = new List<FaceAssignment>
-                            {
+                            FaceAssignments =
+                            [
                                 new SingleFaceAssignment
                                 {
                                     GroupIndex = 1,
                                     FaceIndex = 2
                                 }
-                            },
+                            ],
                             LightEmittingPartIntensityMapping = new Dictionary<string, double>
                             {
                                 ["leoPart"] = 0.8
                             }
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         });
 
         switch (containerTypeToTest)
@@ -4902,10 +4927,10 @@ public class ContainerValidatorTests
                 context.ContainerValidator.Validate(Guid.NewGuid().ToString(), Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Bytes:
-                context.ContainerValidator.Validate(new byte[] {0, 1, 2, 3, 4}, Validation.IsXmlValid).Should().BeEmpty();
+                context.ContainerValidator.Validate([0, 1, 2, 3, 4], Validation.IsXmlValid).Should().BeEmpty();
                 break;
             case ContainerTypeToTest.Stream:
-                using (var ms = new MemoryStream(new byte[] {0, 1, 2, 3, 4}))
+                using (var ms = new MemoryStream([0, 1, 2, 3, 4]))
                 {
                     context.ContainerValidator.Validate(ms, Validation.IsXmlValid).Should().BeEmpty();
                 }

@@ -103,6 +103,7 @@ public class L3dXmlReaderTests
         var l3DXmlReader = new L3DXmlReader();
 
         using var cache = Path.GetDirectoryName(testFile)!.ToCache(Path.GetFileName(testFile));
+        // ReSharper disable once AccessToDisposedClosure
         var act = () => l3DXmlReader.Read(cache);
         act.Should().Throw<InvalidL3DException>();
     }
@@ -120,6 +121,7 @@ public class L3dXmlReaderTests
         var l3DXmlReader = new L3DXmlReader();
 
         using var cache = Path.GetDirectoryName(testFile)!.ToCache(Path.GetFileName(testFile));
+        // ReSharper disable once AccessToDisposedClosure
         var act = () => l3DXmlReader.Read(cache);
         act.Should().NotThrow();
     }
