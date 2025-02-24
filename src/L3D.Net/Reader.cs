@@ -20,7 +20,6 @@ public class Reader : IReader
     private static IContainerReader CreateContainerReader()
     {
         var fileHandler = new FileHandler();
-        return new ContainerReader(fileHandler,
-            new L3DXmlReader());
+        return new ContainerReader(fileHandler, new L3DXmlReader());
     }
 }

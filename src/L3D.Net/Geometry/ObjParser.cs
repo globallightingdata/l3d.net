@@ -14,6 +14,7 @@ namespace L3D.Net.Geometry;
 public class ObjParser : IObjParser
 {
     public static readonly IObjParser Instance = new ObjParser();
+    private static readonly ObjFileReaderSettings DefaultSettings = new() {HandleObjectNamesAsGroup = true, OnlyOneGroupNamePerLine = true};
 
     private static string GetFileName(string path)
     {
@@ -32,7 +33,7 @@ public class ObjParser : IObjParser
             return null;
 
         stream.Seek(0, SeekOrigin.Begin);
-        var objFile = ObjFile.FromStream(stream);
+        var objFile = ObjFile.FromStream(stream, DefaultSettings);
 
         var objMaterialLibraries = CollectAvailableMaterialLibraries(logger, objFile, files).ToList();
 
@@ -61,7 +62,7 @@ public class ObjParser : IObjParser
         byte[] fileBytes;
         using (var fs = File.OpenRead(filePath))
         {
-            objFile = ObjFile.FromStream(fs);
+            objFile = ObjFile.FromStream(fs, DefaultSettings);
             fileBytes = fs.ToArray();
         }
 

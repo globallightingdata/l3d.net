@@ -23,7 +23,7 @@ public class FileHandlerTests
     {
         var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
         var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
-        var geometryDirectories = Directory.GetDirectories(sourceDirectory).ToArray();
+        var geometryDirectories = Directory.GetDirectories(sourceDirectory);
         var targetZipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".zip");
         var testDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 
@@ -82,7 +82,7 @@ public class FileHandlerTests
     {
         var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
         var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
-        var geometryDirectories = Directory.GetDirectories(sourceDirectory).ToArray();
+        var geometryDirectories = Directory.GetDirectories(sourceDirectory);
         var targetZipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".zip");
         var testDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 

@@ -25,7 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="JeremyAnsel.Media.WavefrontObj" Version="3.0.39" />
+        <PackageReference Include="JeremyAnsel.Media.WavefrontObj" Version="3.0.44" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />
         <PackageReference Include="MinVer" PrivateAssets="all" Version="6.0.0" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
