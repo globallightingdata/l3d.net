@@ -202,11 +202,35 @@ public class FileHandlerTests
     }
 
     [Test]
-    public void GetTextureBytes_ShouldReturnFileBytes_WhenCorrect()
+    public void GetTextureBytes_ShouldReturnFileBytes_Example_008_WhenCorrect()
     {
         var examplePath = Path.Combine(Setup.TestDataDirectory, "xml", "v0.11.0", "example_008");
-        var geomId = "cube";
-        var textureName = "CubeTexture.png";
+        const string geomId = "cube";
+        const string textureName = "CubeTexture.png";
+        var expectedPath = Path.Combine(examplePath, geomId, textureName);
+        var expectedBytes = File.ReadAllBytes(expectedPath);
+
+        using var cache = new ContainerCache();
+        var memStream = new MemoryStream(expectedBytes);
+        var files = new Dictionary<string, Stream>
+        {
+            {textureName, memStream}
+        };
+
+        cache.Geometries.Add(geomId, files);
+
+        var fileHandler = new FileHandler();
+        var textureBytes = fileHandler.GetTextureBytes(cache, geomId, textureName);
+
+        textureBytes.Should().BeEquivalentTo(expectedBytes);
+    }
+
+    [Test]
+    public void GetTextureBytes_ShouldReturnFileBytes_Example_011_WhenCorrect()
+    {
+        var examplePath = Path.Combine(Setup.TestDataDirectory, "xml", "v0.11.0", "example_011");
+        const string geomId = "cube";
+        const string textureName = "CubeTexture";
         var expectedPath = Path.Combine(examplePath, geomId, textureName);
         var expectedBytes = File.ReadAllBytes(expectedPath);
 

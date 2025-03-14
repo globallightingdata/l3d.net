@@ -111,6 +111,7 @@ public static class Setup
         ["example_007"] = luminaire => luminaire.BuildExample007(),
         ["example_008"] = luminaire => luminaire.BuildExample008(),
         ["example_009"] = luminaire => luminaire.BuildExample009(),
-        ["example_010"] = luminaire => luminaire.BuildExample010()
+        ["example_010"] = luminaire => luminaire.BuildExample010(),
+        ["example_011"] = luminaire => luminaire.BuildExample011()
     };
 }
