@@ -25,19 +25,4 @@
         </None>
     </ItemGroup>
 
-    <ItemGroup>
-        <None Update="TestData\xml\v0.11.0\example_009\cube\CubeTexture.png">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="TestData\xml\v0.11.0\example_009\cube\textured_cube.mtl">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="TestData\xml\v0.11.0\example_009\cube\textured_cube.obj">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="TestData\xml\v0.11.0\example_009\structure.xml">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-    </ItemGroup>
-
 </Project>
