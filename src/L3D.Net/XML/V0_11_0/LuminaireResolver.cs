@@ -37,7 +37,8 @@ internal class LuminaireResolver : ILuminaireResolver
         return luminaire;
     }
 
-    private GeometryFileDefinition ResolveGeometrySource(GeometryFileDefinition geometryFileDefinition, IEnumerable<GeometryFileDefinition> geometrySources, ContainerCache cache, ILogger? logger)
+    private GeometryFileDefinition ResolveGeometrySource(GeometryFileDefinition geometryFileDefinition, IEnumerable<GeometryFileDefinition> geometrySources, ContainerCache cache,
+        ILogger? logger)
     {
         var source = geometrySources.FirstOrDefault(x => x.GeometryId.Equals(geometryFileDefinition.GeometryId, StringComparison.Ordinal));
 
@@ -105,12 +106,11 @@ internal class LuminaireResolver : ILuminaireResolver
     {
         yield return geometryPart;
 
-        foreach (var subGeometryPart in geometryPart.Joints?.SelectMany(x => x.Geometries) ?? Array.Empty<GeometryPart>())
+        if (geometryPart.Joints is null) yield break;
+
+        foreach (var part in geometryPart.Joints.SelectMany(x => x.Geometries).SelectMany(GetParts))
         {
-            foreach (var part in GetParts(subGeometryPart))
-            {
-                yield return part;
-            }
+            yield return part;
         }
     }
 }

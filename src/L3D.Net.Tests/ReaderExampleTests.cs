@@ -57,7 +57,8 @@ public class ReaderExampleTests
 
     [Test]
     public void Reader_ShouldBeAbleToReadAllExampleFiles_ContainerPath([ValueSource(nameof(ExampleDirectories))] string exampleDirectory,
-        [ValueSource(nameof(ContainerTypeToTestEnumValues))] ContainerTypeToTest containerTypeToTest)
+        [ValueSource(nameof(ContainerTypeToTestEnumValues))]
+        ContainerTypeToTest containerTypeToTest)
     {
         var exampleName = Path.GetFileName(exampleDirectory).ToLower();
 
@@ -79,6 +80,7 @@ public class ReaderExampleTests
                 {
                     _writer.WriteToStream(luminaire, stream);
                 }
+
                 break;
             case ContainerTypeToTest.Path:
                 _writer.WriteToFile(luminaire, containerPath);
@@ -98,14 +100,12 @@ public class ReaderExampleTests
             {
                 var containerBytes = File.ReadAllBytes(containerPath);
                 return new Reader().ReadContainer(containerBytes);
-            }
-            ,
+            },
             ContainerTypeToTest.Stream => () =>
             {
                 using var stream = File.OpenRead(containerPath);
                 return new Reader().ReadContainer(stream);
-            }
-            ,
+            },
             _ => throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null)
         };
 

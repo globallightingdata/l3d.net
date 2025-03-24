@@ -6,7 +6,7 @@ namespace L3D.Net.XML.V0_11_0.Dto;
 [Serializable]
 public class GeometryReferenceDto
 {
-    /// <remarks/>
+    /// <remarks />
     [XmlAttribute("geometryId")]
     public string GeometryId { get; set; } = string.Empty;
 }

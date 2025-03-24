@@ -4,21 +4,21 @@ using System.Xml.Serialization;
 
 namespace L3D.Net.XML.V0_11_0.Dto;
 
-/// <remarks/>
+/// <remarks />
 [XmlRoot("Luminaire", Namespace = "", IsNullable = false)]
 public class LuminaireDto
 {
     [XmlAttribute("noNamespaceSchemaLocation", Namespace = "http://www.w3.org/2001/XMLSchema-instance")]
     public string Scheme { get; set; } = Constants.CurrentSchemeUri;
 
-    /// <remarks/>
+    /// <remarks />
     public HeaderDto Header { get; set; } = new();
 
-    /// <remarks/>
+    /// <remarks />
     [XmlArrayItem("GeometryFileDefinition", Type = typeof(GeometryFileDefinitionDto))]
     public List<GeometryDefinitionDto> GeometryDefinitions { get; set; } = new();
 
-    /// <remarks/>
+    /// <remarks />
     [XmlArray("Structure")]
     [XmlArrayItem("Geometry")]
     public List<GeometryPartDto> Parts { get; set; } = new();

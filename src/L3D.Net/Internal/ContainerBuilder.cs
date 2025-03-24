@@ -58,7 +58,7 @@ internal class ContainerBuilder : IContainerBuilder
 
     private void PrepareFiles(Luminaire luminaire, ContainerCache cache)
     {
-        if (luminaire.GeometryDefinitions.Any(x => x.Model == null))
+        if (luminaire.GeometryDefinitions.Exists(x => x.Model == null))
             throw new InvalidL3DException("All geometry definitions must have a model");
 
         foreach (var geometryDefinition in luminaire.GeometryDefinitions)

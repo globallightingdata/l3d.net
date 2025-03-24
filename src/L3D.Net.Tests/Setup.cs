@@ -17,14 +17,21 @@ public static class Setup
     private static readonly MemoryStream Stream = new();
 
     public static string TestDataDirectory { get; private set; } = null!;
+
     public static string ExamplesDirectory { get; private set; } = null!;
+
     public static string ValidVersionsDirectory { get; private set; } = null!;
+
     public static string InvalidVersionsDirectory { get; private set; } = null!;
 
     public static IEnumerable<Stream> ExampleXmlStreams { get; private set; } = Array.Empty<Stream>();
+
     public static IEnumerable<string> ExampleXmlFiles { get; private set; } = Array.Empty<string>();
+
     public static IEnumerable<string> ExampleObjFiles { get; private set; } = Array.Empty<string>();
+
     public static IEnumerable<string> ValidVersionXmlFiles { get; private set; } = Array.Empty<string>();
+
     public static IEnumerable<string> InvalidVersionXmlFiles { get; private set; } = Array.Empty<string>();
 
     [OneTimeSetUp]
@@ -69,51 +76,42 @@ public static class Setup
         }
     }
 
-    public static List<string> EmptyStringValues()
+    public static List<string> EmptyStringValues() =>
+    [
+        null!,
+        "",
+        " ",
+        "\t",
+        "\t ",
+        "\t \t",
+        Environment.NewLine
+    ];
+
+    public static IEnumerable<TestCaseData> EmptyByteArrayValues()
     {
-        return new List<string>
-        {
-            null!,
-            "",
-            " ",
-            "\t",
-            "\t ",
-            "\t \t",
-            Environment.NewLine
-        };
+        yield return new TestCaseData(null).SetArgDisplayNames("<null>");
+        yield return new TestCaseData(Array.Empty<byte>()).SetArgDisplayNames("<empty byte array>");
     }
 
-    public static List<byte[]> EmptyByteArrayValues()
+    public static IEnumerable<TestCaseData> EmptyStreamValues()
     {
-        return new List<byte[]>
-        {
-            null!,
-            Array.Empty<byte>()
-        };
+        yield return new TestCaseData(null).SetArgDisplayNames("<null>");
+        yield return new TestCaseData(Stream).SetArgDisplayNames("<empty stream>");
     }
 
-    public static List<Stream> EmptyStreamValues()
+    public static Dictionary<string, Func<Luminaire, Luminaire>> ExampleBuilderMapping { get; } = new()
     {
-        return new List<Stream>
-        {
-            null!,
-            Stream
-        };
-    }
-
-    public static Dictionary<string, Func<Luminaire, Luminaire>> ExampleBuilderMapping { get; } =
-        new()
-        {
-            {"example_000", luminaire => luminaire.BuildExample000()},
-            {"example_001", luminaire => luminaire.BuildExample001()},
-            {"example_002", luminaire => luminaire.BuildExample002()},
-            {"example_003", luminaire => luminaire.BuildExample003()},
-            {"example_004", luminaire => luminaire.BuildExample004()},
-            {"example_005", luminaire => luminaire.BuildExample005()},
-            {"example_006", luminaire => luminaire.BuildExample006()},
-            {"example_007", luminaire => luminaire.BuildExample007()},
-            {"example_008", luminaire => luminaire.BuildExample008()},
-            {"example_009", luminaire => luminaire.BuildExample009()},
-            {"example_010", luminaire => luminaire.BuildExample010()}
-        };
+        ["example_000"] = luminaire => luminaire.BuildExample000(),
+        ["example_001"] = luminaire => luminaire.BuildExample001(),
+        ["example_002"] = luminaire => luminaire.BuildExample002(),
+        ["example_003"] = luminaire => luminaire.BuildExample003(),
+        ["example_004"] = luminaire => luminaire.BuildExample004(),
+        ["example_005"] = luminaire => luminaire.BuildExample005(),
+        ["example_006"] = luminaire => luminaire.BuildExample006(),
+        ["example_007"] = luminaire => luminaire.BuildExample007(),
+        ["example_008"] = luminaire => luminaire.BuildExample008(),
+        ["example_009"] = luminaire => luminaire.BuildExample009(),
+        ["example_010"] = luminaire => luminaire.BuildExample010(),
+        ["example_011"] = luminaire => luminaire.BuildExample011()
+    };
 }

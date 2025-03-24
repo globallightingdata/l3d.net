@@ -11,5 +11,5 @@ internal static class Constants
     public const string L3dFormatVersionMajor = "major";
     public const string L3dFormatVersionMinor = "minor";
     public const string L3dFormatVersionPreRelease = "pre-release";
-    public static readonly string[] L3dFormatVersionRequiredFields = { L3dFormatVersionMajor, L3dFormatVersionMinor };
+    public static readonly string[] L3dFormatVersionRequiredFields = [L3dFormatVersionMajor, L3dFormatVersionMinor];
 }

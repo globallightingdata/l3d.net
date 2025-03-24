@@ -75,6 +75,7 @@ internal class L3DXmlReader : IL3DXmlReader
             version = null;
             return false;
         }
+
         if (!fields.TryGetValue(Constants.L3dFormatVersionMinor, out var minorValue) || !int.TryParse(minorValue, out var minor))
         {
             version = null;

@@ -106,7 +106,7 @@ public class XmlValidator : IXmlValidator
     private static bool TryGetSchemeAttribute(XElement root, out XAttribute? attribute)
     {
         var schemeAttribute = root.Attributes().FirstOrDefault(attribute =>
-            attribute.Name is { NamespaceName: @"http://www.w3.org/2001/XMLSchema-instance", LocalName: @"noNamespaceSchemaLocation" });
+            attribute.Name is {NamespaceName: @"http://www.w3.org/2001/XMLSchema-instance", LocalName: @"noNamespaceSchemaLocation"});
 
         if (schemeAttribute == null)
         {
@@ -125,6 +125,7 @@ public class XmlValidator : IXmlValidator
             version = null;
             return false;
         }
+
         if (!fields.TryGetValue(Constants.L3dFormatVersionMinor, out var minorValue) || !int.TryParse(minorValue, out var minor) || minor < 0)
         {
             version = null;

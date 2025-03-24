@@ -1,57 +1,57 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>12</LangVersion>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Company>DIAL GmbH</Company>
-    <Authors>DIAL GmbH</Authors>
-    <Copyright>DIAL GmbH © 2024</Copyright>
-    <Description>L3D XML serializer, validator, builder and .l3d container reader</Description>
-    <PackageId>L3D.Net</PackageId>
-    <PackageTags>global lighting data format gldf l3d xml serializier parser validator</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/globallightingdata/l3d.net</PackageProjectUrl>
-    <PackageReleaseNotes>https://github.com/globallightingdata/l3d.net/releases</PackageReleaseNotes>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>embedded</DebugType>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-    <!--<EmbedAllSources>true</EmbedAllSources>-->
-    <PackageReadmeFile>README.md</PackageReadmeFile>    
-  </PropertyGroup>
-  <ItemGroup>
-    <None Remove="XSD\V0_11_0.xsd" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="JeremyAnsel.Media.WavefrontObj" Version="3.0.36" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
-    <PackageReference Include="MinVer" PrivateAssets="all" Version="5.0.0" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-    <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-    <_Parameter1>$(AssemblyName).Tests</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
-  
-  <PropertyGroup>
-    <MinVerTagPrefix>v</MinVerTagPrefix>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-  
-  <ItemGroup>
-    <EmbeddedResource Include="XSD\V0_11_0.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <None Include=".\..\..\README.md">
-      <Pack>true</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>12</LangVersion>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Company>DIAL GmbH</Company>
+        <Authors>DIAL GmbH</Authors>
+        <Copyright>DIAL GmbH © 2024</Copyright>
+        <Description>L3D XML serializer, validator, builder and .l3d container reader</Description>
+        <PackageId>L3D.Net</PackageId>
+        <PackageTags>global lighting data format gldf l3d xml serializier parser validator</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/globallightingdata/l3d.net</PackageProjectUrl>
+        <PackageReleaseNotes>https://github.com/globallightingdata/l3d.net/releases</PackageReleaseNotes>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>embedded</DebugType>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+        <!--<EmbedAllSources>true</EmbedAllSources>-->
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Remove="XSD\V0_11_0.xsd" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="JeremyAnsel.Media.WavefrontObj" Version="3.0.46" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
+        <PackageReference Include="MinVer" PrivateAssets="all" Version="6.0.0" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
+        </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>$(AssemblyName).Tests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <PropertyGroup>
+        <MinVerTagPrefix>v</MinVerTagPrefix>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="XSD\V0_11_0.xsd">
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <None Include=".\..\..\README.md">
+            <Pack>true</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+    </ItemGroup>
 </Project>

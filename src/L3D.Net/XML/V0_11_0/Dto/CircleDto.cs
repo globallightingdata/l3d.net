@@ -3,12 +3,12 @@ using System.Xml.Serialization;
 
 namespace L3D.Net.XML.V0_11_0.Dto;
 
-/// <remarks/>
+/// <remarks />
 [Serializable]
 //[XmlType(AnonymousType = true)]
 public class CircleDto : ShapeDto
 {
-    /// <remarks/>
+    /// <remarks />
     [XmlAttribute("diameter")]
     public double Diameter { get; set; }
 }

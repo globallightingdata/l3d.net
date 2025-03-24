@@ -13,7 +13,9 @@ public class FormatVersion
     private int _preRelease;
 
     public int Major { get; set; }
+
     public int Minor { get; set; }
+
     public int PreRelease
     {
         get => _preRelease;
@@ -23,6 +25,8 @@ public class FormatVersion
             PreReleaseSpecified = true;
         }
     }
+
     public bool PreReleaseSpecified { get; set; }
+
     public override string ToString() => $"v{Major}.{Minor}" + (PreReleaseSpecified ? $"-rc{PreRelease}" : string.Empty);
 }

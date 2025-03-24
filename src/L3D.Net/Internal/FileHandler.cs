@@ -100,7 +100,7 @@ internal class FileHandler : IFileHandler
                 {
                     if (string.IsNullOrWhiteSpace(entry.Name)) continue;
 
-                    var geometryName = entry.FullName.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries)[0];
+                    var geometryName = entry.FullName.Split(['/'], StringSplitOptions.RemoveEmptyEntries)[0];
 
                     if (!cache.Geometries.TryGetValue(geometryName, out var files))
                     {
@@ -171,10 +171,10 @@ internal class FileHandler : IFileHandler
             throw new ArgumentException(@$"'{nameof(textureName)}' cannot be null or whitespace.", nameof(textureName));
 
         if (!cache.Geometries.TryGetValue(geomId, out var files))
-            return Array.Empty<byte>();
+            return [];
 
         if (!files.TryGetValue(textureName, out var stream))
-            return Array.Empty<byte>();
+            return [];
 
         var buffer = stream.ToArray();
 

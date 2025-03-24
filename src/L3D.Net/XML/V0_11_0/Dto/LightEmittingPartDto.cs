@@ -3,16 +3,16 @@ using System.Xml.Serialization;
 
 namespace L3D.Net.XML.V0_11_0.Dto;
 
-/// <remarks/>
+/// <remarks />
 [Serializable]
 public class LightEmittingPartDto : TransformablePartDto
 {
-    /// <remarks/>
+    /// <remarks />
     [XmlElement(ElementName = "Rectangle", Type = typeof(RectangleDto))]
     [XmlElement(ElementName = "Circle", Type = typeof(CircleDto))]
     public ShapeDto Shape { get; set; }
 
-    /// <remarks/>
+    /// <remarks />
     public LuminousHeightsDto? LuminousHeights { get; set; }
 
 #pragma warning disable CS8618

@@ -22,16 +22,16 @@ public class ShapeMapperTests : MapperTestBase
                 new Circle())
             .SetArgDisplayNames("<new CircleDto()>", "<new Circle()>");
         yield return new TestCaseData(
-                new RectangleDto { SizeX = 0.2 },
-                new Rectangle { SizeX = 0.2 })
+                new RectangleDto {SizeX = 0.2},
+                new Rectangle {SizeX = 0.2})
             .SetArgDisplayNames(nameof(RectangleDto.SizeX), nameof(Rectangle.SizeX));
         yield return new TestCaseData(
-                new RectangleDto { SizeY = 0.2 },
-                new Rectangle { SizeY = 0.2 })
+                new RectangleDto {SizeY = 0.2},
+                new Rectangle {SizeY = 0.2})
             .SetArgDisplayNames(nameof(RectangleDto.SizeY), nameof(Rectangle.SizeY));
         yield return new TestCaseData(
-                new CircleDto { Diameter = 0.2 },
-                new Circle { Diameter = 0.2 })
+                new CircleDto {Diameter = 0.2},
+                new Circle {Diameter = 0.2})
             .SetArgDisplayNames(nameof(CircleDto.Diameter), nameof(Circle.Diameter));
         yield return new TestCaseData(
                 new RectangleDto

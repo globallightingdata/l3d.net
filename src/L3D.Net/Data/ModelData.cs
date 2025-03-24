@@ -12,5 +12,6 @@ public class ModelData
     public List<Vector2> TextureCoordinates { get; set; } = new();
 
     public List<ModelFaceGroup> FaceGroups { get; set; } = new();
+
     public List<ModelMaterial> Materials { get; set; } = new();
 }

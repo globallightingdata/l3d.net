@@ -25,5 +25,6 @@ public class FormatVersionDto
 
     [XmlIgnore]
     public bool PreReleaseSpecified { get; set; }
+
     public override string ToString() => $"v{Major}.{Minor}" + (PreReleaseSpecified ? $"-rc{PreRelease}" : string.Empty);
 }

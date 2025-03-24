@@ -4,22 +4,28 @@
 
 namespace L3D.Net.XML.V0_11_0.Dto;
 
-/// <remarks/>
+/// <remarks />
 [Serializable]
 public enum GeometricUnitsDto
 {
-    /// <remarks/>
+    /// <remarks />
     m,
-    /// <remarks/>
+
+    /// <remarks />
     dm,
-    /// <remarks/>
+
+    /// <remarks />
     cm,
-    /// <remarks/>
+
+    /// <remarks />
     mm,
-    /// <remarks/>
+
+    /// <remarks />
     yard,
-    /// <remarks/>
+
+    /// <remarks />
     foot,
-    /// <remarks/>
+
+    /// <remarks />
     inch,
 }

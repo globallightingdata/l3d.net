@@ -6,11 +6,11 @@ namespace L3D.Net.XML.V0_11_0.Dto;
 
 public class LightEmittingObjectReferenceDto
 {
-    /// <remarks/>
+    /// <remarks />
     [XmlAttribute("lightEmittingPartName")]
     public string LightEmittingPartName { get; set; } = string.Empty;
 
-    /// <remarks/>
+    /// <remarks />
     [XmlAttribute("intensity")]
     public double Intensity { get; set; } = 1.0;
 

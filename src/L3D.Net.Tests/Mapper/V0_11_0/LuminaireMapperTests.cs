@@ -17,33 +17,51 @@ public class LuminaireMapperTests : MapperTestBase
     {
         var utcNow = DateTime.UtcNow;
         yield return new TestCaseData(
-                new LuminaireDto { Header = new HeaderDto { FormatVersion = new FormatVersionDto() } },
-                new Luminaire { Header = new Header { FormatVersion = new FormatVersion() } })
+                new LuminaireDto {Header = new HeaderDto {FormatVersion = new FormatVersionDto()}},
+                new Luminaire {Header = new Header {FormatVersion = new FormatVersion()}})
             .SetArgDisplayNames("<new()>", "<new()>");
         yield return new TestCaseData(
-                new LuminaireDto { Header = new HeaderDto { Name = "name1", Description = "desc", CreatedWithApplication = "app", CreationTimeCode = utcNow, FormatVersion = new FormatVersionDto { Major = 1, Minor = 2, PreRelease = 3, PreReleaseSpecified = true } } },
-                new Luminaire { Header = new Header { Name = "name1", Description = "desc", CreatedWithApplication = "app", CreationTimeCode = utcNow, FormatVersion = new FormatVersion { Major = 1, Minor = 2, PreRelease = 3, PreReleaseSpecified = true } } })
+                new LuminaireDto
+                {
+                    Header = new HeaderDto
+                    {
+                        Name = "name1", Description = "desc", CreatedWithApplication = "app", CreationTimeCode = utcNow,
+                        FormatVersion = new FormatVersionDto {Major = 1, Minor = 2, PreRelease = 3, PreReleaseSpecified = true}
+                    }
+                },
+                new Luminaire
+                {
+                    Header = new Header
+                    {
+                        Name = "name1", Description = "desc", CreatedWithApplication = "app", CreationTimeCode = utcNow,
+                        FormatVersion = new FormatVersion {Major = 1, Minor = 2, PreRelease = 3, PreReleaseSpecified = true}
+                    }
+                })
             .SetArgDisplayNames(nameof(LuminaireDto.Header), nameof(Luminaire.Header));
         yield return new TestCaseData(
-                new LuminaireDto { GeometryDefinitions = new List<GeometryDefinitionDto> { new GeometryFileDefinitionDto { GeometryId = "id" } }, Header = new HeaderDto { FormatVersion = new FormatVersionDto() } },
-                new Luminaire { GeometryDefinitions = new List<GeometryFileDefinition> { new() { GeometryId = "id" } }, Header = new Header { FormatVersion = new FormatVersion() } })
+                new LuminaireDto
+                {
+                    GeometryDefinitions = [new GeometryFileDefinitionDto {GeometryId = "id"}],
+                    Header = new HeaderDto {FormatVersion = new FormatVersionDto()}
+                },
+                new Luminaire {GeometryDefinitions = [new() {GeometryId = "id"}], Header = new Header {FormatVersion = new FormatVersion()}})
             .SetArgDisplayNames(nameof(LuminaireDto.GeometryDefinitions), nameof(Luminaire.GeometryDefinitions));
         yield return new TestCaseData(
                 new LuminaireDto
                 {
-                    Header = new HeaderDto { FormatVersion = new FormatVersionDto() },
-                    Parts = new List<GeometryPartDto>
-                    {
+                    Header = new HeaderDto {FormatVersion = new FormatVersionDto()},
+                    Parts =
+                    [
                         new()
                         {
                             Name = "name2",
-                            Position = new Vector3Dto { X = 0.1f, Y = 0.2f, Z = 0.3f },
-                            Rotation = new Vector3Dto { X = 0.4f, Y = 0.5f, Z = 0.6f },
+                            Position = new Vector3Dto {X = 0.1f, Y = 0.2f, Z = 0.3f},
+                            Rotation = new Vector3Dto {X = 0.4f, Y = 0.5f, Z = 0.6f},
                             IncludedInMeasurement = true,
-                            ElectricalConnectors = new Vector3Dto[] { new(){ X =  0.7f, Y = 0.8f, Z = 0.9f } },
-                            GeometryReference = new GeometryReferenceDto { GeometryId = "id" },
-                            LightEmittingObjects = new LightEmittingPartDto[]
-                            {
+                            ElectricalConnectors = [new() {X = 0.7f, Y = 0.8f, Z = 0.9f}],
+                            GeometryReference = new GeometryReferenceDto {GeometryId = "id"},
+                            LightEmittingObjects =
+                            [
                                 new(new RectangleDto
                                 {
                                     SizeX = 50,
@@ -51,8 +69,8 @@ public class LuminaireMapperTests : MapperTestBase
                                 })
                                 {
                                     Name = "name3",
-                                    Rotation = new Vector3Dto { X = 1.0f, Y = 1.1f, Z = 1.2f },
-                                    Position = new Vector3Dto { X = 1.3f, Y = 1.4f, Z = 1.5f },
+                                    Rotation = new Vector3Dto {X = 1.0f, Y = 1.1f, Z = 1.2f},
+                                    Position = new Vector3Dto {X = 1.3f, Y = 1.4f, Z = 1.5f},
                                     LuminousHeights = new LuminousHeightsDto
                                     {
                                         C0 = 10,
@@ -61,55 +79,55 @@ public class LuminaireMapperTests : MapperTestBase
                                         C270 = 40
                                     }
                                 }
-                            },
-                            LightEmittingSurfaces = new LightEmittingSurfacePartDto[]
-                            {
+                            ],
+                            LightEmittingSurfaces =
+                            [
                                 new()
                                 {
                                     Name = "name3",
-                                    FaceAssignments = new List<FaceAssignmentDto>
-                                    {
+                                    FaceAssignments =
+                                    [
                                         new FaceRangeAssignmentDto
                                         {
                                             FaceIndexBegin = 1,
                                             FaceIndexEnd = 2,
                                             GroupIndex = 3
                                         }
-                                    },
-                                    LightEmittingPartIntensityMapping = new List<LightEmittingObjectReferenceDto>
-                                    {
+                                    ],
+                                    LightEmittingPartIntensityMapping =
+                                    [
                                         new()
                                         {
                                             Intensity = 0.8,
                                             LightEmittingPartName = "name4"
                                         }
-                                    }
+                                    ]
                                 }
-                            },
-                            Joints = new JointPartDto[]
-                            {
+                            ],
+                            Joints =
+                            [
                                 new()
                                 {
                                     Name = "name5",
-                                    Rotation = new Vector3Dto { X = 1.6f, Y = 1.7f, Z = 1.8f },
-                                    Position = new Vector3Dto { X = 1.9f, Y = 2.0f, Z = 2.1f },
-                                    DefaultRotation = new Vector3Dto { X = 2.2f, Y = 2.3f, Z = 2.4f },
-                                    XAxis = new AxisRotationDto { Min = 2.5, Max = 2.6, Step = 2.7 },
-                                    YAxis = new AxisRotationDto { Min = 2.8, Max = 2.9, Step = 3.0 },
-                                    ZAxis = new AxisRotationDto { Min = 3.1, Max = 3.2, Step = 3.3 }
+                                    Rotation = new Vector3Dto {X = 1.6f, Y = 1.7f, Z = 1.8f},
+                                    Position = new Vector3Dto {X = 1.9f, Y = 2.0f, Z = 2.1f},
+                                    DefaultRotation = new Vector3Dto {X = 2.2f, Y = 2.3f, Z = 2.4f},
+                                    XAxis = new AxisRotationDto {Min = 2.5, Max = 2.6, Step = 2.7},
+                                    YAxis = new AxisRotationDto {Min = 2.8, Max = 2.9, Step = 3.0},
+                                    ZAxis = new AxisRotationDto {Min = 3.1, Max = 3.2, Step = 3.3}
                                 }
-                            },
-                            PendulumConnectors = new Vector3Dto[]
-                            {
+                            ],
+                            PendulumConnectors =
+                            [
                                 new()
                                 {
                                     X = 3.4f,
                                     Y = 3.5f,
                                     Z = 3.6f
                                 }
-                            },
-                            Sensors = new SensorPartDto[]
-                            {
+                            ],
+                            Sensors =
+                            [
                                 new()
                                 {
                                     Name = "name6",
@@ -126,25 +144,25 @@ public class LuminaireMapperTests : MapperTestBase
                                         Z = 3.9f
                                     }
                                 }
-                            }
+                            ]
                         }
-                    }
+                    ]
                 },
                 new Luminaire
                 {
-                    Header = new Header { FormatVersion = new FormatVersion() },
-                    Parts = new List<GeometryPart>
-                    {
+                    Header = new Header {FormatVersion = new FormatVersion()},
+                    Parts =
+                    [
                         new()
                         {
                             Name = "name2",
-                            Position = new Vector3 { X = 0.1f, Y = 0.2f, Z = 0.3f },
-                            Rotation = new Vector3 { X = 0.4f, Y = 0.5f, Z = 0.6f },
+                            Position = new Vector3 {X = 0.1f, Y = 0.2f, Z = 0.3f},
+                            Rotation = new Vector3 {X = 0.4f, Y = 0.5f, Z = 0.6f},
                             IncludedInMeasurement = true,
-                            ElectricalConnectors = new List<Vector3> { new(){ X =  0.7f, Y = 0.8f, Z = 0.9f } },
-                            GeometryReference = new GeometryFileDefinition { GeometryId = "id" },
-                            LightEmittingObjects = new List<LightEmittingPart>
-                            {
+                            ElectricalConnectors = [new() {X = 0.7f, Y = 0.8f, Z = 0.9f}],
+                            GeometryReference = new GeometryFileDefinition {GeometryId = "id"},
+                            LightEmittingObjects =
+                            [
                                 new(new Rectangle
                                 {
                                     SizeX = 50,
@@ -152,8 +170,8 @@ public class LuminaireMapperTests : MapperTestBase
                                 })
                                 {
                                     Name = "name3",
-                                    Rotation = new Vector3 { X = 1.0f, Y = 1.1f, Z = 1.2f },
-                                    Position = new Vector3 { X = 1.3f, Y = 1.4f, Z = 1.5f },
+                                    Rotation = new Vector3 {X = 1.0f, Y = 1.1f, Z = 1.2f},
+                                    Position = new Vector3 {X = 1.3f, Y = 1.4f, Z = 1.5f},
                                     LuminousHeights = new LuminousHeights
                                     {
                                         C0 = 10,
@@ -162,51 +180,51 @@ public class LuminaireMapperTests : MapperTestBase
                                         C270 = 40
                                     }
                                 }
-                            },
-                            LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                            {
+                            ],
+                            LightEmittingSurfaces =
+                            [
                                 new()
                                 {
                                     Name = "name3",
-                                    FaceAssignments = new List<FaceAssignment>
-                                    {
+                                    FaceAssignments =
+                                    [
                                         new FaceRangeAssignment
                                         {
                                             FaceIndexBegin = 1,
                                             FaceIndexEnd = 2,
                                             GroupIndex = 3
                                         }
-                                    },
+                                    ],
                                     LightEmittingPartIntensityMapping = new Dictionary<string, double>
                                     {
                                         ["name4"] = 0.8
                                     }
                                 }
-                            },
-                            Joints = new List<JointPart>
-                            {
+                            ],
+                            Joints =
+                            [
                                 new()
                                 {
                                     Name = "name5",
-                                    Rotation = new Vector3 { X = 1.6f, Y = 1.7f, Z = 1.8f },
-                                    Position = new Vector3 { X = 1.9f, Y = 2.0f, Z = 2.1f },
-                                    DefaultRotation = new Vector3 { X = 2.2f, Y = 2.3f, Z = 2.4f },
-                                    XAxis = new AxisRotation { Min = 2.5, Max = 2.6, Step = 2.7 },
-                                    YAxis = new AxisRotation { Min = 2.8, Max = 2.9, Step = 3.0 },
-                                    ZAxis = new AxisRotation { Min = 3.1, Max = 3.2, Step = 3.3 }
+                                    Rotation = new Vector3 {X = 1.6f, Y = 1.7f, Z = 1.8f},
+                                    Position = new Vector3 {X = 1.9f, Y = 2.0f, Z = 2.1f},
+                                    DefaultRotation = new Vector3 {X = 2.2f, Y = 2.3f, Z = 2.4f},
+                                    XAxis = new AxisRotation {Min = 2.5, Max = 2.6, Step = 2.7},
+                                    YAxis = new AxisRotation {Min = 2.8, Max = 2.9, Step = 3.0},
+                                    ZAxis = new AxisRotation {Min = 3.1, Max = 3.2, Step = 3.3}
                                 }
-                            },
-                            PendulumConnectors = new List<Vector3>
-                            {
+                            ],
+                            PendulumConnectors =
+                            [
                                 new()
                                 {
                                     X = 3.4f,
                                     Y = 3.5f,
                                     Z = 3.6f
                                 }
-                            },
-                            Sensors = new List<SensorPart>
-                            {
+                            ],
+                            Sensors =
+                            [
                                 new()
                                 {
                                     Name = "name6",
@@ -223,26 +241,26 @@ public class LuminaireMapperTests : MapperTestBase
                                         Z = 3.9f
                                     }
                                 }
-                            }
+                            ]
                         }
-                    }
+                    ]
                 })
             .SetArgDisplayNames(nameof(LuminaireDto.Parts), nameof(Luminaire.Parts));
         yield return new TestCaseData(
                 new LuminaireDto
                 {
-                    Parts = new List<GeometryPartDto>
-                    {
+                    Parts =
+                    [
                         new()
                         {
                             Name = "name2",
-                            Position = new Vector3Dto { X = 0.1f, Y = 0.2f, Z = 0.3f },
-                            Rotation = new Vector3Dto { X = 0.4f, Y = 0.5f, Z = 0.6f },
+                            Position = new Vector3Dto {X = 0.1f, Y = 0.2f, Z = 0.3f},
+                            Rotation = new Vector3Dto {X = 0.4f, Y = 0.5f, Z = 0.6f},
                             IncludedInMeasurement = true,
-                            ElectricalConnectors = new Vector3Dto[] { new(){ X =  0.7f, Y = 0.8f, Z = 0.9f } },
-                            GeometryReference = new GeometryReferenceDto { GeometryId = "id" },
-                            LightEmittingObjects = new LightEmittingPartDto[]
-                            {
+                            ElectricalConnectors = [new() {X = 0.7f, Y = 0.8f, Z = 0.9f}],
+                            GeometryReference = new GeometryReferenceDto {GeometryId = "id"},
+                            LightEmittingObjects =
+                            [
                                 new(new RectangleDto
                                 {
                                     SizeX = 50,
@@ -250,8 +268,8 @@ public class LuminaireMapperTests : MapperTestBase
                                 })
                                 {
                                     Name = "name3",
-                                    Rotation = new Vector3Dto { X = 1.0f, Y = 1.1f, Z = 1.2f },
-                                    Position = new Vector3Dto { X = 1.3f, Y = 1.4f, Z = 1.5f },
+                                    Rotation = new Vector3Dto {X = 1.0f, Y = 1.1f, Z = 1.2f},
+                                    Position = new Vector3Dto {X = 1.3f, Y = 1.4f, Z = 1.5f},
                                     LuminousHeights = new LuminousHeightsDto
                                     {
                                         C0 = 10,
@@ -260,55 +278,55 @@ public class LuminaireMapperTests : MapperTestBase
                                         C270 = 40
                                     }
                                 }
-                            },
-                            LightEmittingSurfaces = new LightEmittingSurfacePartDto[]
-                            {
+                            ],
+                            LightEmittingSurfaces =
+                            [
                                 new()
                                 {
                                     Name = "name3",
-                                    FaceAssignments = new List<FaceAssignmentDto>
-                                    {
+                                    FaceAssignments =
+                                    [
                                         new FaceRangeAssignmentDto
                                         {
                                             FaceIndexBegin = 1,
                                             FaceIndexEnd = 2,
                                             GroupIndex = 3
                                         }
-                                    },
-                                    LightEmittingPartIntensityMapping = new List<LightEmittingObjectReferenceDto>
-                                    {
+                                    ],
+                                    LightEmittingPartIntensityMapping =
+                                    [
                                         new()
                                         {
                                             Intensity = 0.8,
                                             LightEmittingPartName = "name4"
                                         }
-                                    }
+                                    ]
                                 }
-                            },
-                            Joints = new JointPartDto[]
-                            {
+                            ],
+                            Joints =
+                            [
                                 new()
                                 {
                                     Name = "name5",
-                                    Rotation = new Vector3Dto { X = 1.6f, Y = 1.7f, Z = 1.8f },
-                                    Position = new Vector3Dto { X = 1.9f, Y = 2.0f, Z = 2.1f },
-                                    DefaultRotation = new Vector3Dto { X = 2.2f, Y = 2.3f, Z = 2.4f },
-                                    XAxis = new AxisRotationDto { Min = 2.5, Max = 2.6, Step = 2.7 },
-                                    YAxis = new AxisRotationDto { Min = 2.8, Max = 2.9, Step = 3.0 },
-                                    ZAxis = new AxisRotationDto { Min = 3.1, Max = 3.2, Step = 3.3 }
+                                    Rotation = new Vector3Dto {X = 1.6f, Y = 1.7f, Z = 1.8f},
+                                    Position = new Vector3Dto {X = 1.9f, Y = 2.0f, Z = 2.1f},
+                                    DefaultRotation = new Vector3Dto {X = 2.2f, Y = 2.3f, Z = 2.4f},
+                                    XAxis = new AxisRotationDto {Min = 2.5, Max = 2.6, Step = 2.7},
+                                    YAxis = new AxisRotationDto {Min = 2.8, Max = 2.9, Step = 3.0},
+                                    ZAxis = new AxisRotationDto {Min = 3.1, Max = 3.2, Step = 3.3}
                                 }
-                            },
-                            PendulumConnectors = new Vector3Dto[]
-                            {
+                            ],
+                            PendulumConnectors =
+                            [
                                 new()
                                 {
                                     X = 3.4f,
                                     Y = 3.5f,
                                     Z = 3.6f
                                 }
-                            },
-                            Sensors = new SensorPartDto[]
-                            {
+                            ],
+                            Sensors =
+                            [
                                 new()
                                 {
                                     Name = "name6",
@@ -325,26 +343,27 @@ public class LuminaireMapperTests : MapperTestBase
                                         Z = 3.9f
                                     }
                                 }
-                            }
+                            ]
                         }
-                    },
-                    Header = new HeaderDto { Name = "name1", Description = "desc", CreatedWithApplication = "app", CreationTimeCode = utcNow, FormatVersion = new FormatVersionDto() },
-                    GeometryDefinitions = new List<GeometryDefinitionDto> { new GeometryFileDefinitionDto { GeometryId = "id" } }
+                    ],
+                    Header = new HeaderDto
+                        {Name = "name1", Description = "desc", CreatedWithApplication = "app", CreationTimeCode = utcNow, FormatVersion = new FormatVersionDto()},
+                    GeometryDefinitions = [new GeometryFileDefinitionDto {GeometryId = "id"}]
                 },
                 new Luminaire
                 {
-                    Parts = new List<GeometryPart>
-                    {
+                    Parts =
+                    [
                         new()
                         {
                             Name = "name2",
-                            Position = new Vector3 { X = 0.1f, Y = 0.2f, Z = 0.3f },
-                            Rotation = new Vector3 { X = 0.4f, Y = 0.5f, Z = 0.6f },
+                            Position = new Vector3 {X = 0.1f, Y = 0.2f, Z = 0.3f},
+                            Rotation = new Vector3 {X = 0.4f, Y = 0.5f, Z = 0.6f},
                             IncludedInMeasurement = true,
-                            ElectricalConnectors = new List<Vector3> { new(){ X =  0.7f, Y = 0.8f, Z = 0.9f } },
-                            GeometryReference = new GeometryFileDefinition { GeometryId = "id" },
-                            LightEmittingObjects = new List<LightEmittingPart>
-                            {
+                            ElectricalConnectors = [new() {X = 0.7f, Y = 0.8f, Z = 0.9f}],
+                            GeometryReference = new GeometryFileDefinition {GeometryId = "id"},
+                            LightEmittingObjects =
+                            [
                                 new(new Rectangle
                                 {
                                     SizeX = 50,
@@ -352,8 +371,8 @@ public class LuminaireMapperTests : MapperTestBase
                                 })
                                 {
                                     Name = "name3",
-                                    Rotation = new Vector3 { X = 1.0f, Y = 1.1f, Z = 1.2f },
-                                    Position = new Vector3 { X = 1.3f, Y = 1.4f, Z = 1.5f },
+                                    Rotation = new Vector3 {X = 1.0f, Y = 1.1f, Z = 1.2f},
+                                    Position = new Vector3 {X = 1.3f, Y = 1.4f, Z = 1.5f},
                                     LuminousHeights = new LuminousHeights
                                     {
                                         C0 = 10,
@@ -362,51 +381,51 @@ public class LuminaireMapperTests : MapperTestBase
                                         C270 = 40
                                     }
                                 }
-                            },
-                            LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                            {
+                            ],
+                            LightEmittingSurfaces =
+                            [
                                 new()
                                 {
                                     Name = "name3",
-                                    FaceAssignments = new List<FaceAssignment>
-                                    {
+                                    FaceAssignments =
+                                    [
                                         new FaceRangeAssignment
                                         {
                                             FaceIndexBegin = 1,
                                             FaceIndexEnd = 2,
                                             GroupIndex = 3
                                         }
-                                    },
+                                    ],
                                     LightEmittingPartIntensityMapping = new Dictionary<string, double>
                                     {
                                         ["name4"] = 0.8
                                     }
                                 }
-                            },
-                            Joints = new List<JointPart>
-                            {
+                            ],
+                            Joints =
+                            [
                                 new()
                                 {
                                     Name = "name5",
-                                    Rotation = new Vector3 { X = 1.6f, Y = 1.7f, Z = 1.8f },
-                                    Position = new Vector3 { X = 1.9f, Y = 2.0f, Z = 2.1f },
-                                    DefaultRotation = new Vector3 { X = 2.2f, Y = 2.3f, Z = 2.4f },
-                                    XAxis = new AxisRotation { Min = 2.5, Max = 2.6, Step = 2.7 },
-                                    YAxis = new AxisRotation { Min = 2.8, Max = 2.9, Step = 3.0 },
-                                    ZAxis = new AxisRotation { Min = 3.1, Max = 3.2, Step = 3.3 }
+                                    Rotation = new Vector3 {X = 1.6f, Y = 1.7f, Z = 1.8f},
+                                    Position = new Vector3 {X = 1.9f, Y = 2.0f, Z = 2.1f},
+                                    DefaultRotation = new Vector3 {X = 2.2f, Y = 2.3f, Z = 2.4f},
+                                    XAxis = new AxisRotation {Min = 2.5, Max = 2.6, Step = 2.7},
+                                    YAxis = new AxisRotation {Min = 2.8, Max = 2.9, Step = 3.0},
+                                    ZAxis = new AxisRotation {Min = 3.1, Max = 3.2, Step = 3.3}
                                 }
-                            },
-                            PendulumConnectors = new List<Vector3>
-                            {
+                            ],
+                            PendulumConnectors =
+                            [
                                 new()
                                 {
                                     X = 3.4f,
                                     Y = 3.5f,
                                     Z = 3.6f
                                 }
-                            },
-                            Sensors = new List<SensorPart>
-                            {
+                            ],
+                            Sensors =
+                            [
                                 new()
                                 {
                                     Name = "name6",
@@ -423,11 +442,11 @@ public class LuminaireMapperTests : MapperTestBase
                                         Z = 3.9f
                                     }
                                 }
-                            }
+                            ]
                         }
-                    },
-                    Header = new Header { Name = "name1", Description = "desc", CreatedWithApplication = "app", CreationTimeCode = utcNow, FormatVersion = new FormatVersion() },
-                    GeometryDefinitions = new List<GeometryFileDefinition> { new() { GeometryId = "id" } }
+                    ],
+                    Header = new Header {Name = "name1", Description = "desc", CreatedWithApplication = "app", CreationTimeCode = utcNow, FormatVersion = new FormatVersion()},
+                    GeometryDefinitions = [new() {GeometryId = "id"}]
                 })
             .SetArgDisplayNames("<filled>", "<filled>");
     }

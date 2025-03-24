@@ -84,6 +84,7 @@ public class ReadXmlExamplesTest
 
         stopwatch.Stop();
         var totalCount = exampleCount * loopCount;
-        Console.WriteLine($"Performance: Total of {totalCount} xml files read in {stopwatch.ElapsedMilliseconds}ms with {(double)stopwatch.ElapsedMilliseconds / totalCount}ms per file");
+        Console.WriteLine(
+            $"Performance: Total of {totalCount} xml files read in {stopwatch.ElapsedMilliseconds}ms with {(double) stopwatch.ElapsedMilliseconds / totalCount}ms per file");
     }
 }

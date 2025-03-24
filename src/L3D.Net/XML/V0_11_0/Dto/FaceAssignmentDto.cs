@@ -3,10 +3,10 @@ using System.Xml.Serialization;
 
 namespace L3D.Net.XML.V0_11_0.Dto;
 
-/// <remarks/>
+/// <remarks />
 public abstract class FaceAssignmentDto
 {
-    /// <remarks/>
+    /// <remarks />
     [XmlAttribute("groupIndex")]
     public int GroupIndex { get; set; }
 

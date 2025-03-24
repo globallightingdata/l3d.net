@@ -4,39 +4,39 @@ using System.Xml.Serialization;
 
 namespace L3D.Net.XML.V0_11_0.Dto;
 
-/// <remarks/>
+/// <remarks />
 [Serializable]
 public class GeometryPartDto : TransformablePartDto
 {
     [XmlElement(ElementName = "GeometryReference")]
     public GeometryReferenceDto GeometryReference { get; set; } = new();
 
-    /// <remarks/>
+    /// <remarks />
     [XmlArrayItem("Joint")]
     public JointPartDto[]? Joints { get; set; }
 
-    /// <remarks/>
+    /// <remarks />
     [XmlArrayItem("LightEmittingObject")]
     public LightEmittingPartDto[]? LightEmittingObjects { get; set; }
 
-    /// <remarks/>
+    /// <remarks />
     [XmlArray("SensorObjects")]
     [XmlArrayItem("SensorObject")]
     public SensorPartDto[]? Sensors { get; set; }
 
-    /// <remarks/>
+    /// <remarks />
     [XmlArrayItem("LightEmittingSurface")]
     public LightEmittingSurfacePartDto[]? LightEmittingSurfaces { get; set; }
 
-    /// <remarks/>
+    /// <remarks />
     [XmlArrayItem("ElectricalConnector")]
     public Vector3Dto[]? ElectricalConnectors { get; set; }
 
-    /// <remarks/>
+    /// <remarks />
     [XmlArrayItem("PendulumConnector")]
     public Vector3Dto[]? PendulumConnectors { get; set; }
 
-    /// <remarks/>
+    /// <remarks />
     [XmlAttribute("includedInMeasurement")]
     public bool IncludedInMeasurement
     {
@@ -54,13 +54,28 @@ public class GeometryPartDto : TransformablePartDto
     public bool IncludedInMeasurementSpecified { get; set; }
 
     // ReSharper disable UnusedMember.Global
-    [ExcludeFromCodeCoverage] public bool ShouldSerializeLightEmittingObjects() => LightEmittingObjects is { Length: > 0 };
-    [ExcludeFromCodeCoverage] public bool ShouldSerializeSensors() => Sensors is { Length: > 0 };
-    [ExcludeFromCodeCoverage] public bool ShouldSerializeLightEmittingFaceAssignments() => LightEmittingSurfaces is { Length: > 0 };
-    [ExcludeFromCodeCoverage] public bool ShouldSerializeJoints() => Joints is { Length: > 0 };
-    [ExcludeFromCodeCoverage] public bool ShouldSerializeElectricalConnectors() => ElectricalConnectors is { Length: > 0 };
-    [ExcludeFromCodeCoverage] public bool ShouldSerializePendulumConnectors() => PendulumConnectors is { Length: > 0 };
-    [ExcludeFromCodeCoverage] public bool ShouldSerializeLightEmittingSurfaces() => LightEmittingSurfaces is { Length: > 0 };
-    [ExcludeFromCodeCoverage] public bool ShouldSerializeIncludedInMeasurement() => IncludedInMeasurementSpecified;
+    [ExcludeFromCodeCoverage]
+    public bool ShouldSerializeLightEmittingObjects() => LightEmittingObjects is {Length: > 0};
+
+    [ExcludeFromCodeCoverage]
+    public bool ShouldSerializeSensors() => Sensors is {Length: > 0};
+
+    [ExcludeFromCodeCoverage]
+    public bool ShouldSerializeLightEmittingFaceAssignments() => LightEmittingSurfaces is {Length: > 0};
+
+    [ExcludeFromCodeCoverage]
+    public bool ShouldSerializeJoints() => Joints is {Length: > 0};
+
+    [ExcludeFromCodeCoverage]
+    public bool ShouldSerializeElectricalConnectors() => ElectricalConnectors is {Length: > 0};
+
+    [ExcludeFromCodeCoverage]
+    public bool ShouldSerializePendulumConnectors() => PendulumConnectors is {Length: > 0};
+
+    [ExcludeFromCodeCoverage]
+    public bool ShouldSerializeLightEmittingSurfaces() => LightEmittingSurfaces is {Length: > 0};
+
+    [ExcludeFromCodeCoverage]
+    public bool ShouldSerializeIncludedInMeasurement() => IncludedInMeasurementSpecified;
     // ReSharper restore UnusedMember.Global
 }

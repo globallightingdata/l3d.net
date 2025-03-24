@@ -15,39 +15,24 @@ namespace L3D.Net.Tests;
 [TestFixture]
 public class FileHandlerTests
 {
-    private readonly List<string> _filesToDelete = new();
-    private readonly List<string> _directoriesToDelete = new();
+    private readonly List<string> _filesToDelete = [];
+    private readonly List<string> _directoriesToDelete = [];
 
     [SetUp]
     public void Init()
     {
         var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
         var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
-        var geometryDirectories = Directory.GetDirectories(sourceDirectory).ToArray();
+        var geometryDirectories = Directory.GetDirectories(sourceDirectory);
         var targetZipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".zip");
         var testDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 
         _filesToDelete.Add(targetZipPath);
         _directoriesToDelete.Add(testDirectory);
 
-        using var cache = new ContainerCache
-        {
-            StructureXml = File.OpenRead(sourceXml),
-            Geometries = geometryDirectories.ToDictionary(x => Path.GetFileName(x), y =>
-            {
-                var geometries = new Dictionary<string, Stream>();
-
-                var files = Directory.GetFiles(y);
-                foreach (var file in files)
-                {
-                    var fileName = Path.GetFileName(file);
-
-                    geometries.Add(fileName, File.OpenRead(file));
-                }
-
-                return geometries;
-            })
-        };
+        using var cache = new ContainerCache();
+        cache.StructureXml = File.OpenRead(sourceXml);
+        cache.Geometries = geometryDirectories.ToDictionary(x => Path.GetFileName(x), GetGeometriesFromDictionary);
 
         new FileHandler().CreateContainerFile(cache, targetZipPath);
     }
@@ -97,31 +82,16 @@ public class FileHandlerTests
     {
         var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
         var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
-        var geometryDirectories = Directory.GetDirectories(sourceDirectory).ToArray();
+        var geometryDirectories = Directory.GetDirectories(sourceDirectory);
         var targetZipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".zip");
         var testDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 
         _filesToDelete.Add(targetZipPath);
         _directoriesToDelete.Add(testDirectory);
 
-        using var cache = new ContainerCache
-        {
-            StructureXml = File.OpenRead(sourceXml),
-            Geometries = geometryDirectories.ToDictionary(x => Path.GetFileName(x), y =>
-            {
-                var geometries = new Dictionary<string, Stream>();
-
-                var files = Directory.GetFiles(y);
-                foreach (var file in files)
-                {
-                    var fileName = Path.GetFileName(file);
-
-                    geometries.Add(fileName, File.OpenRead(file));
-                }
-
-                return geometries;
-            })
-        };
+        using var cache = new ContainerCache();
+        cache.StructureXml = File.OpenRead(sourceXml);
+        cache.Geometries = geometryDirectories.ToDictionary(x => Path.GetFileName(x), GetGeometriesFromDictionary);
 
         new FileHandler().CreateContainerFile(cache, targetZipPath);
 
@@ -174,7 +144,7 @@ public class FileHandlerTests
         _directoriesToDelete.Add(targetTestDirectory);
         var model3D = CreateFakeModel3D();
 
-        model3D.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]> { [path ?? string.Empty] = Array.Empty<byte>() });
+        model3D.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]> {[path ?? string.Empty] = []});
 
         var fileHandler = new FileHandler();
         var action = () => fileHandler.AddModelFilesToCache(model3D, "someId", new ContainerCache());
@@ -190,8 +160,8 @@ public class FileHandlerTests
         _directoriesToDelete.Add(targetTestDirectory);
         var model3D = CreateFakeModel3D();
 
-        model3D.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]> { ["someId"] = Array.Empty<byte>() });
-        model3D.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]> { [path ?? string.Empty] = Array.Empty<byte>() });
+        model3D.ReferencedMaterialLibraryFiles.Returns(new Dictionary<string, byte[]> {["someId"] = []});
+        model3D.ReferencedTextureFiles.Returns(new Dictionary<string, byte[]> {[path ?? string.Empty] = []});
 
         var fileHandler = new FileHandler();
         var action = () => fileHandler.AddModelFilesToCache(model3D, "someId", new ContainerCache());
@@ -232,11 +202,11 @@ public class FileHandlerTests
     }
 
     [Test]
-    public void GetTextureBytes_ShouldReturnFileBytes_WhenCorrect()
+    public void GetTextureBytes_ShouldReturnFileBytes_Example_008_WhenCorrect()
     {
         var examplePath = Path.Combine(Setup.TestDataDirectory, "xml", "v0.11.0", "example_008");
-        var geomId = "cube";
-        var textureName = "CubeTexture.png";
+        const string geomId = "cube";
+        const string textureName = "CubeTexture.png";
         var expectedPath = Path.Combine(examplePath, geomId, textureName);
         var expectedBytes = File.ReadAllBytes(expectedPath);
 
@@ -244,7 +214,31 @@ public class FileHandlerTests
         var memStream = new MemoryStream(expectedBytes);
         var files = new Dictionary<string, Stream>
         {
-            { textureName, memStream }
+            {textureName, memStream}
+        };
+
+        cache.Geometries.Add(geomId, files);
+
+        var fileHandler = new FileHandler();
+        var textureBytes = fileHandler.GetTextureBytes(cache, geomId, textureName);
+
+        textureBytes.Should().BeEquivalentTo(expectedBytes);
+    }
+
+    [Test]
+    public void GetTextureBytes_ShouldReturnFileBytes_Example_011_WhenCorrect()
+    {
+        var examplePath = Path.Combine(Setup.TestDataDirectory, "xml", "v0.11.0", "example_011");
+        const string geomId = "cube";
+        const string textureName = "CubeTexture";
+        var expectedPath = Path.Combine(examplePath, geomId, textureName);
+        var expectedBytes = File.ReadAllBytes(expectedPath);
+
+        using var cache = new ContainerCache();
+        var memStream = new MemoryStream(expectedBytes);
+        var files = new Dictionary<string, Stream>
+        {
+            {textureName, memStream}
         };
 
         cache.Geometries.Add(geomId, files);
@@ -282,6 +276,7 @@ public class FileHandlerTests
         var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
         var fileHandler = new FileHandler();
         using var fs = File.OpenRead(sourceXml);
+        // ReSharper disable once AccessToDisposedClosure
         var act = () => fileHandler.ExtractContainerOrThrow(fs);
         act.Should().Throw<InvalidDataException>();
     }
@@ -313,7 +308,23 @@ public class FileHandlerTests
         var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
         var fileHandler = new FileHandler();
         using var fs = File.OpenRead(sourceXml);
+        // ReSharper disable once AccessToDisposedClosure
         var act = () => fileHandler.ExtractContainer(fs);
         act.Should().NotThrow();
+    }
+
+    private static Dictionary<string, Stream> GetGeometriesFromDictionary(string directory)
+    {
+        var geometries = new Dictionary<string, Stream>();
+
+        var files = Directory.GetFiles(directory);
+        foreach (var file in files)
+        {
+            var fileName = Path.GetFileName(file);
+
+            geometries.Add(fileName, File.OpenRead(file));
+        }
+
+        return geometries;
     }
 }

@@ -18,16 +18,16 @@ public class AxisRotationMapperTests : MapperTestBase
                 new AxisRotation())
             .SetArgDisplayNames("<new()>", "<new()>");
         yield return new TestCaseData(
-                new AxisRotationDto { Min = 0.2 },
-                new AxisRotation { Min = 0.2 })
+                new AxisRotationDto {Min = 0.2},
+                new AxisRotation {Min = 0.2})
             .SetArgDisplayNames(nameof(AxisRotationDto.Min), nameof(AxisRotation.Min));
         yield return new TestCaseData(
-                new AxisRotationDto { Max = 0.2 },
-                new AxisRotation { Max = 0.2 })
+                new AxisRotationDto {Max = 0.2},
+                new AxisRotation {Max = 0.2})
             .SetArgDisplayNames(nameof(AxisRotationDto.Max), nameof(AxisRotation.Max));
         yield return new TestCaseData(
-                new AxisRotationDto { Step = 0.2 },
-                new AxisRotation { Step = 0.2 })
+                new AxisRotationDto {Step = 0.2},
+                new AxisRotation {Step = 0.2})
             .SetArgDisplayNames(nameof(AxisRotationDto.Step), nameof(AxisRotation.Step));
         yield return new TestCaseData(
                 new AxisRotationDto

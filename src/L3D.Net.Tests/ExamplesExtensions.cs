@@ -33,18 +33,15 @@ public static class ExamplesExtensions
             FileName = fileName
         };
 
-        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
-        {
-            geometryDefinition
-        };
+        luminaire.GeometryDefinitions = [geometryDefinition];
 
-        luminaire.Parts = new List<GeometryPart>
-        {
+        luminaire.Parts =
+        [
             new()
             {
                 Name = "luminaire",
-                LightEmittingObjects = new List<LightEmittingPart>
-                {
+                LightEmittingObjects =
+                [
                     new(new Rectangle
                     {
                         SizeX = 0.5,
@@ -53,28 +50,28 @@ public static class ExamplesExtensions
                     {
                         Name = "leo"
                     }
-                },
-                LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                {
+                ],
+                LightEmittingSurfaces =
+                [
                     new()
                     {
                         Name = "les",
-                        FaceAssignments = new List<FaceAssignment>
-                        {
+                        FaceAssignments =
+                        [
                             new SingleFaceAssignment
                             {
                                 FaceIndex = 3
                             }
-                        },
+                        ],
                         LightEmittingPartIntensityMapping = new Dictionary<string, double>
                         {
                             ["leo"] = 1
                         }
                     }
-                },
+                ],
                 GeometryReference = geometryDefinition
             }
-        };
+        ];
 
         return Resolver.Resolve(luminaire, cache)!;
     }
@@ -99,18 +96,15 @@ public static class ExamplesExtensions
             FileName = fileName
         };
 
-        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
-        {
-            geometryDefinition
-        };
+        luminaire.GeometryDefinitions = [geometryDefinition];
 
-        luminaire.Parts = new List<GeometryPart>
-        {
+        luminaire.Parts =
+        [
             new()
             {
                 Name = "luminaire",
-                LightEmittingObjects = new List<LightEmittingPart>
-                {
+                LightEmittingObjects =
+                [
                     new(new Rectangle
                     {
                         SizeX = 0.5,
@@ -125,25 +119,25 @@ public static class ExamplesExtensions
                             Z = 0.05f
                         }
                     }
-                },
-                LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                {
+                ],
+                LightEmittingSurfaces =
+                [
                     new()
                     {
                         Name = "les",
-                        FaceAssignments = new List<FaceAssignment>
-                        {
+                        FaceAssignments =
+                        [
                             new SingleFaceAssignment
                             {
                                 FaceIndex = 3
                             }
-                        },
+                        ],
                         LightEmittingPartIntensityMapping = new Dictionary<string, double>
                         {
                             ["leo"] = 1
                         }
                     }
-                },
+                ],
                 Position = new Vector3
                 {
                     X = -0.25f,
@@ -152,7 +146,7 @@ public static class ExamplesExtensions
                 },
                 GeometryReference = geometryDefinition
             }
-        };
+        ];
 
         return Resolver.Resolve(luminaire, cache)!;
     }
@@ -215,23 +209,23 @@ public static class ExamplesExtensions
             FileName = headFileName
         };
 
-        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
-        {
+        luminaire.GeometryDefinitions =
+        [
             baseDefinition,
             baseArmDefinition,
             armDefinition,
             armHeadDefinition,
             headDefinition
-        };
+        ];
 
-        luminaire.Parts = new List<GeometryPart>
-        {
+        luminaire.Parts =
+        [
             new()
             {
                 Name = "base",
                 GeometryReference = baseDefinition,
-                Joints = new List<JointPart>
-                {
+                Joints =
+                [
                     new()
                     {
                         Name = "base-con-hinge",
@@ -247,8 +241,8 @@ public static class ExamplesExtensions
                             Max = 15,
                             Step = 1
                         },
-                        Geometries = new List<GeometryPart>
-                        {
+                        Geometries =
+                        [
                             new()
                             {
                                 Name = "base-arm-con",
@@ -259,8 +253,8 @@ public static class ExamplesExtensions
                                     Z = -0.05f
                                 },
                                 GeometryReference = baseArmDefinition,
-                                Joints = new List<JointPart>
-                                {
+                                Joints =
+                                [
                                     new()
                                     {
                                         Name = "con-arm-hinge",
@@ -282,8 +276,8 @@ public static class ExamplesExtensions
                                             Y = 0f,
                                             Z = 0f
                                         },
-                                        Geometries = new List<GeometryPart>
-                                        {
+                                        Geometries =
+                                        [
                                             new()
                                             {
                                                 Name = "arm",
@@ -294,8 +288,8 @@ public static class ExamplesExtensions
                                                     Y = -0.05f,
                                                     Z = -0.085f
                                                 },
-                                                Joints = new List<JointPart>
-                                                {
+                                                Joints =
+                                                [
                                                     new()
                                                     {
                                                         Name = "arm-con-hinge",
@@ -323,8 +317,8 @@ public static class ExamplesExtensions
                                                             Y = 0f,
                                                             Z = 0f
                                                         },
-                                                        Geometries = new List<GeometryPart>
-                                                        {
+                                                        Geometries =
+                                                        [
                                                             new()
                                                             {
                                                                 Name = "arm-head-con",
@@ -335,8 +329,8 @@ public static class ExamplesExtensions
                                                                     Z = -0.485f
                                                                 },
                                                                 GeometryReference = armHeadDefinition,
-                                                                Joints = new List<JointPart>
-                                                                {
+                                                                Joints =
+                                                                [
                                                                     new()
                                                                     {
                                                                         Name = "con-head-hinge",
@@ -352,8 +346,8 @@ public static class ExamplesExtensions
                                                                             Max = 15,
                                                                             Step = 1
                                                                         },
-                                                                        Geometries = new List<GeometryPart>
-                                                                        {
+                                                                        Geometries =
+                                                                        [
                                                                             new()
                                                                             {
                                                                                 Name = "head",
@@ -365,8 +359,8 @@ public static class ExamplesExtensions
                                                                                     Z = -0.525f
                                                                                 },
                                                                                 IncludedInMeasurement = false,
-                                                                                LightEmittingObjects = new List<LightEmittingPart>
-                                                                                {
+                                                                                LightEmittingObjects =
+                                                                                [
                                                                                     new(new Rectangle
                                                                                     {
                                                                                         SizeX = 0.08,
@@ -387,44 +381,44 @@ public static class ExamplesExtensions
                                                                                             Z = 180f
                                                                                         }
                                                                                     }
-                                                                                },
-                                                                                LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                                                                                {
+                                                                                ],
+                                                                                LightEmittingSurfaces =
+                                                                                [
                                                                                     new()
                                                                                     {
                                                                                         Name = "les",
-                                                                                        FaceAssignments = new List<FaceAssignment>
-                                                                                        {
+                                                                                        FaceAssignments =
+                                                                                        [
                                                                                             new FaceRangeAssignment
                                                                                             {
                                                                                                 FaceIndexBegin = 16,
                                                                                                 FaceIndexEnd = 21
                                                                                             }
-                                                                                        },
+                                                                                        ],
                                                                                         LightEmittingPartIntensityMapping = new Dictionary<string, double>
                                                                                         {
                                                                                             ["leo"] = 1
                                                                                         }
                                                                                     }
-                                                                                }
+                                                                                ]
                                                                             }
-                                                                        }
+                                                                        ]
                                                                     }
-                                                                }
+                                                                ]
                                                             }
-                                                        }
+                                                        ]
                                                     }
-                                                }
+                                                ]
                                             }
-                                        }
+                                        ]
                                     }
-                                }
+                                ]
                             }
-                        }
+                        ]
                     }
-                }
+                ]
             }
-        };
+        ];
 
         return Resolver.Resolve(luminaire, cache)!;
     }
@@ -449,19 +443,16 @@ public static class ExamplesExtensions
             FileName = fileName
         };
 
-        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
-        {
-            bodyDefinition
-        };
+        luminaire.GeometryDefinitions = [bodyDefinition];
 
-        luminaire.Parts = new List<GeometryPart>
-        {
+        luminaire.Parts =
+        [
             new()
             {
                 Name = "luminaire",
                 GeometryReference = bodyDefinition,
-                LightEmittingObjects = new List<LightEmittingPart>
-                {
+                LightEmittingObjects =
+                [
                     new(new Circle
                     {
                         Diameter = 0.2
@@ -469,28 +460,28 @@ public static class ExamplesExtensions
                     {
                         Name = "leo"
                     }
-                },
-                LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                {
+                ],
+                LightEmittingSurfaces =
+                [
                     new()
                     {
                         Name = "les",
-                        FaceAssignments = new List<FaceAssignment>
-                        {
+                        FaceAssignments =
+                        [
                             new FaceRangeAssignment
                             {
                                 FaceIndexBegin = 1199,
                                 FaceIndexEnd = 1235
                             }
-                        },
+                        ],
                         LightEmittingPartIntensityMapping = new Dictionary<string, double>
                         {
                             ["leo"] = 1
                         }
                     }
-                }
+                ]
             }
-        };
+        ];
 
         return Resolver.Resolve(luminaire, cache)!;
     }
@@ -515,13 +506,10 @@ public static class ExamplesExtensions
             FileName = fileName
         };
 
-        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
-        {
-            bodyDefinition
-        };
+        luminaire.GeometryDefinitions = [bodyDefinition];
 
-        luminaire.Parts = new List<GeometryPart>
-        {
+        luminaire.Parts =
+        [
             new()
             {
                 Name = "luminaire",
@@ -532,8 +520,8 @@ public static class ExamplesExtensions
                     Y = 0f,
                     Z = -0.5f
                 },
-                LightEmittingObjects = new List<LightEmittingPart>
-                {
+                LightEmittingObjects =
+                [
                     new(new Rectangle
                     {
                         SizeX = 0.15,
@@ -554,6 +542,7 @@ public static class ExamplesExtensions
                             Z = 90f
                         }
                     },
+
                     new(new Rectangle
                     {
                         SizeX = 0.17,
@@ -574,68 +563,70 @@ public static class ExamplesExtensions
                             Z = -90f
                         }
                     }
-                },
-                LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                {
+                ],
+                LightEmittingSurfaces =
+                [
                     new()
                     {
                         Name = "les_top",
-                        FaceAssignments = new List<FaceAssignment>
-                        {
+                        FaceAssignments =
+                        [
                             new FaceRangeAssignment
                             {
                                 FaceIndexBegin = 84,
                                 FaceIndexEnd = 85
                             }
-                        },
+                        ],
                         LightEmittingPartIntensityMapping = new Dictionary<string, double>
                         {
                             ["leo_top"] = 1
                         }
                     },
+
                     new()
                     {
                         Name = "les_bottom",
-                        FaceAssignments = new List<FaceAssignment>
-                        {
+                        FaceAssignments =
+                        [
                             new FaceRangeAssignment
                             {
                                 FaceIndexBegin = 90,
                                 FaceIndexEnd = 91
                             }
-                        },
+                        ],
                         LightEmittingPartIntensityMapping = new Dictionary<string, double>
                         {
                             ["leo_bottom"] = 1
                         }
                     }
-                },
-                ElectricalConnectors = new List<Vector3>
-                {
+                ],
+                ElectricalConnectors =
+                [
                     new()
                     {
                         X = -0.575f,
                         Y = 0f,
                         Z = 0.04f
                     }
-                },
-                PendulumConnectors = new List<Vector3>
-                {
+                ],
+                PendulumConnectors =
+                [
                     new()
                     {
                         X = -0.55f,
                         Y = 0f,
                         Z = 0.04f
                     },
+
                     new()
                     {
                         X = 0.55f,
                         Y = 0f,
                         Z = 0.04f
                     }
-                }
+                ]
             }
-        };
+        ];
 
         return Resolver.Resolve(luminaire, cache)!;
     }
@@ -671,20 +662,20 @@ public static class ExamplesExtensions
             FileName = headFileName
         };
 
-        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
-        {
+        luminaire.GeometryDefinitions =
+        [
             baseDefinition,
             headDefinition
-        };
+        ];
 
-        luminaire.Parts = new List<GeometryPart>
-        {
+        luminaire.Parts =
+        [
             new()
             {
                 Name = "base",
                 GeometryReference = baseDefinition,
-                Joints = new List<JointPart>
-                {
+                Joints =
+                [
                     new()
                     {
                         Name = "head-hinge",
@@ -706,8 +697,8 @@ public static class ExamplesExtensions
                             Max = 30,
                             Step = 1
                         },
-                        Geometries = new List<GeometryPart>
-                        {
+                        Geometries =
+                        [
                             new()
                             {
                                 Name = "head",
@@ -725,8 +716,8 @@ public static class ExamplesExtensions
                                     Z = 0f
                                 },
                                 IncludedInMeasurement = false,
-                                LightEmittingObjects = new List<LightEmittingPart>
-                                {
+                                LightEmittingObjects =
+                                [
                                     new(new Rectangle
                                     {
                                         SizeX = 0.15,
@@ -747,32 +738,32 @@ public static class ExamplesExtensions
                                             Z = 0f
                                         }
                                     }
-                                },
-                                LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                                {
+                                ],
+                                LightEmittingSurfaces =
+                                [
                                     new()
                                     {
                                         Name = "les",
-                                        FaceAssignments = new List<FaceAssignment>
-                                        {
+                                        FaceAssignments =
+                                        [
                                             new FaceRangeAssignment
                                             {
                                                 FaceIndexBegin = 158,
                                                 FaceIndexEnd = 179
                                             }
-                                        },
+                                        ],
                                         LightEmittingPartIntensityMapping = new Dictionary<string, double>
                                         {
                                             ["leo"] = 1
                                         }
                                     }
-                                }
+                                ]
                             }
-                        }
+                        ]
                     }
-                }
+                ]
             }
-        };
+        ];
 
         return Resolver.Resolve(luminaire, cache)!;
     }
@@ -815,19 +806,19 @@ public static class ExamplesExtensions
             FileName = headFileName
         };
 
-        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
-        {
+        luminaire.GeometryDefinitions =
+        [
             baseDefinition,
             baseHeadConnectionDefinition,
             headDefinition
-        };
+        ];
 
         GeometryPart CreatePart(int index, float yPosition) => new()
         {
             Name = $"part-{index}",
             GeometryReference = baseHeadConnectionDefinition,
-            Joints = new List<JointPart>
-            {
+            Joints =
+            [
                 new()
                 {
                     Name = $"head-joint-{index}",
@@ -843,14 +834,14 @@ public static class ExamplesExtensions
                         Max = 65,
                         Step = 1
                     },
-                    Geometries = new List<GeometryPart>
-                    {
+                    Geometries =
+                    [
                         new()
                         {
                             Name = $"head-{index}",
                             GeometryReference = headDefinition,
-                            LightEmittingObjects = new List<LightEmittingPart>
-                            {
+                            LightEmittingObjects =
+                            [
                                 new(new Circle
                                 {
                                     Diameter = 0.1
@@ -870,40 +861,40 @@ public static class ExamplesExtensions
                                         Z = 0f
                                     }
                                 }
-                            },
-                            LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                            {
+                            ],
+                            LightEmittingSurfaces =
+                            [
                                 new()
                                 {
                                     Name = $"les-{index}",
-                                    FaceAssignments = new List<FaceAssignment>
-                                    {
+                                    FaceAssignments =
+                                    [
                                         new FaceRangeAssignment
                                         {
                                             FaceIndexBegin = 50,
                                             FaceIndexEnd = 97
                                         }
-                                    },
+                                    ],
                                     LightEmittingPartIntensityMapping = new Dictionary<string, double>
                                     {
                                         [$"leo-{index}"] = 1
                                     }
                                 }
-                            }
+                            ]
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         };
 
-        luminaire.Parts = new List<GeometryPart>
-        {
+        luminaire.Parts =
+        [
             new()
             {
                 Name = "base",
                 GeometryReference = baseDefinition,
-                Joints = new List<JointPart>
-                {
+                Joints =
+                [
                     new()
                     {
                         Name = "part-joint-0",
@@ -919,17 +910,17 @@ public static class ExamplesExtensions
                             Max = 180,
                             Step = 1
                         },
-                        Geometries = new List<GeometryPart>
-                        {
+                        Geometries =
+                        [
                             CreatePart(0, -0.55f),
                             CreatePart(1, -0.15f),
                             CreatePart(2, 0.25f),
-                            CreatePart(3, 0.65f),
-                        }
+                            CreatePart(3, 0.65f)
+                        ]
                     }
-                }
+                ]
             }
-        };
+        ];
 
         return Resolver.Resolve(luminaire, cache)!;
     }
@@ -972,21 +963,21 @@ public static class ExamplesExtensions
             FileName = headFileName
         };
 
-        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
-        {
+        luminaire.GeometryDefinitions =
+        [
             baseDefinition,
             baseHeadConnectionDefinition,
             headDefinition
-        };
+        ];
 
-        luminaire.Parts = new List<GeometryPart>
-        {
+        luminaire.Parts =
+        [
             new()
             {
                 Name = "base",
                 GeometryReference = baseDefinition,
-                Joints = new List<JointPart>
-                {
+                Joints =
+                [
                     new()
                     {
                         Name = "base-head-con-joint-0",
@@ -1008,14 +999,14 @@ public static class ExamplesExtensions
                             Y = 0f,
                             Z = 0f
                         },
-                        Geometries = new List<GeometryPart>
-                        {
+                        Geometries =
+                        [
                             new()
                             {
                                 Name = "base-head-con-0",
                                 GeometryReference = baseHeadConnectionDefinition,
-                                Joints = new List<JointPart>
-                                {
+                                Joints =
+                                [
                                     new()
                                     {
                                         Name = "head-joint-0",
@@ -1037,8 +1028,8 @@ public static class ExamplesExtensions
                                             Y = 0f,
                                             Z = 0f
                                         },
-                                        Geometries = new List<GeometryPart>
-                                        {
+                                        Geometries =
+                                        [
                                             new()
                                             {
                                                 Name = "head-0",
@@ -1049,8 +1040,8 @@ public static class ExamplesExtensions
                                                     Y = 0f,
                                                     Z = -0.0375f
                                                 },
-                                                LightEmittingObjects = new List<LightEmittingPart>
-                                                {
+                                                LightEmittingObjects =
+                                                [
                                                     new(new Circle
                                                     {
                                                         Diameter = 0.0575
@@ -1071,33 +1062,34 @@ public static class ExamplesExtensions
                                                             C270 = 10
                                                         }
                                                     }
-                                                },
-                                                LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                                                {
+                                                ],
+                                                LightEmittingSurfaces =
+                                                [
                                                     new()
                                                     {
                                                         Name = "LES0",
-                                                        FaceAssignments = new List<FaceAssignment>
-                                                        {
+                                                        FaceAssignments =
+                                                        [
                                                             new FaceRangeAssignment()
                                                             {
                                                                 FaceIndexBegin = 574,
                                                                 FaceIndexEnd = 607
                                                             }
-                                                        },
+                                                        ],
                                                         LightEmittingPartIntensityMapping = new Dictionary<string, double>
                                                         {
                                                             ["LEO0"] = 1
                                                         }
                                                     }
-                                                }
+                                                ]
                                             }
-                                        }
+                                        ]
                                     }
-                                }
+                                ]
                             }
-                        }
+                        ]
                     },
+
                     new()
                     {
                         Name = "base-head-con-joint-1",
@@ -1119,14 +1111,14 @@ public static class ExamplesExtensions
                             Y = 0f,
                             Z = 0f
                         },
-                        Geometries = new List<GeometryPart>
-                        {
+                        Geometries =
+                        [
                             new()
                             {
                                 Name = "base-head-con-1",
                                 GeometryReference = baseHeadConnectionDefinition,
-                                Joints = new List<JointPart>
-                                {
+                                Joints =
+                                [
                                     new()
                                     {
                                         Name = "head-joint-1",
@@ -1148,8 +1140,8 @@ public static class ExamplesExtensions
                                             Y = 0f,
                                             Z = 0f
                                         },
-                                        Geometries = new List<GeometryPart>
-                                        {
+                                        Geometries =
+                                        [
                                             new()
                                             {
                                                 Name = "head-1",
@@ -1160,8 +1152,8 @@ public static class ExamplesExtensions
                                                     Y = 0f,
                                                     Z = -0.0375f
                                                 },
-                                                LightEmittingObjects = new List<LightEmittingPart>
-                                                {
+                                                LightEmittingObjects =
+                                                [
                                                     new(new Circle
                                                     {
                                                         Diameter = 0.0575
@@ -1182,43 +1174,43 @@ public static class ExamplesExtensions
                                                             C270 = 10
                                                         }
                                                     }
-                                                },
-                                                LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                                                {
+                                                ],
+                                                LightEmittingSurfaces =
+                                                [
                                                     new()
                                                     {
                                                         Name = "LES1",
-                                                        FaceAssignments = new List<FaceAssignment>
-                                                        {
+                                                        FaceAssignments =
+                                                        [
                                                             new FaceRangeAssignment()
                                                             {
                                                                 FaceIndexBegin = 574,
                                                                 FaceIndexEnd = 607
                                                             }
-                                                        },
+                                                        ],
                                                         LightEmittingPartIntensityMapping = new Dictionary<string, double>
                                                         {
                                                             ["LEO1"] = 1
                                                         }
                                                     }
-                                                }
+                                                ]
                                             }
-                                        }
+                                        ]
                                     }
-                                }
+                                ]
                             }
-                        }
+                        ]
                     }
-                },
-                Sensors = new List<SensorPart>
-                {
+                ],
+                Sensors =
+                [
                     new()
                     {
                         Name = "Sensor"
                     }
-                }
+                ]
             }
-        };
+        ];
 
         return Resolver.Resolve(luminaire, cache)!;
     }
@@ -1243,19 +1235,16 @@ public static class ExamplesExtensions
             FileName = fileName
         };
 
-        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
-        {
-            baseDefinition
-        };
+        luminaire.GeometryDefinitions = [baseDefinition];
 
-        luminaire.Parts = new List<GeometryPart>
-        {
+        luminaire.Parts =
+        [
             new()
             {
                 Name = "luminaire",
                 GeometryReference = baseDefinition,
-                LightEmittingObjects = new List<LightEmittingPart>
-                {
+                LightEmittingObjects =
+                [
                     new(new Rectangle
                     {
                         SizeX = 0.5,
@@ -1264,27 +1253,27 @@ public static class ExamplesExtensions
                     {
                         Name = "leo"
                     }
-                },
-                LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                {
+                ],
+                LightEmittingSurfaces =
+                [
                     new()
                     {
                         Name = "les",
-                        FaceAssignments = new List<FaceAssignment>
-                        {
+                        FaceAssignments =
+                        [
                             new SingleFaceAssignment
                             {
                                 FaceIndex = 3
                             }
-                        },
+                        ],
                         LightEmittingPartIntensityMapping = new Dictionary<string, double>
                         {
                             ["leo"] = 1
                         }
                     }
-                }
+                ]
             }
-        };
+        ];
 
         return Resolver.Resolve(luminaire, cache)!;
     }
@@ -1309,19 +1298,16 @@ public static class ExamplesExtensions
             FileName = fileName
         };
 
-        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
-        {
-            baseDefinition
-        };
+        luminaire.GeometryDefinitions = [baseDefinition];
 
-        luminaire.Parts = new List<GeometryPart>
-        {
+        luminaire.Parts =
+        [
             new()
             {
                 Name = "luminaire",
                 GeometryReference = baseDefinition,
-                LightEmittingObjects = new List<LightEmittingPart>
-                {
+                LightEmittingObjects =
+                [
                     new(new Rectangle
                     {
                         SizeX = 0.5,
@@ -1330,27 +1316,27 @@ public static class ExamplesExtensions
                     {
                         Name = "leo"
                     }
-                },
-                LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                {
+                ],
+                LightEmittingSurfaces =
+                [
                     new()
                     {
                         Name = "les",
-                        FaceAssignments = new List<FaceAssignment>
-                        {
+                        FaceAssignments =
+                        [
                             new SingleFaceAssignment
                             {
                                 FaceIndex = 3
                             }
-                        },
+                        ],
                         LightEmittingPartIntensityMapping = new Dictionary<string, double>
                         {
                             ["leo"] = 1
                         }
                     }
-                }
+                ]
             }
-        };
+        ];
 
         return Resolver.Resolve(luminaire, cache)!;
     }
@@ -1375,19 +1361,16 @@ public static class ExamplesExtensions
             FileName = fileName
         };
 
-        luminaire.GeometryDefinitions = new List<GeometryFileDefinition>
-        {
-            baseDefinition
-        };
+        luminaire.GeometryDefinitions = [baseDefinition];
 
-        luminaire.Parts = new List<GeometryPart>
-        {
+        luminaire.Parts =
+        [
             new()
             {
                 Name = "luminaire",
                 GeometryReference = baseDefinition,
-                LightEmittingObjects = new List<LightEmittingPart>
-                {
+                LightEmittingObjects =
+                [
                     new(new Rectangle
                     {
                         SizeX = 0.5,
@@ -1396,27 +1379,90 @@ public static class ExamplesExtensions
                     {
                         Name = "leo"
                     }
-                },
-                LightEmittingSurfaces = new List<LightEmittingSurfacePart>
-                {
+                ],
+                LightEmittingSurfaces =
+                [
                     new()
                     {
                         Name = "les",
-                        FaceAssignments = new List<FaceAssignment>
-                        {
+                        FaceAssignments =
+                        [
                             new SingleFaceAssignment
                             {
                                 FaceIndex = 3
                             }
-                        },
+                        ],
                         LightEmittingPartIntensityMapping = new Dictionary<string, double>
                         {
                             ["leo"] = 1
                         }
                     }
-                }
+                ]
             }
+        ];
+
+        return Resolver.Resolve(luminaire, cache)!;
+    }
+
+    public static Luminaire BuildExample011(this Luminaire luminaire)
+    {
+        var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_011");
+        var cubeObjPath = Path.Combine(exampleDirectory, "cube", "textured_cube.obj");
+        var cache = exampleDirectory.ToCache();
+        var fileName = Path.GetFileName(cubeObjPath);
+
+        luminaire.Header = new Header
+        {
+            CreatedWithApplication = "Example-Tool"
         };
+
+        var baseDefinition = new GeometryFileDefinition
+        {
+            GeometryId = "cube",
+            Units = GeometricUnits.m,
+            Model = ObjParser.Parse(fileName, cache.Geometries["cube"], NullLogger.Instance),
+            FileName = fileName
+        };
+
+        luminaire.GeometryDefinitions = [baseDefinition];
+
+        luminaire.Parts =
+        [
+            new()
+            {
+                Name = "luminaire",
+                GeometryReference = baseDefinition,
+                LightEmittingObjects =
+                [
+                    new(new Rectangle
+                    {
+                        SizeX = 0.5,
+                        SizeY = 0.25
+                    })
+                    {
+                        Name = "leo"
+                    }
+                ],
+                LightEmittingSurfaces =
+                [
+                    new()
+                    {
+                        Name = "les",
+                        FaceAssignments =
+                        [
+                            new SingleFaceAssignment
+                            {
+                                FaceIndex = 3
+                            }
+                        ],
+                        LightEmittingPartIntensityMapping = new Dictionary<string, double>
+                        {
+                            ["leo"] = 1
+                        }
+                    }
+                ]
+            }
+        ];
 
         return Resolver.Resolve(luminaire, cache)!;
     }

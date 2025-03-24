@@ -22,12 +22,12 @@ public class FaceAssignmentMapperTests : MapperTestBase
                 new FaceRangeAssignment())
             .SetArgDisplayNames("<new FaceRangeAssignmentDto()>", "<new FaceRangeAssignment()>");
         yield return new TestCaseData(
-                new SingleFaceAssignmentDto { GroupIndex = 11 },
-                new SingleFaceAssignment { GroupIndex = 11 })
+                new SingleFaceAssignmentDto {GroupIndex = 11},
+                new SingleFaceAssignment {GroupIndex = 11})
             .SetArgDisplayNames(nameof(SingleFaceAssignmentDto.GroupIndex), nameof(SingleFaceAssignment.GroupIndex));
         yield return new TestCaseData(
-                new SingleFaceAssignmentDto { FaceIndex = 11 },
-                new SingleFaceAssignment { FaceIndex = 11 })
+                new SingleFaceAssignmentDto {FaceIndex = 11},
+                new SingleFaceAssignment {FaceIndex = 11})
             .SetArgDisplayNames(nameof(SingleFaceAssignmentDto.FaceIndex), nameof(SingleFaceAssignment.FaceIndex));
         yield return new TestCaseData(
                 new SingleFaceAssignmentDto
@@ -42,16 +42,16 @@ public class FaceAssignmentMapperTests : MapperTestBase
                 })
             .SetArgDisplayNames("<filled SingleFaceAssignmentDto>", "<filled SingleFaceAssignment>");
         yield return new TestCaseData(
-                new FaceRangeAssignmentDto { GroupIndex = 11 },
-                new FaceRangeAssignment { GroupIndex = 11 })
+                new FaceRangeAssignmentDto {GroupIndex = 11},
+                new FaceRangeAssignment {GroupIndex = 11})
             .SetArgDisplayNames(nameof(FaceRangeAssignmentDto.GroupIndex), nameof(FaceRangeAssignment.GroupIndex));
         yield return new TestCaseData(
-                new FaceRangeAssignmentDto { FaceIndexBegin = 11 },
-                new FaceRangeAssignment { FaceIndexBegin = 11 })
+                new FaceRangeAssignmentDto {FaceIndexBegin = 11},
+                new FaceRangeAssignment {FaceIndexBegin = 11})
             .SetArgDisplayNames(nameof(FaceRangeAssignmentDto.FaceIndexBegin), nameof(FaceRangeAssignment.FaceIndexBegin));
         yield return new TestCaseData(
-                new FaceRangeAssignmentDto { FaceIndexEnd = 11 },
-                new FaceRangeAssignment { FaceIndexEnd = 11 })
+                new FaceRangeAssignmentDto {FaceIndexEnd = 11},
+                new FaceRangeAssignment {FaceIndexEnd = 11})
             .SetArgDisplayNames(nameof(FaceRangeAssignmentDto.FaceIndexEnd), nameof(FaceRangeAssignment.FaceIndexEnd));
         yield return new TestCaseData(
                 new FaceRangeAssignmentDto
