@@ -45,7 +45,7 @@ var geometryDefinition = new GeometryFileDefinition
 {
     GeometryId = "PN.Ab12",
     Units = GeometricUnits.m,
-    Model = ObjParser.Parse(cubeObjPath, NullLogger.Instance),
+    Model = ObjParser.Instance.Parse(cubeObjPath, NullLogger.Instance),
     FileName = cubeObjPath
 };
 
@@ -61,14 +61,9 @@ luminaire.Parts = new List<GeometryPart>
         Name = "luminaire",
         LightEmittingObjects = new List<LightEmittingPart>
         {
-            new()
+            new(new Rectangle { SizeX = 0.5, SizeY = 0.25 })
             {
-                Name = "leo",
-                Shape = new Rectangle
-                {
-                    SizeX = 0.5,
-                    SizeY = 0.25
-                }
+                Name = "leo"
             }
         },
         LightEmittingSurfaces = new List<LightEmittingSurfacePart>
