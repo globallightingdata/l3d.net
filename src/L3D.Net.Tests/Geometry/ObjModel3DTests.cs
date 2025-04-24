@@ -1,10 +1,10 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using L3D.Net.Data;
 using L3D.Net.Geometry;
 using NUnit.Framework;
-using System;
 
-namespace L3D.Net.Tests;
+namespace L3D.Net.Tests.Geometry;
 
 [TestFixture]
 public class ObjModel3DTests

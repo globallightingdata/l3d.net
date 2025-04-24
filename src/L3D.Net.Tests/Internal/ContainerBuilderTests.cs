@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.IO;
+using FluentAssertions;
 using L3D.Net.Abstract;
 using L3D.Net.Data;
 using L3D.Net.Internal;
@@ -6,12 +8,10 @@ using L3D.Net.Internal.Abstract;
 using L3D.Net.XML.V0_11_0;
 using NSubstitute;
 using NUnit.Framework;
-using System;
-using System.IO;
 
 // ReSharper disable ObjectCreationAsStatement
 
-namespace L3D.Net.Tests;
+namespace L3D.Net.Tests.Internal;
 
 [TestFixture]
 public class ContainerBuilderTests

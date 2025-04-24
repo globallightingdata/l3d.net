@@ -1,14 +1,14 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Numerics;
+using FluentAssertions;
 using L3D.Net.Geometry;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Numerics;
 
-namespace L3D.Net.Tests;
+namespace L3D.Net.Tests.Geometry;
 
 [TestFixture]
 public class ObjParserTest

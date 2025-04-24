@@ -13,7 +13,7 @@ namespace L3D.Net.Geometry;
 
 public class ObjParser : IObjParser
 {
-    public static readonly IObjParser Instance = new ObjParser();
+    public static readonly ObjParser Instance = new();
     private static readonly ObjFileReaderSettings DefaultSettings = new() {HandleObjectNamesAsGroup = true, OnlyOneGroupNamePerLine = true};
 
     private static string GetFileName(string path)
