@@ -24,15 +24,15 @@ public static class Setup
 
     public static string InvalidVersionsDirectory { get; private set; } = null!;
 
-    public static IEnumerable<Stream> ExampleXmlStreams { get; private set; } = Array.Empty<Stream>();
+    public static IEnumerable<Stream> ExampleXmlStreams { get; private set; } = [];
 
-    public static IEnumerable<string> ExampleXmlFiles { get; private set; } = Array.Empty<string>();
+    public static IEnumerable<string> ExampleXmlFiles { get; private set; } = [];
 
-    public static IEnumerable<string> ExampleObjFiles { get; private set; } = Array.Empty<string>();
+    public static IEnumerable<string> ExampleObjFiles { get; private set; } = [];
 
-    public static IEnumerable<string> ValidVersionXmlFiles { get; private set; } = Array.Empty<string>();
+    public static IEnumerable<string> ValidVersionXmlFiles { get; private set; } = [];
 
-    public static IEnumerable<string> InvalidVersionXmlFiles { get; private set; } = Array.Empty<string>();
+    public static IEnumerable<string> InvalidVersionXmlFiles { get; private set; } = [];
 
     [OneTimeSetUp]
     public static void Initialize()

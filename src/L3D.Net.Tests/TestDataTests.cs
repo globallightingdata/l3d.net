@@ -3,7 +3,6 @@ using System.IO;
 using FluentAssertions;
 using L3D.Net.Abstract;
 using L3D.Net.Data;
-using L3D.Net.Internal.Abstract;
 using L3D.Net.XML;
 using NUnit.Framework;
 
@@ -12,7 +11,7 @@ namespace L3D.Net.Tests;
 [TestFixture]
 public class TestDataTests
 {
-    private static IEnumerable<TestCaseData> ValidationTests()
+    private static IEnumerable<TestCaseData> ExamplesTestCases()
     {
         Setup.Initialize();
         foreach (var keyValuePair in Setup.ExampleBuilderMapping)
@@ -22,48 +21,19 @@ public class TestDataTests
         }
     }
 
-    [Test, TestCaseSource(nameof(ValidationTests))]
+    [Test, TestCaseSource(nameof(ExamplesTestCases))]
     public void ValidateExamples(DirectoryInfo exampleDirectory, Luminaire exampleBuild)
     {
-        using var cache = new ContainerCache();
-        cache.StructureXml = File.OpenRead(Path.Combine(exampleDirectory.FullName, "structure.xml"));
-        foreach (var geometryDirectory in exampleDirectory.GetDirectories())
-        {
-            if (!cache.Geometries.TryGetValue(geometryDirectory.Name, out var files))
-            {
-                files = new Dictionary<string, Stream>();
-                cache.Geometries.Add(geometryDirectory.Name, files);
-            }
-
-            foreach (var fileInfo in geometryDirectory.GetFiles())
-            {
-                files.Add(fileInfo.Name, File.OpenRead(fileInfo.FullName));
-            }
-        }
-
+        using var cache = exampleDirectory.ToCache();
         var luminaire = new L3DXmlReader().Read(cache);
         var expected = new Reader().ReadContainer(new Writer().WriteToByteArray(exampleBuild));
         luminaire.Should().BeEquivalentTo(expected, o => o.WithStrictOrdering().IncludingAllRuntimeProperties().AllowingInfiniteRecursion());
     }
 
-    [Test, TestCaseSource(nameof(ValidationTests))]
+    [Test, TestCaseSource(nameof(ExamplesTestCases))]
     public void ValidateExamples_ShouldHaveNoValidationHints(DirectoryInfo exampleDirectory, Luminaire _)
     {
-        using var cache = new ContainerCache();
-        cache.StructureXml = File.OpenRead(Path.Combine(exampleDirectory.FullName, "structure.xml"));
-        foreach (var geometryDirectory in exampleDirectory.GetDirectories())
-        {
-            if (!cache.Geometries.TryGetValue(geometryDirectory.Name, out var files))
-            {
-                files = new Dictionary<string, Stream>();
-                cache.Geometries.Add(geometryDirectory.Name, files);
-            }
-
-            foreach (var fileInfo in geometryDirectory.GetFiles())
-            {
-                files.Add(fileInfo.Name, File.OpenRead(fileInfo.FullName));
-            }
-        }
+        using var cache = exampleDirectory.ToCache();
 
         var luminaire = new L3DXmlReader().Read(cache)!;
         new Validator().ValidateContainer(new Writer().WriteToByteArray(luminaire), Validation.All).Should().BeEmpty();

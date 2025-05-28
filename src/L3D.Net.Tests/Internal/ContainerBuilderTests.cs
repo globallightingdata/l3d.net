@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using FluentAssertions;
-using L3D.Net.Abstract;
 using L3D.Net.Data;
 using L3D.Net.Internal;
 using L3D.Net.Internal.Abstract;
@@ -31,7 +30,7 @@ public class ContainerBuilderTests
             FileHandler = Substitute.For<IFileHandler>();
             Serializer = Substitute.For<IXmlDtoSerializer>();
             Validator = Substitute.For<IXmlValidator>();
-            Validator.ValidateStream(Arg.Any<Stream>()).Returns(Array.Empty<ValidationHint>());
+            Validator.ValidateStream(Arg.Any<Stream>()).Returns([]);
             Builder = new ContainerBuilder(FileHandler, Serializer, Validator);
         }
     }
