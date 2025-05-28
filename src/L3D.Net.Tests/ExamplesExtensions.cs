@@ -1413,4 +1413,60 @@ public static class ExamplesExtensions
 
         return Resolver.Resolve(luminaire, cache)!;
     }
+
+    public static Luminaire BuildExample012(this Luminaire luminaire)
+    {
+        var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_012");
+        var luminaireObjPath = Path.Combine(exampleDirectory, "geom_1", "luminaire.obj");
+        var cache = exampleDirectory.ToCache();
+
+        luminaire.Header = new Header
+        {
+            CreatedWithApplication = "Online L3D-Editor",
+            Name = "",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
+            CreationTimeCode = new DateTime(2024, 03, 20, 10, 29, 34, 880, DateTimeKind.Utc)
+        };
+        var baseDefinition = CreateFileDefinition("geom_1", luminaireObjPath, GeometricUnits.m, cache);
+
+        luminaire.GeometryDefinitions = [baseDefinition];
+
+        luminaire.Parts =
+        [
+            new()
+            {
+                Name = "luminaire",
+                GeometryReference = baseDefinition,
+                LightEmittingObjects =
+                [
+                    new(new Circle {Diameter = 0.075})
+                    {
+                        Name = "LEO",
+                        Position = new Vector3(0f, 0f, -0.045f)
+                    }
+                ],
+                LightEmittingSurfaces =
+                [
+                    new()
+                    {
+                        Name = "les_ksib",
+                        FaceAssignments =
+                        [
+                            new FaceRangeAssignment
+                            {
+                                FaceIndexBegin = 0,
+                                FaceIndexEnd = 61
+                            }
+                        ],
+                        LightEmittingPartIntensityMapping = new Dictionary<string, double>
+                        {
+                            ["LEO"] = 1
+                        }
+                    }
+                ]
+            }
+        ];
+
+        return Resolver.Resolve(luminaire, cache)!;
+    }
 }

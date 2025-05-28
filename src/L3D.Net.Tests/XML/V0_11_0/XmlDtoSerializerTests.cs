@@ -52,14 +52,14 @@ public class XmlDtoSerializerTests
     [TestCaseSource(nameof(ExampleFiles))]
     public void ExampleTest(Stream stream)
     {
-        var serilizer = new XmlDtoSerializer();
+        var serializer = new XmlDtoSerializer();
 
-        var dto = serilizer.Deserialize(stream);
+        var dto = serializer.Deserialize(stream);
 
         stream.Seek(0, SeekOrigin.Begin);
 
         using var ms = new MemoryStream();
-        serilizer.Serialize(dto, ms);
+        serializer.Serialize(dto, ms);
         ms.Seek(0, SeekOrigin.Begin);
 
         var exampleDocument = XDocument.Load(stream);
