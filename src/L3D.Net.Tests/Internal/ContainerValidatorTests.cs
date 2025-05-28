@@ -527,6 +527,26 @@ public class ContainerValidatorTests
         }
     }
 
+    private static IEnumerable<TestCaseData> ValidateExampleTestCases()
+    {
+        Setup.Initialize();
+        foreach (var kv in Setup.ExampleBuilderMapping)
+        {
+            var luminaire = kv.Value(new Luminaire());
+            var container = new Writer().WriteToByteArray(luminaire);
+            foreach (var validation in Enum.GetValues<Validation>())
+                yield return new TestCaseData(validation, container)
+                    .SetArgDisplayNames(validation.ToString("G"), kv.Key);
+        }
+    }
+
+    [Test, TestCaseSource(nameof(ValidateExampleTestCases))]
+    public void Validate_ShouldReturnNoValidationHintsForExistingExamples(Validation validation, byte[] container)
+    {
+        var validationHints = new Validator().ValidateContainer(container, validation).ToArray();
+        validationHints.Should().BeEmpty();
+    }
+
     [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
     public void Validate_ShouldReturnValidationHint_WhenLuminaireIsNullAndFlagIsSet(ContainerTypeToTest containerTypeToTest)
     {

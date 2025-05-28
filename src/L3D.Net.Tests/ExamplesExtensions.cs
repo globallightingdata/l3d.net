@@ -1,4 +1,5 @@
-﻿using L3D.Net.Data;
+﻿using System;
+using L3D.Net.Data;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.Generic;
 using System.IO;
@@ -38,7 +39,9 @@ public static class ExamplesExtensions
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Example-Tool"
+            CreatedWithApplication = "Example-Tool",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
         };
 
         var geometryDefinition = CreateFileDefinition("cube", cubeObjPath, GeometricUnits.m, cache);
@@ -94,7 +97,9 @@ public static class ExamplesExtensions
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Example-Tool"
+            CreatedWithApplication = "Example-Tool",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
         };
 
         var geometryDefinition = CreateFileDefinition("cube", cubeObjPath, GeometricUnits.m, cache);
@@ -117,9 +122,9 @@ public static class ExamplesExtensions
                         Name = "leo",
                         Position = new Vector3
                         {
-                            X = -0.25f,
-                            Y = -0.125f,
-                            Z = 0.05f
+                            X = 0.25f,
+                            Y = 0.125f,
+                            Z = -0.05f
                         }
                     }
                 ],
@@ -168,7 +173,9 @@ public static class ExamplesExtensions
         {
             CreatedWithApplication = "Keyboard-v1.0",
             Name = "First example",
-            Description = "First ever xml luminaire geometry description"
+            Description = "First ever xml luminaire geometry description",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            CreationTimeCode = new DateTime(2020, 12, 03, 16, 33, 44, DateTimeKind.Utc)
         };
 
         var baseDefinition = CreateFileDefinition("base", baseObjPath, GeometricUnits.mm, cache);
@@ -357,9 +364,21 @@ public static class ExamplesExtensions
                                                                                         Name = "les",
                                                                                         FaceAssignments =
                                                                                         [
+                                                                                            new SingleFaceAssignment
+                                                                                            {
+                                                                                                FaceIndex = 16
+                                                                                            },
+                                                                                            new SingleFaceAssignment
+                                                                                            {
+                                                                                                FaceIndex = 17
+                                                                                            },
+                                                                                            new SingleFaceAssignment
+                                                                                            {
+                                                                                                FaceIndex = 18
+                                                                                            },
                                                                                             new FaceRangeAssignment
                                                                                             {
-                                                                                                FaceIndexBegin = 16,
+                                                                                                FaceIndexBegin = 19,
                                                                                                 FaceIndexEnd = 21
                                                                                             }
                                                                                         ],
@@ -399,7 +418,9 @@ public static class ExamplesExtensions
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Keyboard-v1.0"
+            CreatedWithApplication = "Keyboard-v1.0",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            CreationTimeCode = new DateTime(2020, 12, 11, 11, 12, 13, DateTimeKind.Utc)
         };
 
 
@@ -456,7 +477,9 @@ public static class ExamplesExtensions
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Keyboard-v1.0"
+            CreatedWithApplication = "Keyboard-v1.0",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            CreationTimeCode = new DateTime(2020, 12, 11, 11, 12, 13, DateTimeKind.Utc)
         };
 
         var bodyDefinition = CreateFileDefinition("luminaire", objPath, GeometricUnits.mm, cache);
@@ -523,35 +546,28 @@ public static class ExamplesExtensions
                 [
                     new()
                     {
-                        Name = "les_top",
-                        FaceAssignments =
-                        [
-                            new FaceRangeAssignment
-                            {
-                                FaceIndexBegin = 84,
-                                FaceIndexEnd = 85
-                            }
-                        ],
-                        LightEmittingPartIntensityMapping = new Dictionary<string, double>
-                        {
-                            ["leo_top"] = 1
-                        }
-                    },
-
-                    new()
-                    {
                         Name = "les_bottom",
                         FaceAssignments =
                         [
-                            new FaceRangeAssignment
-                            {
-                                FaceIndexBegin = 90,
-                                FaceIndexEnd = 91
-                            }
+                            new SingleFaceAssignment {FaceIndex = 90},
+                            new SingleFaceAssignment {FaceIndex = 91}
                         ],
                         LightEmittingPartIntensityMapping = new Dictionary<string, double>
                         {
                             ["leo_bottom"] = 1
+                        }
+                    },
+                    new()
+                    {
+                        Name = "les_top",
+                        FaceAssignments =
+                        [
+                            new SingleFaceAssignment {FaceIndex = 84},
+                            new SingleFaceAssignment {FaceIndex = 85}
+                        ],
+                        LightEmittingPartIntensityMapping = new Dictionary<string, double>
+                        {
+                            ["leo_top"] = 1
                         }
                     }
                 ],
@@ -597,7 +613,9 @@ public static class ExamplesExtensions
         {
             CreatedWithApplication = "Keyboard-v1.0",
             Name = "Another example",
-            Description = "Example luminaire 4"
+            Description = "Example luminaire 4",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            CreationTimeCode = new DateTime(2021, 01, 07, 16, 33, 44, DateTimeKind.Utc)
         };
 
         var baseDefinition = CreateFileDefinition("base", baseObjPath, GeometricUnits.mm, cache);
@@ -719,7 +737,9 @@ public static class ExamplesExtensions
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Experimental"
+            CreatedWithApplication = "Experimental",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            CreationTimeCode = new DateTime(2021, 01, 15, 15, 55, 13, DateTimeKind.Utc)
         };
 
         var baseDefinition = CreateFileDefinition("base", baseObjPath, GeometricUnits.m, cache);
@@ -733,7 +753,7 @@ public static class ExamplesExtensions
             headDefinition
         ];
 
-        GeometryPart CreatePart(int index, float yPosition) => new()
+        GeometryPart CreateJointGeometryPart(int index) => new()
         {
             Name = $"part-{index}",
             GeometryReference = baseHeadConnectionDefinition,
@@ -745,7 +765,7 @@ public static class ExamplesExtensions
                     Position = new Vector3
                     {
                         X = 0f,
-                        Y = yPosition,
+                        Y = 0,
                         Z = -0.128f
                     },
                     YAxis = new AxisRotation
@@ -791,6 +811,7 @@ public static class ExamplesExtensions
                                     [
                                         new FaceRangeAssignment
                                         {
+                                            GroupIndex = 1,
                                             FaceIndexBegin = 50,
                                             FaceIndexEnd = 97
                                         }
@@ -830,13 +851,58 @@ public static class ExamplesExtensions
                             Max = 180,
                             Step = 1
                         },
-                        Geometries =
-                        [
-                            CreatePart(0, -0.55f),
-                            CreatePart(1, -0.15f),
-                            CreatePart(2, 0.25f),
-                            CreatePart(3, 0.65f)
-                        ]
+                        Geometries = [CreateJointGeometryPart(0)]
+                    },
+                    new()
+                    {
+                        Name = "part-joint-1",
+                        Position = new Vector3
+                        {
+                            X = 0f,
+                            Y = -0.15f,
+                            Z = -0.017f
+                        },
+                        ZAxis = new AxisRotation
+                        {
+                            Min = -180,
+                            Max = 180,
+                            Step = 1
+                        },
+                        Geometries = [CreateJointGeometryPart(1)]
+                    },
+                    new()
+                    {
+                        Name = "part-joint-2",
+                        Position = new Vector3
+                        {
+                            X = 0f,
+                            Y = 0.25f,
+                            Z = -0.017f
+                        },
+                        ZAxis = new AxisRotation
+                        {
+                            Min = -180,
+                            Max = 180,
+                            Step = 1
+                        },
+                        Geometries = [CreateJointGeometryPart(2)]
+                    },
+                    new()
+                    {
+                        Name = "part-joint-3",
+                        Position = new Vector3
+                        {
+                            X = 0f,
+                            Y = 0.65f,
+                            Z = -0.017f
+                        },
+                        ZAxis = new AxisRotation
+                        {
+                            Min = -180,
+                            Max = 180,
+                            Step = 1
+                        },
+                        Geometries = [CreateJointGeometryPart(3)]
                     }
                 ]
             }
@@ -855,12 +921,14 @@ public static class ExamplesExtensions
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Experimental"
+            CreatedWithApplication = "Experimental",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            CreationTimeCode = new DateTime(2021, 02, 16, 15, 55, 13, DateTimeKind.Utc)
         };
 
-        var baseDefinition = CreateFileDefinition("base", baseObjPath, GeometricUnits.m, cache);
-        var baseHeadConnectionDefinition = CreateFileDefinition("base-head-con", baseHeadConObjPath, GeometricUnits.m, cache);
-        var headDefinition = CreateFileDefinition("head", headObjPath, GeometricUnits.m, cache);
+        var baseDefinition = CreateFileDefinition("base", baseObjPath, GeometricUnits.mm, cache);
+        var baseHeadConnectionDefinition = CreateFileDefinition("base-head-con", baseHeadConObjPath, GeometricUnits.mm, cache);
+        var headDefinition = CreateFileDefinition("head", headObjPath, GeometricUnits.mm, cache);
 
         luminaire.GeometryDefinitions =
         [
@@ -904,6 +972,7 @@ public static class ExamplesExtensions
                             {
                                 Name = "base-head-con-0",
                                 GeometryReference = baseHeadConnectionDefinition,
+                                Position = new Vector3(0.4f, 0f, -0.0375f),
                                 Joints =
                                 [
                                     new()
@@ -951,7 +1020,7 @@ public static class ExamplesExtensions
                                                         {
                                                             X = -0.4f,
                                                             Y = 0f,
-                                                            Z = -0.0375f
+                                                            Z = 0.01f
                                                         },
                                                         LuminousHeights = new LuminousHeights
                                                         {
@@ -994,7 +1063,7 @@ public static class ExamplesExtensions
                         Name = "base-head-con-joint-1",
                         Position = new Vector3
                         {
-                            X = -0.4f,
+                            X = 0.4f,
                             Y = 0f,
                             Z = 0.0375f
                         },
@@ -1016,6 +1085,7 @@ public static class ExamplesExtensions
                             {
                                 Name = "base-head-con-1",
                                 GeometryReference = baseHeadConnectionDefinition,
+                                Position = new Vector3(0.4f, 0f, -0.0375f),
                                 Joints =
                                 [
                                     new()
@@ -1063,7 +1133,7 @@ public static class ExamplesExtensions
                                                         {
                                                             X = -0.4f,
                                                             Y = 0f,
-                                                            Z = -0.0375f
+                                                            Z = 0.01f
                                                         },
                                                         LuminousHeights = new LuminousHeights
                                                         {
@@ -1122,7 +1192,9 @@ public static class ExamplesExtensions
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Example-Tool"
+            CreatedWithApplication = "Example-Tool",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
         };
 
         var baseDefinition = CreateFileDefinition("cube", cubeObjPath, GeometricUnits.m, cache);
@@ -1178,7 +1250,9 @@ public static class ExamplesExtensions
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Example-Tool"
+            CreatedWithApplication = "Example-Tool",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
         };
 
         var baseDefinition = CreateFileDefinition("cube", cubeObjPath, GeometricUnits.m, cache);
@@ -1234,7 +1308,9 @@ public static class ExamplesExtensions
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Example-Tool"
+            CreatedWithApplication = "Example-Tool",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
         };
         var baseDefinition = CreateFileDefinition("cube", cubeObjPath, GeometricUnits.m, cache);
 
@@ -1289,7 +1365,9 @@ public static class ExamplesExtensions
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Example-Tool"
+            CreatedWithApplication = "Example-Tool",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
         };
         var baseDefinition = CreateFileDefinition("cube", cubeObjPath, GeometricUnits.m, cache);
 

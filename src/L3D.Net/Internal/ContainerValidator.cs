@@ -283,7 +283,7 @@ internal class ContainerValidator : IContainerValidator
                 yield return new L3DContentValidationHint(
                     $"{nameof(LightEmittingSurfacePart.LightEmittingPartIntensityMapping)}.[{intensityMapping.Key}] of {nameof(LightEmittingSurfacePart)} '{lightEmittingSurfacePart.Name}' must not be null or whitespace");
 
-            if (flags.HasFlag(Validation.NameReferences) && leos.Any(d => !string.Equals(d.Name, intensityMapping.Key, StringComparison.Ordinal)))
+            if (flags.HasFlag(Validation.NameReferences) && leos.All(d => !string.Equals(d.Name, intensityMapping.Key, StringComparison.Ordinal)))
                 yield return new L3DContentValidationHint(
                     $"{nameof(LightEmittingSurfacePart.LightEmittingPartIntensityMapping)}.[{intensityMapping.Key}] of {nameof(LightEmittingSurfacePart)} '{lightEmittingSurfacePart.Name}' must be defined in any {nameof(LightEmittingPart)}.{nameof(LightEmittingPart.Name)}");
 
@@ -420,12 +420,13 @@ internal class ContainerValidator : IContainerValidator
 
         var parts = part switch
         {
-            GeometryPart geometryPart => geometryPart.LightEmittingObjects?
-                .Concat<Part>(geometryPart.LightEmittingSurfaces ?? [])
+            GeometryPart geometryPart => Enumerable.Empty<Part>()
+                .Concat(geometryPart.LightEmittingObjects ?? [])
+                .Concat(geometryPart.LightEmittingSurfaces ?? [])
                 .Concat(geometryPart.Joints ?? [])
-                .Concat(geometryPart.Sensors ?? []) ?? [],
+                .Concat(geometryPart.Sensors ?? []),
             JointPart jointPart => jointPart.Geometries,
-            _ => Array.Empty<Part>()
+            _ => []
         };
 
         foreach (var nextPart in parts.SelectMany(GetParts))
