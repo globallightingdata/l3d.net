@@ -40,7 +40,7 @@ public static class ExamplesExtensions
         luminaire.Header = new Header
         {
             CreatedWithApplication = "Example-Tool",
-            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
             CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
         };
 
@@ -98,7 +98,7 @@ public static class ExamplesExtensions
         luminaire.Header = new Header
         {
             CreatedWithApplication = "Example-Tool",
-            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
             CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
         };
 
@@ -174,7 +174,7 @@ public static class ExamplesExtensions
             CreatedWithApplication = "Keyboard-v1.0",
             Name = "First example",
             Description = "First ever xml luminaire geometry description",
-            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
             CreationTimeCode = new DateTime(2020, 12, 03, 16, 33, 44, DateTimeKind.Utc)
         };
 
@@ -419,7 +419,7 @@ public static class ExamplesExtensions
         luminaire.Header = new Header
         {
             CreatedWithApplication = "Keyboard-v1.0",
-            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
             CreationTimeCode = new DateTime(2020, 12, 11, 11, 12, 13, DateTimeKind.Utc)
         };
 
@@ -478,7 +478,7 @@ public static class ExamplesExtensions
         luminaire.Header = new Header
         {
             CreatedWithApplication = "Keyboard-v1.0",
-            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
             CreationTimeCode = new DateTime(2020, 12, 11, 11, 12, 13, DateTimeKind.Utc)
         };
 
@@ -614,7 +614,7 @@ public static class ExamplesExtensions
             CreatedWithApplication = "Keyboard-v1.0",
             Name = "Another example",
             Description = "Example luminaire 4",
-            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
             CreationTimeCode = new DateTime(2021, 01, 07, 16, 33, 44, DateTimeKind.Utc)
         };
 
@@ -738,7 +738,7 @@ public static class ExamplesExtensions
         luminaire.Header = new Header
         {
             CreatedWithApplication = "Experimental",
-            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
             CreationTimeCode = new DateTime(2021, 01, 15, 15, 55, 13, DateTimeKind.Utc)
         };
 
@@ -922,7 +922,7 @@ public static class ExamplesExtensions
         luminaire.Header = new Header
         {
             CreatedWithApplication = "Experimental",
-            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
             CreationTimeCode = new DateTime(2021, 02, 16, 15, 55, 13, DateTimeKind.Utc)
         };
 
@@ -1193,7 +1193,7 @@ public static class ExamplesExtensions
         luminaire.Header = new Header
         {
             CreatedWithApplication = "Example-Tool",
-            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
             CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
         };
 
@@ -1251,7 +1251,7 @@ public static class ExamplesExtensions
         luminaire.Header = new Header
         {
             CreatedWithApplication = "Example-Tool",
-            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
             CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
         };
 
@@ -1309,7 +1309,7 @@ public static class ExamplesExtensions
         luminaire.Header = new Header
         {
             CreatedWithApplication = "Example-Tool",
-            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
             CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
         };
         var baseDefinition = CreateFileDefinition("cube", cubeObjPath, GeometricUnits.m, cache);
@@ -1366,7 +1366,7 @@ public static class ExamplesExtensions
         luminaire.Header = new Header
         {
             CreatedWithApplication = "Example-Tool",
-            FormatVersion = new FormatVersion {Major = 0, Minor = 11, PreRelease = 0},
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
             CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
         };
         var baseDefinition = CreateFileDefinition("cube", cubeObjPath, GeometricUnits.m, cache);
