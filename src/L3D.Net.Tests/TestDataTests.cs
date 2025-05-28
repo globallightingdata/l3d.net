@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using FluentAssertions;
@@ -11,7 +12,7 @@ namespace L3D.Net.Tests;
 [TestFixture]
 public class TestDataTests
 {
-    private static IEnumerable<TestCaseData> ExamplesTestCases()
+    private static IEnumerable<TestCaseData> ExamplesConsistencyTestCases()
     {
         Setup.Initialize();
         foreach (var keyValuePair in Setup.ExampleBuilderMapping)
@@ -21,7 +22,7 @@ public class TestDataTests
         }
     }
 
-    [Test, TestCaseSource(nameof(ExamplesTestCases))]
+    [Test, TestCaseSource(nameof(ExamplesConsistencyTestCases))]
     public void ValidateExamples(DirectoryInfo exampleDirectory, Luminaire exampleBuild)
     {
         using var cache = exampleDirectory.ToCache();
@@ -30,12 +31,25 @@ public class TestDataTests
         luminaire.Should().BeEquivalentTo(expected, o => o.WithStrictOrdering().IncludingAllRuntimeProperties().AllowingInfiniteRecursion());
     }
 
-    [Test, TestCaseSource(nameof(ExamplesTestCases))]
-    public void ValidateExamples_ShouldHaveNoValidationHints(DirectoryInfo exampleDirectory, Luminaire _)
-    {
-        using var cache = exampleDirectory.ToCache();
 
-        var luminaire = new L3DXmlReader().Read(cache)!;
-        new Validator().ValidateContainer(new Writer().WriteToByteArray(luminaire), Validation.All).Should().BeEmpty();
+    private static IEnumerable<TestCaseData> ExamplesValidationTestCases()
+    {
+        Setup.Initialize();
+        foreach (var keyValuePair in Setup.ExampleBuilderMapping)
+        {
+            using var cache = new DirectoryInfo(Path.Combine(Setup.ExamplesDirectory, keyValuePair.Key)).ToCache();
+            var luminaire = new L3DXmlReader().Read(cache)!;
+            var written = new Writer().WriteToByteArray(luminaire);
+            foreach (var validation in Enum.GetValues<Validation>())
+            {
+                yield return new TestCaseData(written, validation).SetArgDisplayNames(keyValuePair.Key, validation.ToString("G"));
+            }
+        }
+    }
+
+    [Test, TestCaseSource(nameof(ExamplesValidationTestCases))]
+    public void ValidateExamples_ShouldHaveNoValidationHints(byte[] luminaire, Validation validation)
+    {
+        new Validator().ValidateContainer(luminaire, validation).Should().BeEmpty();
     }
 }

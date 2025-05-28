@@ -811,7 +811,6 @@ public static class ExamplesExtensions
                                     [
                                         new FaceRangeAssignment
                                         {
-                                            GroupIndex = 1,
                                             FaceIndexBegin = 50,
                                             FaceIndexEnd = 97
                                         }
