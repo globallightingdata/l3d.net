@@ -147,7 +147,7 @@ public class ObjParser : IObjParser
             .Select(x => Convert(x, files.TryGetValue(x.DiffuseMap?.FileName ?? string.Empty, out var b) ? b : []))
             .ToList();
         var faceGroups = objFile.Groups.Count > 0
-            ? objFile.Groups.Select(group => ConvertGroup(group, materials)).Where(e => e.Faces.Count > 0).ToList()
+            ? objFile.Groups.Where(group => group.Faces.Count > 0).Select(group => ConvertGroup(group, materials)).ToList()
             : [CreateDefaultFaceGroup(objFile, materials)];
 
         return new ModelData
