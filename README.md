@@ -2,7 +2,7 @@
 
 [![OnPublishedRelease](https://github.com/globallightingdata/l3d.net/actions/workflows/OnPublishedRelease.yml/badge.svg)](https://github.com/globallightingdata/l3d.net/actions/workflows/OnPublishedRelease.yml)  
 [![OnPush develop](https://github.com/globallightingdata/l3d.net/actions/workflows/OnPushDevelop.yml/badge.svg)](https://github.com/globallightingdata/l3d.net/actions/workflows/OnPushDevelop.yml)  
-[![NuGet Status](https://img.shields.io/nuget/v/L3D.Net.svg)](https://www.nuget.org/packages/L3D.Net/) [![L3D.Net on fuget.org](https://www.fuget.org/packages/L3D.Net/badge.svg)](https://www.fuget.org/packages/L3D.Net)
+[![NuGet Status](https://img.shields.io/nuget/v/L3D.Net.svg)](https://www.nuget.org/packages/L3D.Net/)
 
 ## Intro
 
