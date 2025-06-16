@@ -24,15 +24,15 @@ public static class Setup
 
     public static string InvalidVersionsDirectory { get; private set; } = null!;
 
-    public static IEnumerable<Stream> ExampleXmlStreams { get; private set; } = Array.Empty<Stream>();
+    public static IEnumerable<Stream> ExampleXmlStreams { get; private set; } = [];
 
-    public static IEnumerable<string> ExampleXmlFiles { get; private set; } = Array.Empty<string>();
+    public static IEnumerable<string> ExampleXmlFiles { get; private set; } = [];
 
-    public static IEnumerable<string> ExampleObjFiles { get; private set; } = Array.Empty<string>();
+    public static IEnumerable<string> ExampleObjFiles { get; private set; } = [];
 
-    public static IEnumerable<string> ValidVersionXmlFiles { get; private set; } = Array.Empty<string>();
+    public static IEnumerable<string> ValidVersionXmlFiles { get; private set; } = [];
 
-    public static IEnumerable<string> InvalidVersionXmlFiles { get; private set; } = Array.Empty<string>();
+    public static IEnumerable<string> InvalidVersionXmlFiles { get; private set; } = [];
 
     [OneTimeSetUp]
     public static void Initialize()
@@ -112,6 +112,7 @@ public static class Setup
         ["example_008"] = luminaire => luminaire.BuildExample008(),
         ["example_009"] = luminaire => luminaire.BuildExample009(),
         ["example_010"] = luminaire => luminaire.BuildExample010(),
-        ["example_011"] = luminaire => luminaire.BuildExample011()
+        ["example_011"] = luminaire => luminaire.BuildExample011(),
+        ["example_012"] = luminaire => luminaire.BuildExample012()
     };
 }

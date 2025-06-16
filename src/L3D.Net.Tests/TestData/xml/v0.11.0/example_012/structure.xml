@@ -1,0 +1,33 @@
+<Luminaire xmlns:a0="http://www.w3.org/2001/XMLSchema-instance" a0:noNamespaceSchemaLocation="https://gldf.io/xsd/l3d/0.11.0/l3d.xsd">
+    <Header>
+        <Name />
+        <CreatedWithApplication>Online L3D-Editor</CreatedWithApplication>
+        <CreationTimeCode>2024-03-20T10:29:34.88Z</CreationTimeCode>
+        <FormatVersion major="0" minor="11" />
+    </Header>
+    <GeometryDefinitions>
+        <GeometryFileDefinition id="geom_1" filename="luminaire.obj" units="m" />
+    </GeometryDefinitions>
+    <Structure>
+        <Geometry partName="luminaire">
+            <Position x="0" y="0" z="0" />
+            <Rotation x="0" y="0" z="0" />
+            <GeometryReference geometryId="geom_1" />
+            <LightEmittingObjects>
+                <LightEmittingObject partName="LEO">
+                    <Position x="0" y="0" z="-0.045" />
+                    <Rotation x="0" y="0" z="0" />
+                    <Circle diameter="0.075" />
+                </LightEmittingObject>
+            </LightEmittingObjects>
+            <LightEmittingSurfaces>
+                <LightEmittingSurface partName="les_ksib">
+                    <LightEmittingObjectReference lightEmittingPartName="LEO" />
+                    <FaceAssignments>
+                        <FaceRangeAssignment faceIndexBegin="0" faceIndexEnd="61" />
+                    </FaceAssignments>
+                </LightEmittingSurface>
+            </LightEmittingSurfaces>
+        </Geometry>
+    </Structure>
+</Luminaire>

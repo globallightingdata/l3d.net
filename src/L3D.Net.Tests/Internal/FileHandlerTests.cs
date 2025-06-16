@@ -10,7 +10,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 
-namespace L3D.Net.Tests;
+namespace L3D.Net.Tests.Internal;
 
 [TestFixture]
 public class FileHandlerTests

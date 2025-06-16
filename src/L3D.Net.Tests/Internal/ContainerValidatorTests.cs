@@ -1,19 +1,19 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using FluentAssertions;
 using L3D.Net.Abstract;
 using L3D.Net.Data;
 using L3D.Net.Internal;
 using L3D.Net.Internal.Abstract;
 using NSubstitute;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 // ReSharper disable ObjectCreationAsStatement
 // ReSharper disable UnusedMethodReturnValue.Local
 
-namespace L3D.Net.Tests;
+namespace L3D.Net.Tests.Internal;
 
 [TestFixture]
 public class ContainerValidatorTests

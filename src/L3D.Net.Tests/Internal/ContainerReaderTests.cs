@@ -1,4 +1,8 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using FluentAssertions;
 using L3D.Net.Data;
 using L3D.Net.Exceptions;
 using L3D.Net.Geometry;
@@ -7,12 +11,8 @@ using L3D.Net.Internal.Abstract;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
-namespace L3D.Net.Tests;
+namespace L3D.Net.Tests.Internal;
 
 [TestFixture]
 public class ContainerReaderTests

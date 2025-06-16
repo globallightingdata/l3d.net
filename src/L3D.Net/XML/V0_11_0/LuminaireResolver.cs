@@ -28,7 +28,6 @@ internal class LuminaireResolver : ILuminaireResolver
             return null;
 
         var geometryParts = luminaire.Parts.SelectMany(GetParts);
-
         foreach (var geometryPart in geometryParts)
         {
             geometryPart.GeometryReference = ResolveGeometrySource(geometryPart.GeometryReference, luminaire.GeometryDefinitions, cache, logger);
@@ -37,47 +36,46 @@ internal class LuminaireResolver : ILuminaireResolver
         return luminaire;
     }
 
-    private GeometryFileDefinition ResolveGeometrySource(GeometryFileDefinition geometryFileDefinition, IEnumerable<GeometryFileDefinition> geometrySources, ContainerCache cache,
+    private GeometryFileDefinition ResolveGeometrySource(GeometryFileDefinition geometryFileDefinition, List<GeometryFileDefinition> geometrySources, ContainerCache cache,
         ILogger? logger)
     {
-        var source = geometrySources.FirstOrDefault(x => x.GeometryId.Equals(geometryFileDefinition.GeometryId, StringComparison.Ordinal));
+        var source = geometrySources.Find(x => x.GeometryId.Equals(geometryFileDefinition.GeometryId, StringComparison.Ordinal));
 
         if (source == null)
             return geometryFileDefinition;
 
-        if (!cache.Geometries.TryGetValue(source.GeometryId, out var files))
-            return geometryFileDefinition;
+        if (source.Model is not null || !cache.Geometries.TryGetValue(source.GeometryId, out var files))
+            return source;
 
-        var model = _objParser.Parse(source.FileName, files!, logger);
+        source.Model = _objParser.Parse(source.FileName, files!, logger);
 
-        if (model == null)
-            return geometryFileDefinition;
+        if (source.Model is null) return source;
 
-        geometryFileDefinition.Model = ScaleModel(model, GetScale(source.Units), source.GeometryId, cache);
-        geometryFileDefinition.Units = source.Units;
-        geometryFileDefinition.FileName = source.FileName;
+        ScaleModel(source.Model, GetScale(source.Units));
+        ResolveModelMaterials(source.Model, source.GeometryId, cache);
 
-        source.Model = geometryFileDefinition.Model;
-
-        return geometryFileDefinition;
+        return source;
     }
 
-    private IModel3D ScaleModel(IModel3D model, float scale, string geomId, ContainerCache cache)
+    internal static void ScaleModel(IModel3D model, float scale)
     {
-        if (model.Data == null)
-            return model;
+        if (model.Data == null) return;
 
-        model.Data.Vertices = model.Data.Vertices.Select(vector3 => vector3 * scale).ToList();
-        model.Data.Normals = model.Data.Normals.ToList();
-        model.Data.TextureCoordinates = model.Data.TextureCoordinates.ToList();
-        model.Data.FaceGroups = model.Data.FaceGroups.ToList();
-        model.Data.Materials = model.Data.Materials.Select(material => ResolveMaterial(material, geomId, cache))
-            .ToList();
-
-        return model;
+        for (var i = 0; i < model.Data.Vertices.Count; i++)
+            model.Data.Vertices[i] *= scale;
     }
 
-    private ModelMaterial ResolveMaterial(ModelMaterial material, string geomId, ContainerCache cache)
+    internal void ResolveModelMaterials(IModel3D model, string geomId, ContainerCache cache)
+    {
+        if (model.Data == null) return;
+
+        foreach (var material in model.Data.Materials)
+        {
+            ResolveMaterial(material, geomId, cache);
+        }
+    }
+
+    private void ResolveMaterial(ModelMaterial material, string geomId, ContainerCache cache)
     {
         var textureBytes = Array.Empty<byte>();
 
@@ -85,12 +83,10 @@ internal class LuminaireResolver : ILuminaireResolver
             textureBytes = _fileHandler.GetTextureBytes(cache, geomId, material.TextureName);
 
         material.TextureBytes = textureBytes;
-
-        return material;
     }
 
 
-    private static float GetScale(GeometricUnits units) => units switch
+    internal static float GetScale(GeometricUnits units) => units switch
     {
         GeometricUnits.m => 1f,
         GeometricUnits.dm => 0.1f,

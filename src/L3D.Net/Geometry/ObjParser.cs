@@ -13,7 +13,7 @@ namespace L3D.Net.Geometry;
 
 public class ObjParser : IObjParser
 {
-    public static readonly IObjParser Instance = new ObjParser();
+    public static readonly ObjParser Instance = new();
     private static readonly ObjFileReaderSettings DefaultSettings = new() {HandleObjectNamesAsGroup = true, OnlyOneGroupNamePerLine = true};
 
     private static string GetFileName(string path)
@@ -147,7 +147,7 @@ public class ObjParser : IObjParser
             .Select(x => Convert(x, files.TryGetValue(x.DiffuseMap?.FileName ?? string.Empty, out var b) ? b : []))
             .ToList();
         var faceGroups = objFile.Groups.Count > 0
-            ? objFile.Groups.Select(group => ConvertGroup(group, materials)).ToList()
+            ? objFile.Groups.Where(group => group.Faces.Count > 0).Select(group => ConvertGroup(group, materials)).ToList()
             : [CreateDefaultFaceGroup(objFile, materials)];
 
         return new ModelData

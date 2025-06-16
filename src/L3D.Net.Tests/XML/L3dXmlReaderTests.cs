@@ -1,16 +1,16 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using FluentAssertions;
 using L3D.Net.Exceptions;
 using L3D.Net.Internal.Abstract;
 using L3D.Net.XML;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 // ReSharper disable ObjectCreationAsStatement
 
-namespace L3D.Net.Tests;
+namespace L3D.Net.Tests.XML;
 
 [TestFixture]
 public class L3dXmlReaderTests

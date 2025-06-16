@@ -1,37 +1,50 @@
-﻿using L3D.Net.Data;
-using L3D.Net.Internal.Abstract;
+﻿using System;
+using L3D.Net.Data;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
+using L3D.Net.Geometry;
+using L3D.Net.Internal.Abstract;
 using L3D.Net.XML.V0_11_0;
 
 namespace L3D.Net.Tests;
 
 public static class ExamplesExtensions
 {
-    private static readonly IObjParser ObjParser = Geometry.ObjParser.Instance;
-    private static readonly ILuminaireResolver Resolver = LuminaireResolver.Instance;
+    private static readonly ObjParser ObjParser = ObjParser.Instance;
+    private static readonly LuminaireResolver Resolver = LuminaireResolver.Instance;
+
+    private static GeometryFileDefinition CreateFileDefinition(string id, string objPath, GeometricUnits unit, ContainerCache cache)
+    {
+        var filename = Path.GetFileName(objPath);
+        var model = ObjParser.Parse(filename, cache.Geometries[id], NullLogger.Instance);
+        var fileDefinition = new GeometryFileDefinition
+        {
+            GeometryId = id,
+            Units = unit,
+            Model = model,
+            FileName = filename
+        };
+        LuminaireResolver.ScaleModel(model!, LuminaireResolver.GetScale(unit));
+        Resolver.ResolveModelMaterials(model!, id, cache);
+        return fileDefinition;
+    }
 
     public static Luminaire BuildExample000(this Luminaire luminaire)
     {
         var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_000");
         var cubeObjPath = Path.Combine(exampleDirectory, "cube", "cube.obj");
-        var fileName = Path.GetFileName(cubeObjPath);
         var cache = exampleDirectory.ToCache();
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Example-Tool"
+            CreatedWithApplication = "Example-Tool",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
+            CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
         };
 
-        var geometryDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "cube",
-            Units = GeometricUnits.m,
-            Model = ObjParser.Parse(fileName, cache.Geometries["cube"], NullLogger.Instance),
-            FileName = fileName
-        };
+        var geometryDefinition = CreateFileDefinition("cube", cubeObjPath, GeometricUnits.m, cache);
 
         luminaire.GeometryDefinitions = [geometryDefinition];
 
@@ -81,20 +94,15 @@ public static class ExamplesExtensions
         var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_001");
         var cubeObjPath = Path.Combine(exampleDirectory, "cube", "cube.obj");
         var cache = exampleDirectory.ToCache();
-        var fileName = Path.GetFileName(cubeObjPath);
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Example-Tool"
+            CreatedWithApplication = "Example-Tool",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
+            CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
         };
 
-        var geometryDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "cube",
-            Units = GeometricUnits.m,
-            Model = ObjParser.Parse(fileName, cache.Geometries["cube"], NullLogger.Instance),
-            FileName = fileName
-        };
+        var geometryDefinition = CreateFileDefinition("cube", cubeObjPath, GeometricUnits.m, cache);
 
         luminaire.GeometryDefinitions = [geometryDefinition];
 
@@ -114,9 +122,9 @@ public static class ExamplesExtensions
                         Name = "leo",
                         Position = new Vector3
                         {
-                            X = -0.25f,
-                            Y = -0.125f,
-                            Z = 0.05f
+                            X = 0.25f,
+                            Y = 0.125f,
+                            Z = -0.05f
                         }
                     }
                 ],
@@ -160,54 +168,21 @@ public static class ExamplesExtensions
         var armHeadConObjPath = Path.Combine(exampleDirectory, "arm-head-con", "arm-head-con.obj");
         var headObjPath = Path.Combine(exampleDirectory, "head", "head.obj");
         var cache = exampleDirectory.ToCache();
-        var baseFileName = Path.GetFileName(baseObjPath);
-        var baseArmFileName = Path.GetFileName(baseArmConObjPath);
-        var armFileName = Path.GetFileName(armObjPath);
-        var armHeadFileName = Path.GetFileName(armHeadConObjPath);
-        var headFileName = Path.GetFileName(headObjPath);
 
         luminaire.Header = new Header
         {
             CreatedWithApplication = "Keyboard-v1.0",
             Name = "First example",
-            Description = "First ever xml luminaire geometry description"
+            Description = "First ever xml luminaire geometry description",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
+            CreationTimeCode = new DateTime(2020, 12, 03, 16, 33, 44, DateTimeKind.Utc)
         };
 
-        var baseDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "base",
-            Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(baseFileName, cache.Geometries["base"], NullLogger.Instance),
-            FileName = baseFileName
-        };
-        var baseArmDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "base-arm-con",
-            Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(baseArmFileName, cache.Geometries["base-arm-con"], NullLogger.Instance),
-            FileName = baseArmFileName
-        };
-        var armDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "arm",
-            Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(armFileName, cache.Geometries["arm"], NullLogger.Instance),
-            FileName = armFileName
-        };
-        var armHeadDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "arm-head-con",
-            Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(armHeadFileName, cache.Geometries["arm-head-con"], NullLogger.Instance),
-            FileName = armHeadFileName
-        };
-        var headDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "head",
-            Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(headFileName, cache.Geometries["head"], NullLogger.Instance),
-            FileName = headFileName
-        };
+        var baseDefinition = CreateFileDefinition("base", baseObjPath, GeometricUnits.mm, cache);
+        var baseArmDefinition = CreateFileDefinition("base-arm-con", baseArmConObjPath, GeometricUnits.mm, cache);
+        var armDefinition = CreateFileDefinition("arm", armObjPath, GeometricUnits.mm, cache);
+        var armHeadDefinition = CreateFileDefinition("arm-head-con", armHeadConObjPath, GeometricUnits.mm, cache);
+        var headDefinition = CreateFileDefinition("head", headObjPath, GeometricUnits.mm, cache);
 
         luminaire.GeometryDefinitions =
         [
@@ -389,9 +364,21 @@ public static class ExamplesExtensions
                                                                                         Name = "les",
                                                                                         FaceAssignments =
                                                                                         [
+                                                                                            new SingleFaceAssignment
+                                                                                            {
+                                                                                                FaceIndex = 16
+                                                                                            },
+                                                                                            new SingleFaceAssignment
+                                                                                            {
+                                                                                                FaceIndex = 17
+                                                                                            },
+                                                                                            new SingleFaceAssignment
+                                                                                            {
+                                                                                                FaceIndex = 18
+                                                                                            },
                                                                                             new FaceRangeAssignment
                                                                                             {
-                                                                                                FaceIndexBegin = 16,
+                                                                                                FaceIndexBegin = 19,
                                                                                                 FaceIndexEnd = 21
                                                                                             }
                                                                                         ],
@@ -428,20 +415,16 @@ public static class ExamplesExtensions
         var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_003");
         var objPath = Path.Combine(exampleDirectory, "luminaire", "luminaire.obj");
         var cache = exampleDirectory.ToCache();
-        var fileName = Path.GetFileName(objPath);
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Keyboard-v1.0"
+            CreatedWithApplication = "Keyboard-v1.0",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
+            CreationTimeCode = new DateTime(2020, 12, 11, 11, 12, 13, DateTimeKind.Utc)
         };
 
-        var bodyDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "luminaire",
-            Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(fileName, cache.Geometries["luminaire"], NullLogger.Instance),
-            FileName = fileName
-        };
+
+        var bodyDefinition = CreateFileDefinition("luminaire", objPath, GeometricUnits.mm, cache);
 
         luminaire.GeometryDefinitions = [bodyDefinition];
 
@@ -491,20 +474,15 @@ public static class ExamplesExtensions
         var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_004");
         var objPath = Path.Combine(exampleDirectory, "luminaire", "luminaire.obj");
         var cache = exampleDirectory.ToCache();
-        var fileName = Path.GetFileName(objPath);
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Keyboard-v1.0"
+            CreatedWithApplication = "Keyboard-v1.0",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
+            CreationTimeCode = new DateTime(2020, 12, 11, 11, 12, 13, DateTimeKind.Utc)
         };
 
-        var bodyDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "luminaire",
-            Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(fileName, cache.Geometries["luminaire"], NullLogger.Instance),
-            FileName = fileName
-        };
+        var bodyDefinition = CreateFileDefinition("luminaire", objPath, GeometricUnits.mm, cache);
 
         luminaire.GeometryDefinitions = [bodyDefinition];
 
@@ -568,35 +546,28 @@ public static class ExamplesExtensions
                 [
                     new()
                     {
-                        Name = "les_top",
-                        FaceAssignments =
-                        [
-                            new FaceRangeAssignment
-                            {
-                                FaceIndexBegin = 84,
-                                FaceIndexEnd = 85
-                            }
-                        ],
-                        LightEmittingPartIntensityMapping = new Dictionary<string, double>
-                        {
-                            ["leo_top"] = 1
-                        }
-                    },
-
-                    new()
-                    {
                         Name = "les_bottom",
                         FaceAssignments =
                         [
-                            new FaceRangeAssignment
-                            {
-                                FaceIndexBegin = 90,
-                                FaceIndexEnd = 91
-                            }
+                            new SingleFaceAssignment {FaceIndex = 90},
+                            new SingleFaceAssignment {FaceIndex = 91}
                         ],
                         LightEmittingPartIntensityMapping = new Dictionary<string, double>
                         {
                             ["leo_bottom"] = 1
+                        }
+                    },
+                    new()
+                    {
+                        Name = "les_top",
+                        FaceAssignments =
+                        [
+                            new SingleFaceAssignment {FaceIndex = 84},
+                            new SingleFaceAssignment {FaceIndex = 85}
+                        ],
+                        LightEmittingPartIntensityMapping = new Dictionary<string, double>
+                        {
+                            ["leo_top"] = 1
                         }
                     }
                 ],
@@ -637,30 +608,18 @@ public static class ExamplesExtensions
         var baseObjPath = Path.Combine(exampleDirectory, "base", "base.obj");
         var headObjPath = Path.Combine(exampleDirectory, "head", "head.obj");
         var cache = exampleDirectory.ToCache();
-        var baseFileName = Path.GetFileName(baseObjPath);
-        var headFileName = Path.GetFileName(headObjPath);
 
         luminaire.Header = new Header
         {
             CreatedWithApplication = "Keyboard-v1.0",
             Name = "Another example",
-            Description = "Example luminaire 4"
+            Description = "Example luminaire 4",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
+            CreationTimeCode = new DateTime(2021, 01, 07, 16, 33, 44, DateTimeKind.Utc)
         };
 
-        var baseDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "base",
-            Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(baseFileName, cache.Geometries["base"], NullLogger.Instance),
-            FileName = baseFileName
-        };
-        var headDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "head",
-            Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(headFileName, cache.Geometries["head"], NullLogger.Instance),
-            FileName = headFileName
-        };
+        var baseDefinition = CreateFileDefinition("base", baseObjPath, GeometricUnits.mm, cache);
+        var headDefinition = CreateFileDefinition("head", headObjPath, GeometricUnits.mm, cache);
 
         luminaire.GeometryDefinitions =
         [
@@ -775,36 +734,17 @@ public static class ExamplesExtensions
         var baseHeadConObjPath = Path.Combine(exampleDirectory, "base-head-con", "base-head-con.obj");
         var headObjPath = Path.Combine(exampleDirectory, "head", "head.obj");
         var cache = exampleDirectory.ToCache();
-        var baseFileName = Path.GetFileName(baseObjPath);
-        var baseHeadConFileName = Path.GetFileName(baseHeadConObjPath);
-        var headFileName = Path.GetFileName(headObjPath);
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Experimental"
+            CreatedWithApplication = "Experimental",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
+            CreationTimeCode = new DateTime(2021, 01, 15, 15, 55, 13, DateTimeKind.Utc)
         };
 
-        var baseDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "base",
-            Units = GeometricUnits.m,
-            Model = ObjParser.Parse(baseFileName, cache.Geometries["base"], NullLogger.Instance),
-            FileName = baseFileName
-        };
-        var baseHeadConnectionDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "base-head-con",
-            Units = GeometricUnits.m,
-            Model = ObjParser.Parse(baseHeadConFileName, cache.Geometries["base-head-con"], NullLogger.Instance),
-            FileName = baseHeadConFileName
-        };
-        var headDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "head",
-            Units = GeometricUnits.m,
-            Model = ObjParser.Parse(headFileName, cache.Geometries["head"], NullLogger.Instance),
-            FileName = headFileName
-        };
+        var baseDefinition = CreateFileDefinition("base", baseObjPath, GeometricUnits.m, cache);
+        var baseHeadConnectionDefinition = CreateFileDefinition("base-head-con", baseHeadConObjPath, GeometricUnits.m, cache);
+        var headDefinition = CreateFileDefinition("head", headObjPath, GeometricUnits.m, cache);
 
         luminaire.GeometryDefinitions =
         [
@@ -813,7 +753,7 @@ public static class ExamplesExtensions
             headDefinition
         ];
 
-        GeometryPart CreatePart(int index, float yPosition) => new()
+        GeometryPart CreateJointGeometryPart(int index) => new()
         {
             Name = $"part-{index}",
             GeometryReference = baseHeadConnectionDefinition,
@@ -825,7 +765,7 @@ public static class ExamplesExtensions
                     Position = new Vector3
                     {
                         X = 0f,
-                        Y = yPosition,
+                        Y = 0,
                         Z = -0.128f
                     },
                     YAxis = new AxisRotation
@@ -910,13 +850,58 @@ public static class ExamplesExtensions
                             Max = 180,
                             Step = 1
                         },
-                        Geometries =
-                        [
-                            CreatePart(0, -0.55f),
-                            CreatePart(1, -0.15f),
-                            CreatePart(2, 0.25f),
-                            CreatePart(3, 0.65f)
-                        ]
+                        Geometries = [CreateJointGeometryPart(0)]
+                    },
+                    new()
+                    {
+                        Name = "part-joint-1",
+                        Position = new Vector3
+                        {
+                            X = 0f,
+                            Y = -0.15f,
+                            Z = -0.017f
+                        },
+                        ZAxis = new AxisRotation
+                        {
+                            Min = -180,
+                            Max = 180,
+                            Step = 1
+                        },
+                        Geometries = [CreateJointGeometryPart(1)]
+                    },
+                    new()
+                    {
+                        Name = "part-joint-2",
+                        Position = new Vector3
+                        {
+                            X = 0f,
+                            Y = 0.25f,
+                            Z = -0.017f
+                        },
+                        ZAxis = new AxisRotation
+                        {
+                            Min = -180,
+                            Max = 180,
+                            Step = 1
+                        },
+                        Geometries = [CreateJointGeometryPart(2)]
+                    },
+                    new()
+                    {
+                        Name = "part-joint-3",
+                        Position = new Vector3
+                        {
+                            X = 0f,
+                            Y = 0.65f,
+                            Z = -0.017f
+                        },
+                        ZAxis = new AxisRotation
+                        {
+                            Min = -180,
+                            Max = 180,
+                            Step = 1
+                        },
+                        Geometries = [CreateJointGeometryPart(3)]
                     }
                 ]
             }
@@ -932,36 +917,17 @@ public static class ExamplesExtensions
         var baseHeadConObjPath = Path.Combine(exampleDirectory, "base-head-con", "base-head-con.obj");
         var headObjPath = Path.Combine(exampleDirectory, "head", "head.obj");
         var cache = exampleDirectory.ToCache();
-        var baseFileName = Path.GetFileName(baseObjPath);
-        var baseHeadConFileName = Path.GetFileName(baseHeadConObjPath);
-        var headFileName = Path.GetFileName(headObjPath);
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Experimental"
+            CreatedWithApplication = "Experimental",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
+            CreationTimeCode = new DateTime(2021, 02, 16, 15, 55, 13, DateTimeKind.Utc)
         };
 
-        var baseDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "base",
-            Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(baseFileName, cache.Geometries["base"], NullLogger.Instance),
-            FileName = baseFileName
-        };
-        var baseHeadConnectionDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "base-head-con",
-            Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(baseHeadConFileName, cache.Geometries["base-head-con"], NullLogger.Instance),
-            FileName = baseHeadConFileName
-        };
-        var headDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "head",
-            Units = GeometricUnits.mm,
-            Model = ObjParser.Parse(headFileName, cache.Geometries["head"], NullLogger.Instance),
-            FileName = headFileName
-        };
+        var baseDefinition = CreateFileDefinition("base", baseObjPath, GeometricUnits.mm, cache);
+        var baseHeadConnectionDefinition = CreateFileDefinition("base-head-con", baseHeadConObjPath, GeometricUnits.mm, cache);
+        var headDefinition = CreateFileDefinition("head", headObjPath, GeometricUnits.mm, cache);
 
         luminaire.GeometryDefinitions =
         [
@@ -1005,6 +971,7 @@ public static class ExamplesExtensions
                             {
                                 Name = "base-head-con-0",
                                 GeometryReference = baseHeadConnectionDefinition,
+                                Position = new Vector3(0.4f, 0f, -0.0375f),
                                 Joints =
                                 [
                                     new()
@@ -1052,7 +1019,7 @@ public static class ExamplesExtensions
                                                         {
                                                             X = -0.4f,
                                                             Y = 0f,
-                                                            Z = -0.0375f
+                                                            Z = 0.01f
                                                         },
                                                         LuminousHeights = new LuminousHeights
                                                         {
@@ -1070,7 +1037,7 @@ public static class ExamplesExtensions
                                                         Name = "LES0",
                                                         FaceAssignments =
                                                         [
-                                                            new FaceRangeAssignment()
+                                                            new FaceRangeAssignment
                                                             {
                                                                 FaceIndexBegin = 574,
                                                                 FaceIndexEnd = 607
@@ -1095,7 +1062,7 @@ public static class ExamplesExtensions
                         Name = "base-head-con-joint-1",
                         Position = new Vector3
                         {
-                            X = -0.4f,
+                            X = 0.4f,
                             Y = 0f,
                             Z = 0.0375f
                         },
@@ -1117,6 +1084,7 @@ public static class ExamplesExtensions
                             {
                                 Name = "base-head-con-1",
                                 GeometryReference = baseHeadConnectionDefinition,
+                                Position = new Vector3(0.4f, 0f, -0.0375f),
                                 Joints =
                                 [
                                     new()
@@ -1164,7 +1132,7 @@ public static class ExamplesExtensions
                                                         {
                                                             X = -0.4f,
                                                             Y = 0f,
-                                                            Z = -0.0375f
+                                                            Z = 0.01f
                                                         },
                                                         LuminousHeights = new LuminousHeights
                                                         {
@@ -1182,7 +1150,7 @@ public static class ExamplesExtensions
                                                         Name = "LES1",
                                                         FaceAssignments =
                                                         [
-                                                            new FaceRangeAssignment()
+                                                            new FaceRangeAssignment
                                                             {
                                                                 FaceIndexBegin = 574,
                                                                 FaceIndexEnd = 607
@@ -1220,20 +1188,15 @@ public static class ExamplesExtensions
         var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_008");
         var cubeObjPath = Path.Combine(exampleDirectory, "cube", "textured_cube.obj");
         var cache = exampleDirectory.ToCache();
-        var fileName = Path.GetFileName(cubeObjPath);
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Example-Tool"
+            CreatedWithApplication = "Example-Tool",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
+            CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
         };
 
-        var baseDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "cube",
-            Units = GeometricUnits.m,
-            Model = ObjParser.Parse(fileName, cache.Geometries["cube"], NullLogger.Instance),
-            FileName = fileName
-        };
+        var baseDefinition = CreateFileDefinition("cube", cubeObjPath, GeometricUnits.m, cache);
 
         luminaire.GeometryDefinitions = [baseDefinition];
 
@@ -1283,20 +1246,15 @@ public static class ExamplesExtensions
         var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_009");
         var cubeObjPath = Path.Combine(exampleDirectory, "cube", "textured_cube.obj");
         var cache = exampleDirectory.ToCache();
-        var fileName = Path.GetFileName(cubeObjPath);
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Example-Tool"
+            CreatedWithApplication = "Example-Tool",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
+            CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
         };
 
-        var baseDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "cube",
-            Units = GeometricUnits.m,
-            Model = ObjParser.Parse(fileName, cache.Geometries["cube"], NullLogger.Instance),
-            FileName = fileName
-        };
+        var baseDefinition = CreateFileDefinition("cube", cubeObjPath, GeometricUnits.m, cache);
 
         luminaire.GeometryDefinitions = [baseDefinition];
 
@@ -1346,20 +1304,14 @@ public static class ExamplesExtensions
         var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_010");
         var cubeObjPath = Path.Combine(exampleDirectory, "cube", "textured_cube.obj");
         var cache = exampleDirectory.ToCache();
-        var fileName = Path.GetFileName(cubeObjPath);
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Example-Tool"
+            CreatedWithApplication = "Example-Tool",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
+            CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
         };
-
-        var baseDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "cube",
-            Units = GeometricUnits.m,
-            Model = ObjParser.Parse(fileName, cache.Geometries["cube"], NullLogger.Instance),
-            FileName = fileName
-        };
+        var baseDefinition = CreateFileDefinition("cube", cubeObjPath, GeometricUnits.m, cache);
 
         luminaire.GeometryDefinitions = [baseDefinition];
 
@@ -1409,20 +1361,14 @@ public static class ExamplesExtensions
         var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_011");
         var cubeObjPath = Path.Combine(exampleDirectory, "cube", "textured_cube.obj");
         var cache = exampleDirectory.ToCache();
-        var fileName = Path.GetFileName(cubeObjPath);
 
         luminaire.Header = new Header
         {
-            CreatedWithApplication = "Example-Tool"
+            CreatedWithApplication = "Example-Tool",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
+            CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
         };
-
-        var baseDefinition = new GeometryFileDefinition
-        {
-            GeometryId = "cube",
-            Units = GeometricUnits.m,
-            Model = ObjParser.Parse(fileName, cache.Geometries["cube"], NullLogger.Instance),
-            FileName = fileName
-        };
+        var baseDefinition = CreateFileDefinition("cube", cubeObjPath, GeometricUnits.m, cache);
 
         luminaire.GeometryDefinitions = [baseDefinition];
 
@@ -1458,6 +1404,62 @@ public static class ExamplesExtensions
                         LightEmittingPartIntensityMapping = new Dictionary<string, double>
                         {
                             ["leo"] = 1
+                        }
+                    }
+                ]
+            }
+        ];
+
+        return Resolver.Resolve(luminaire, cache)!;
+    }
+
+    public static Luminaire BuildExample012(this Luminaire luminaire)
+    {
+        var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_012");
+        var luminaireObjPath = Path.Combine(exampleDirectory, "geom_1", "luminaire.obj");
+        var cache = exampleDirectory.ToCache();
+
+        luminaire.Header = new Header
+        {
+            CreatedWithApplication = "Online L3D-Editor",
+            Name = "",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
+            CreationTimeCode = new DateTime(2024, 03, 20, 10, 29, 34, 880, DateTimeKind.Utc)
+        };
+        var baseDefinition = CreateFileDefinition("geom_1", luminaireObjPath, GeometricUnits.m, cache);
+
+        luminaire.GeometryDefinitions = [baseDefinition];
+
+        luminaire.Parts =
+        [
+            new()
+            {
+                Name = "luminaire",
+                GeometryReference = baseDefinition,
+                LightEmittingObjects =
+                [
+                    new(new Circle {Diameter = 0.075})
+                    {
+                        Name = "LEO",
+                        Position = new Vector3(0f, 0f, -0.045f)
+                    }
+                ],
+                LightEmittingSurfaces =
+                [
+                    new()
+                    {
+                        Name = "les_ksib",
+                        FaceAssignments =
+                        [
+                            new FaceRangeAssignment
+                            {
+                                FaceIndexBegin = 0,
+                                FaceIndexEnd = 61
+                            }
+                        ],
+                        LightEmittingPartIntensityMapping = new Dictionary<string, double>
+                        {
+                            ["LEO"] = 1
                         }
                     }
                 ]

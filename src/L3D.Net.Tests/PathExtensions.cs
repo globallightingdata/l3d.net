@@ -11,70 +11,38 @@ public static class PathExtensions
     public static List<Stream> Streams { get; } = new();
 
     public static ContainerCache ToCache(this string directory)
-    {
-        var structure = Path.Combine(directory, Constants.L3dXmlFilename);
-
-        var structureStream = Stream.Null;
-        if (File.Exists(structure))
-        {
-            structureStream = File.OpenRead(structure);
-            Streams.Add(structureStream);
-        }
-
-        return new ContainerCache
-        {
-            StructureXml = structureStream,
-            Geometries = Directory.GetDirectories(directory).ToDictionary(d => Path.GetFileName(d), y =>
-            {
-                var geometries = new Dictionary<string, Stream>();
-
-                var files = Directory.GetFiles(y);
-                foreach (var file in files)
-                {
-                    var fileName = Path.GetFileName(file);
-
-                    var ms = new MemoryStream();
-                    using var fs = File.OpenRead(file);
-                    fs.CopyTo(ms);
-                    ms.Seek(0, SeekOrigin.Begin);
-                    Streams.Add(ms);
-                    geometries.Add(fileName, ms);
-                }
-
-                return geometries;
-            })
-        };
-    }
+        => ToCache(directory, Constants.L3dXmlFilename);
 
     public static ContainerCache ToCache(this string directory, string xmlName)
-    {
-        var structure = Path.Combine(directory, xmlName);
+        => ToCache(new DirectoryInfo(directory), xmlName);
 
+    public static ContainerCache ToCache(this DirectoryInfo directory)
+        => ToCache(directory, Constants.L3dXmlFilename);
+
+    public static ContainerCache ToCache(this DirectoryInfo directory, string xmlName)
+    {
+        var structureXml = Path.Combine(directory.FullName, xmlName);
         var structureStream = Stream.Null;
-        if (File.Exists(structure))
+        if (File.Exists(structureXml))
         {
-            structureStream = File.OpenRead(structure);
+            structureStream = File.OpenRead(structureXml);
             Streams.Add(structureStream);
         }
 
         return new ContainerCache
         {
             StructureXml = structureStream,
-            Geometries = Directory.GetDirectories(directory).ToDictionary(d => Path.GetFileName(d), y =>
+            Geometries = directory.GetDirectories().ToDictionary(d => d.Name, y =>
             {
                 var geometries = new Dictionary<string, Stream>();
-
-                var files = Directory.GetFiles(y);
-                foreach (var file in files)
+                foreach (var file in y.GetFiles())
                 {
-                    var fileName = Path.GetFileName(file);
-
                     var ms = new MemoryStream();
-                    using var fs = File.OpenRead(file);
+                    using var fs = file.OpenRead();
                     fs.CopyTo(ms);
                     ms.Seek(0, SeekOrigin.Begin);
                     Streams.Add(ms);
-                    geometries.Add(fileName, ms);
+                    geometries.Add(file.Name, ms);
                 }
 
                 return geometries;

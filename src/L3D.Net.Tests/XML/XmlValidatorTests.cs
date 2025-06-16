@@ -1,12 +1,12 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using FluentAssertions;
 using L3D.Net.Abstract;
 using L3D.Net.XML;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
-namespace L3D.Net.Tests;
+namespace L3D.Net.Tests.XML;
 
 [TestFixture]
 public class XmlValidatorTests
