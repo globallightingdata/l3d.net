@@ -79,10 +79,10 @@ internal class LuminaireResolver : ILuminaireResolver
     {
         var textureBytes = Array.Empty<byte>();
 
-        if (!string.IsNullOrWhiteSpace(material.TextureName))
-            textureBytes = _fileHandler.GetTextureBytes(cache, geomId, material.TextureName);
+        if (!string.IsNullOrWhiteSpace(material.DiffuseTextureName))
+            textureBytes = _fileHandler.GetTextureBytes(cache, geomId, material.DiffuseTextureName);
 
-        material.TextureBytes = textureBytes;
+        material.DiffuseTextureBytes = textureBytes;
     }
 
 

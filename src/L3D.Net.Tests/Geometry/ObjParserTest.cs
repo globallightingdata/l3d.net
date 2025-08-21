@@ -126,9 +126,9 @@ public class ObjParserTest
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(1);
         var modelMaterial = model.Data.Materials.First();
-        modelMaterial.Color.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
+        modelMaterial.DiffuseColor.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
         modelMaterial.Name.Should().Be("CubeMaterial");
-        modelMaterial.TextureName.Should().Be("CubeTexture.png");
+        modelMaterial.DiffuseTextureName.Should().Be("CubeTexture.png");
 
         foreach (var modelPart in model.Data.FaceGroups)
         {
@@ -159,9 +159,9 @@ public class ObjParserTest
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(1);
         var modelMaterial = model.Data.Materials.First();
-        modelMaterial.Color.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
+        modelMaterial.DiffuseColor.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
         modelMaterial.Name.Should().Be("CubeMaterial");
-        modelMaterial.TextureName.Should().Be("CubeTexture.png");
+        modelMaterial.DiffuseTextureName.Should().Be("CubeTexture.png");
 
         foreach (var modelPart in model.Data.FaceGroups)
         {
@@ -195,9 +195,9 @@ public class ObjParserTest
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(1);
         var modelMaterial = model.Data.Materials.First();
-        modelMaterial.Color.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
+        modelMaterial.DiffuseColor.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
         modelMaterial.Name.Should().Be("CubeMaterial");
-        modelMaterial.TextureName.Should().Be("./CubeTexture.png");
+        modelMaterial.DiffuseTextureName.Should().Be("./CubeTexture.png");
 
         foreach (var modelPart in model.Data.FaceGroups)
         {
@@ -228,9 +228,9 @@ public class ObjParserTest
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(1);
         var modelMaterial = model.Data.Materials.First();
-        modelMaterial.Color.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
+        modelMaterial.DiffuseColor.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
         modelMaterial.Name.Should().Be("CubeMaterial");
-        modelMaterial.TextureName.Should().Be("./CubeTexture.png");
+        modelMaterial.DiffuseTextureName.Should().Be("./CubeTexture.png");
 
         foreach (var modelPart in model.Data.FaceGroups)
         {
@@ -264,9 +264,9 @@ public class ObjParserTest
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(1);
         var modelMaterial = model.Data.Materials.First();
-        modelMaterial.Color.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
+        modelMaterial.DiffuseColor.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
         modelMaterial.Name.Should().Be("CubeMaterial");
-        modelMaterial.TextureName.Should().Be("D:\\CubeTexture.png");
+        modelMaterial.DiffuseTextureName.Should().Be("D:\\CubeTexture.png");
 
         foreach (var modelPart in model.Data.FaceGroups)
         {
@@ -297,9 +297,9 @@ public class ObjParserTest
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(1);
         var modelMaterial = model.Data.Materials.First();
-        modelMaterial.Color.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
+        modelMaterial.DiffuseColor.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
         modelMaterial.Name.Should().Be("CubeMaterial");
-        modelMaterial.TextureName.Should().Be("D:\\CubeTexture.png");
+        modelMaterial.DiffuseTextureName.Should().Be("D:\\CubeTexture.png");
 
         foreach (var modelPart in model.Data.FaceGroups)
         {
@@ -333,9 +333,9 @@ public class ObjParserTest
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(1);
         var modelMaterial = model.Data.Materials.First();
-        modelMaterial.Color.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
+        modelMaterial.DiffuseColor.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
         modelMaterial.Name.Should().Be("CubeMaterial");
-        modelMaterial.TextureName.Should().Be("CubeTexture");
+        modelMaterial.DiffuseTextureName.Should().Be("CubeTexture");
 
         foreach (var modelPart in model.Data.FaceGroups)
         {
@@ -366,9 +366,9 @@ public class ObjParserTest
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(1);
         var modelMaterial = model.Data.Materials.First();
-        modelMaterial.Color.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
+        modelMaterial.DiffuseColor.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
         modelMaterial.Name.Should().Be("CubeMaterial");
-        modelMaterial.TextureName.Should().Be("CubeTexture");
+        modelMaterial.DiffuseTextureName.Should().Be("CubeTexture");
 
         foreach (var modelPart in model.Data.FaceGroups)
         {
@@ -607,7 +607,7 @@ public class ObjParserTest
         model.Data!.FaceGroups[0].Name.Should().BeEquivalentTo("Default");
         model.Data.Materials.Should().HaveCount(1);
         var modelMaterial = model.Data.Materials.First();
-        modelMaterial.Color.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
+        modelMaterial.DiffuseColor.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
         modelMaterial.Name.Should().Be("Material");
 
         foreach (var modelPart in model.Data.FaceGroups)

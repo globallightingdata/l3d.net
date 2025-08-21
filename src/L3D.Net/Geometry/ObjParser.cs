@@ -144,7 +144,7 @@ public class ObjParser : IObjParser
         var materials = objMaterialFiles
             .SelectMany(file => file.Materials)
             .Distinct()
-            .Select(x => Convert(x, files.TryGetValue(x.DiffuseMap?.FileName ?? string.Empty, out var b) ? b : []))
+            .Select(x => Convert(x, files))
             .ToList();
         var faceGroups = objFile.Groups.Count > 0
             ? objFile.Groups.Where(group => group.Faces.Count > 0).Select(group => ConvertGroup(group, materials)).ToList()
@@ -189,16 +189,55 @@ public class ObjParser : IObjParser
         TextureCoordinateIndex = vertex.Texture
     };
 
-    private static ModelMaterial Convert(ObjMaterial objMaterial, byte[] bytes)
+    private static ModelMaterial Convert(ObjMaterial objMaterial, IReadOnlyDictionary<string, byte[]> files)
     {
         var material = new ModelMaterial
         {
-            Name = objMaterial.Name ?? string.Empty,
-            TextureName = objMaterial.DiffuseMap?.FileName ?? string.Empty,
-            TextureBytes = bytes
+            Name = objMaterial.Name ?? string.Empty
         };
-        var color = objMaterial.DiffuseColor;
-        if (color is not null) material.Color = new Vector3(color.Color.X, color.Color.Y, color.Color.Z);
+
+        if (!string.IsNullOrWhiteSpace(objMaterial.DiffuseMap?.FileName))
+        {
+            material.DiffuseTextureName = objMaterial.DiffuseMap?.FileName ?? string.Empty;
+            if (files.TryGetValue(material.DiffuseTextureName, out var b)) material.DiffuseTextureBytes = b;
+        }
+
+        if (!string.IsNullOrWhiteSpace(objMaterial.AmbientMap?.FileName))
+        {
+            material.AmbientTextureName = objMaterial.AmbientMap?.FileName ?? string.Empty;
+            if (files.TryGetValue(material.AmbientTextureName, out var b)) material.AmbientTextureBytes = b;
+        }
+
+        if (!string.IsNullOrWhiteSpace(objMaterial.SpecularMap?.FileName))
+        {
+            material.SpecularTextureName = objMaterial.SpecularMap?.FileName ?? string.Empty;
+            if (files.TryGetValue(material.SpecularTextureName, out var b)) material.SpecularTextureBytes = b;
+        }
+
+        if (!string.IsNullOrWhiteSpace(objMaterial.EmissiveMap?.FileName))
+        {
+            material.EmissiveTextureName = objMaterial.EmissiveMap?.FileName ?? string.Empty;
+            if (files.TryGetValue(material.EmissiveTextureName, out var b)) material.EmissiveTextureBytes = b;
+        }
+
+        var ambientColor = objMaterial.AmbientColor;
+        if (ambientColor is not null) material.AmbientColor = new Vector3(ambientColor.Color.X, ambientColor.Color.Y, ambientColor.Color.Z);
+        var diffuseColor = objMaterial.DiffuseColor;
+        if (diffuseColor is not null) material.DiffuseColor = new Vector3(diffuseColor.Color.X, diffuseColor.Color.Y, diffuseColor.Color.Z);
+        var specularColor = objMaterial.SpecularColor;
+        if (specularColor is not null) material.SpecularColor = new Vector3(specularColor.Color.X, specularColor.Color.Y, specularColor.Color.Z);
+        var emissiveColor = objMaterial.EmissiveColor;
+        if (emissiveColor is not null) material.EmissiveColor = new Vector3(emissiveColor.Color.X, emissiveColor.Color.Y, emissiveColor.Color.Z);
+
+        material.SpecularExponent = objMaterial.SpecularExponent;
+        material.OpticalDensity = objMaterial.OpticalDensity;
+        material.ClearCoatThickness = objMaterial.ClearCoatThickness;
+        material.ClearCoatRoughness = objMaterial.ClearCoatRoughness;
+        material.Metallic = objMaterial.Metallic;
+        material.Roughness = objMaterial.Roughness;
+        material.Dissolve = objMaterial.DissolveFactor;
+        material.IlluminationModel = objMaterial.IlluminationModel;
+
         return material;
     }
 }

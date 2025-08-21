@@ -75,15 +75,15 @@ public class LuminaireResolverTests
         {
             Data = new ModelData
             {
-                Materials = [new ModelMaterial {TextureName = "tex1"}, new ModelMaterial {TextureName = "tex2"}]
+                Materials = [new ModelMaterial {DiffuseTextureName = "tex1"}, new ModelMaterial {DiffuseTextureName = "tex2"}]
             }
         };
         using var cache = new ContainerCache();
         _resolver.ResolveModelMaterials(model, "geom1", cache);
         using (new AssertionScope())
         {
-            model.Data.Materials[0].TextureBytes.Should().BeEmpty();
-            model.Data.Materials[1].TextureBytes.Should().BeEmpty();
+            model.Data.Materials[0].DiffuseTextureBytes.Should().BeEmpty();
+            model.Data.Materials[1].DiffuseTextureBytes.Should().BeEmpty();
         }
     }
 
@@ -94,7 +94,7 @@ public class LuminaireResolverTests
         {
             Data = new ModelData
             {
-                Materials = [new ModelMaterial {TextureName = "tex1"}, new ModelMaterial {TextureName = "tex2"}]
+                Materials = [new ModelMaterial {DiffuseTextureName = "tex1"}, new ModelMaterial {DiffuseTextureName = "tex2"}]
             }
         };
         using var cache = new ContainerCache();
@@ -102,8 +102,8 @@ public class LuminaireResolverTests
         _resolver.ResolveModelMaterials(model, "geom1", cache);
         using (new AssertionScope())
         {
-            model.Data.Materials[0].TextureBytes.Should().BeEmpty();
-            model.Data.Materials[1].TextureBytes.Should().BeEmpty();
+            model.Data.Materials[0].DiffuseTextureBytes.Should().BeEmpty();
+            model.Data.Materials[1].DiffuseTextureBytes.Should().BeEmpty();
         }
     }
 
@@ -114,7 +114,7 @@ public class LuminaireResolverTests
         {
             Data = new ModelData
             {
-                Materials = [new ModelMaterial {TextureName = "tex1"}, new ModelMaterial {TextureName = "tex2"}]
+                Materials = [new ModelMaterial {DiffuseTextureName = "tex1"}, new ModelMaterial {DiffuseTextureName = "tex2"}]
             }
         };
         using var cache = new ContainerCache();
@@ -125,8 +125,8 @@ public class LuminaireResolverTests
         _resolver.ResolveModelMaterials(model, "geom1", cache);
         using (new AssertionScope())
         {
-            model.Data.Materials[0].TextureBytes.Should().BeEmpty();
-            model.Data.Materials[1].TextureBytes.Should().BeEquivalentTo([0x02]);
+            model.Data.Materials[0].DiffuseTextureBytes.Should().BeEmpty();
+            model.Data.Materials[1].DiffuseTextureBytes.Should().BeEquivalentTo([0x02]);
         }
     }
 
@@ -137,7 +137,7 @@ public class LuminaireResolverTests
         {
             Data = new ModelData
             {
-                Materials = [new ModelMaterial {TextureName = "tex1"}, new ModelMaterial {TextureName = "tex2"}]
+                Materials = [new ModelMaterial {DiffuseTextureName = "tex1"}, new ModelMaterial {DiffuseTextureName = "tex2"}]
             }
         };
         using var cache = new ContainerCache();
@@ -149,8 +149,8 @@ public class LuminaireResolverTests
         _resolver.ResolveModelMaterials(model, "geom1", cache);
         using (new AssertionScope())
         {
-            model.Data.Materials[0].TextureBytes.Should().BeEquivalentTo([0x01]);
-            model.Data.Materials[1].TextureBytes.Should().BeEquivalentTo([0x02]);
+            model.Data.Materials[0].DiffuseTextureBytes.Should().BeEquivalentTo([0x01]);
+            model.Data.Materials[1].DiffuseTextureBytes.Should().BeEquivalentTo([0x02]);
         }
     }
 
