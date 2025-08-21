@@ -77,12 +77,14 @@ internal class LuminaireResolver : ILuminaireResolver
 
     private void ResolveMaterial(ModelMaterial material, string geomId, ContainerCache cache)
     {
-        var textureBytes = Array.Empty<byte>();
-
-        if (!string.IsNullOrWhiteSpace(material.DiffuseTextureName))
-            textureBytes = _fileHandler.GetTextureBytes(cache, geomId, material.DiffuseTextureName);
-
-        material.DiffuseTextureBytes = textureBytes;
+        if (material.DiffuseTextureBytes.Length == 0 && !string.IsNullOrWhiteSpace(material.DiffuseTextureName))
+            material.DiffuseTextureBytes = _fileHandler.GetTextureBytes(cache, geomId, material.DiffuseTextureName);
+        if (material.AmbientTextureBytes is null && !string.IsNullOrWhiteSpace(material.AmbientTextureName))
+            material.AmbientTextureBytes = _fileHandler.GetTextureBytes(cache, geomId, material.AmbientTextureName!);
+        if (material.SpecularTextureBytes is null && !string.IsNullOrWhiteSpace(material.SpecularTextureName))
+            material.SpecularTextureBytes = _fileHandler.GetTextureBytes(cache, geomId, material.SpecularTextureName!);
+        if (material.EmissiveTextureBytes is null && !string.IsNullOrWhiteSpace(material.EmissiveTextureName))
+            material.EmissiveTextureBytes = _fileHandler.GetTextureBytes(cache, geomId, material.EmissiveTextureName!);
     }
 
 

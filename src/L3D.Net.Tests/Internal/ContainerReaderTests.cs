@@ -211,6 +211,6 @@ public class ContainerReaderTests
         };
         var written = new Writer().WriteToByteArray(luminaire);
         var read = new Reader().ReadContainer(written);
-        luminaire.Should().BeEquivalentTo(read);
+        luminaire.Should().BeEquivalentTo(read, o => o.WithStrictOrdering());
     }
 }

@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using FluentAssertions;
+using L3D.Net.Data;
 using L3D.Net.Geometry;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
@@ -125,10 +126,20 @@ public class ObjParserTest
         model.ReferencedTextureFiles.Should().Contain(d => d.Key == Path.GetFileName(textureFile));
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(1);
-        var modelMaterial = model.Data.Materials.First();
-        modelMaterial.DiffuseColor.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
-        modelMaterial.Name.Should().Be("CubeMaterial");
-        modelMaterial.DiffuseTextureName.Should().Be("CubeTexture.png");
+        model.Data.Materials[0].Should().BeEquivalentTo(new ModelMaterial
+        {
+            Name = "CubeMaterial",
+            DiffuseColor = new Vector3(0.8f, 0.8f, 0.8f),
+            DiffuseTextureName = "CubeTexture.png",
+            DiffuseTextureBytes = File.ReadAllBytes(textureFile),
+            SpecularExponent = 324f,
+            AmbientColor = new Vector3(1, 1, 1),
+            SpecularColor = new Vector3(0.5f, 0.5f, 0.5f),
+            EmissiveColor = new Vector3(0, 0, 0),
+            OpticalDensity = 1.45f,
+            Dissolve = 1.0f,
+            IlluminationModel = 2
+        });
 
         foreach (var modelPart in model.Data.FaceGroups)
         {
@@ -158,10 +169,20 @@ public class ObjParserTest
         model.ReferencedTextureFiles.First().Key.Should().Be(Path.GetFileName(textureFile));
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(1);
-        var modelMaterial = model.Data.Materials.First();
-        modelMaterial.DiffuseColor.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
-        modelMaterial.Name.Should().Be("CubeMaterial");
-        modelMaterial.DiffuseTextureName.Should().Be("CubeTexture.png");
+        model.Data.Materials[0].Should().BeEquivalentTo(new ModelMaterial
+        {
+            Name = "CubeMaterial",
+            DiffuseColor = new Vector3(0.8f, 0.8f, 0.8f),
+            DiffuseTextureName = "CubeTexture.png",
+            DiffuseTextureBytes = File.ReadAllBytes(textureFile),
+            SpecularExponent = 324f,
+            AmbientColor = new Vector3(1, 1, 1),
+            SpecularColor = new Vector3(0.5f, 0.5f, 0.5f),
+            EmissiveColor = new Vector3(0, 0, 0),
+            OpticalDensity = 1.45f,
+            Dissolve = 1.0f,
+            IlluminationModel = 2
+        });
 
         foreach (var modelPart in model.Data.FaceGroups)
         {
@@ -194,10 +215,20 @@ public class ObjParserTest
         model.ReferencedTextureFiles.Should().Contain(d => d.Key == Path.GetFileName(textureFile));
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(1);
-        var modelMaterial = model.Data.Materials.First();
-        modelMaterial.DiffuseColor.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
-        modelMaterial.Name.Should().Be("CubeMaterial");
-        modelMaterial.DiffuseTextureName.Should().Be("./CubeTexture.png");
+        model.Data.Materials[0].Should().BeEquivalentTo(new ModelMaterial
+        {
+            Name = "CubeMaterial",
+            DiffuseColor = new Vector3(0.8f, 0.8f, 0.8f),
+            DiffuseTextureName = "./CubeTexture.png",
+            DiffuseTextureBytes = File.ReadAllBytes(textureFile),
+            SpecularExponent = 324f,
+            AmbientColor = new Vector3(1, 1, 1),
+            SpecularColor = new Vector3(0.5f, 0.5f, 0.5f),
+            EmissiveColor = new Vector3(0, 0, 0),
+            OpticalDensity = 1.45f,
+            Dissolve = 1.0f,
+            IlluminationModel = 2
+        });
 
         foreach (var modelPart in model.Data.FaceGroups)
         {
@@ -227,10 +258,20 @@ public class ObjParserTest
         model.ReferencedTextureFiles.First().Key.Should().Be(Path.GetFileName(textureFile));
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(1);
-        var modelMaterial = model.Data.Materials.First();
-        modelMaterial.DiffuseColor.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
-        modelMaterial.Name.Should().Be("CubeMaterial");
-        modelMaterial.DiffuseTextureName.Should().Be("./CubeTexture.png");
+        model.Data.Materials[0].Should().BeEquivalentTo(new ModelMaterial
+        {
+            Name = "CubeMaterial",
+            DiffuseColor = new Vector3(0.8f, 0.8f, 0.8f),
+            DiffuseTextureName = "./CubeTexture.png",
+            DiffuseTextureBytes = File.ReadAllBytes(textureFile),
+            SpecularExponent = 324f,
+            AmbientColor = new Vector3(1, 1, 1),
+            SpecularColor = new Vector3(0.5f, 0.5f, 0.5f),
+            EmissiveColor = new Vector3(0, 0, 0),
+            OpticalDensity = 1.45f,
+            Dissolve = 1.0f,
+            IlluminationModel = 2
+        });
 
         foreach (var modelPart in model.Data.FaceGroups)
         {
@@ -263,10 +304,20 @@ public class ObjParserTest
         model.ReferencedTextureFiles.Should().Contain(d => d.Key == Path.GetFileName(textureFile));
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(1);
-        var modelMaterial = model.Data.Materials.First();
-        modelMaterial.DiffuseColor.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
-        modelMaterial.Name.Should().Be("CubeMaterial");
-        modelMaterial.DiffuseTextureName.Should().Be("D:\\CubeTexture.png");
+        model.Data.Materials[0].Should().BeEquivalentTo(new ModelMaterial
+        {
+            Name = "CubeMaterial",
+            DiffuseColor = new Vector3(0.8f, 0.8f, 0.8f),
+            DiffuseTextureName = "D:\\CubeTexture.png",
+            DiffuseTextureBytes = File.ReadAllBytes(textureFile),
+            SpecularExponent = 324f,
+            AmbientColor = new Vector3(1, 1, 1),
+            SpecularColor = new Vector3(0.5f, 0.5f, 0.5f),
+            EmissiveColor = new Vector3(0, 0, 0),
+            OpticalDensity = 1.45f,
+            Dissolve = 1.0f,
+            IlluminationModel = 2
+        });
 
         foreach (var modelPart in model.Data.FaceGroups)
         {
@@ -296,10 +347,20 @@ public class ObjParserTest
         model.ReferencedTextureFiles.First().Key.Should().Be(Path.GetFileName(textureFile));
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(1);
-        var modelMaterial = model.Data.Materials.First();
-        modelMaterial.DiffuseColor.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
-        modelMaterial.Name.Should().Be("CubeMaterial");
-        modelMaterial.DiffuseTextureName.Should().Be("D:\\CubeTexture.png");
+        model.Data.Materials[0].Should().BeEquivalentTo(new ModelMaterial
+        {
+            Name = "CubeMaterial",
+            DiffuseColor = new Vector3(0.8f, 0.8f, 0.8f),
+            DiffuseTextureName = "D:\\CubeTexture.png",
+            DiffuseTextureBytes = File.ReadAllBytes(textureFile),
+            SpecularExponent = 324f,
+            AmbientColor = new Vector3(1, 1, 1),
+            SpecularColor = new Vector3(0.5f, 0.5f, 0.5f),
+            EmissiveColor = new Vector3(0, 0, 0),
+            OpticalDensity = 1.45f,
+            Dissolve = 1.0f,
+            IlluminationModel = 2
+        });
 
         foreach (var modelPart in model.Data.FaceGroups)
         {
@@ -332,10 +393,20 @@ public class ObjParserTest
         model.ReferencedTextureFiles.Should().Contain(d => d.Key == Path.GetFileName(textureFile));
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(1);
-        var modelMaterial = model.Data.Materials.First();
-        modelMaterial.DiffuseColor.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
-        modelMaterial.Name.Should().Be("CubeMaterial");
-        modelMaterial.DiffuseTextureName.Should().Be("CubeTexture");
+        model.Data.Materials[0].Should().BeEquivalentTo(new ModelMaterial
+        {
+            Name = "CubeMaterial",
+            DiffuseColor = new Vector3(0.8f, 0.8f, 0.8f),
+            DiffuseTextureName = "CubeTexture",
+            DiffuseTextureBytes = File.ReadAllBytes(textureFile),
+            SpecularExponent = 324f,
+            AmbientColor = new Vector3(1, 1, 1),
+            SpecularColor = new Vector3(0.5f, 0.5f, 0.5f),
+            EmissiveColor = new Vector3(0, 0, 0),
+            OpticalDensity = 1.45f,
+            Dissolve = 1.0f,
+            IlluminationModel = 2
+        });
 
         foreach (var modelPart in model.Data.FaceGroups)
         {
@@ -365,10 +436,20 @@ public class ObjParserTest
         model.ReferencedTextureFiles.First().Key.Should().Be(Path.GetFileName(textureFile));
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(1);
-        var modelMaterial = model.Data.Materials.First();
-        modelMaterial.DiffuseColor.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
-        modelMaterial.Name.Should().Be("CubeMaterial");
-        modelMaterial.DiffuseTextureName.Should().Be("CubeTexture");
+        model.Data.Materials[0].Should().BeEquivalentTo(new ModelMaterial
+        {
+            Name = "CubeMaterial",
+            DiffuseColor = new Vector3(0.8f, 0.8f, 0.8f),
+            DiffuseTextureName = "CubeTexture",
+            DiffuseTextureBytes = File.ReadAllBytes(textureFile),
+            SpecularExponent = 324f,
+            AmbientColor = new Vector3(1, 1, 1),
+            SpecularColor = new Vector3(0.5f, 0.5f, 0.5f),
+            EmissiveColor = new Vector3(0, 0, 0),
+            OpticalDensity = 1.45f,
+            Dissolve = 1.0f,
+            IlluminationModel = 2
+        });
 
         foreach (var modelPart in model.Data.FaceGroups)
         {
@@ -606,9 +687,18 @@ public class ObjParserTest
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data!.FaceGroups[0].Name.Should().BeEquivalentTo("Default");
         model.Data.Materials.Should().HaveCount(1);
-        var modelMaterial = model.Data.Materials.First();
-        modelMaterial.DiffuseColor.Should().BeEquivalentTo(new Vector3(0.8f, 0.8f, 0.8f));
-        modelMaterial.Name.Should().Be("Material");
+        model.Data.Materials[0].Should().BeEquivalentTo(new ModelMaterial
+        {
+            Name = "Material",
+            DiffuseColor = new Vector3(0.8f, 0.8f, 0.8f),
+            SpecularExponent = 324f,
+            AmbientColor = new Vector3(1, 1, 1),
+            SpecularColor = new Vector3(0.5f, 0.5f, 0.5f),
+            EmissiveColor = new Vector3(0, 0, 0),
+            OpticalDensity = 1.45f,
+            Dissolve = 1.0f,
+            IlluminationModel = 2
+        });
 
         foreach (var modelPart in model.Data.FaceGroups)
         {
@@ -617,5 +707,114 @@ public class ObjParserTest
                 modelFace.MaterialIndex.Should().Be(0);
             }
         }
+    }
+
+    [Test]
+    public void ParseFromFile_Sconce_ShouldParseMaterialCorrectly()
+    {
+        var objPath = Path.Combine(Setup.TestDataDirectory, "obj", "sconce_01.obj");
+        var parser = new ObjParser();
+
+        var model = parser.Parse(objPath, Substitute.For<ILogger>());
+        model.Data!.Materials.Should().HaveCount(2);
+        model.Data!.Materials.Should().BeEquivalentTo(new List<ModelMaterial>
+        {
+            new ModelMaterial
+            {
+                Name = "glass_milk_new",
+                DiffuseColor = new Vector3(0.64f, 0.64f, 0.64f),
+                SpecularExponent = 0,
+                AmbientColor = new Vector3(1, 1, 1),
+                SpecularColor = new Vector3(0, 0, 0),
+                EmissiveColor = new Vector3(0, 0, 0),
+                OpticalDensity = 1.5f,
+                Dissolve = 1.0f,
+                IlluminationModel = 2
+            },
+            new ModelMaterial
+            {
+                Name = "metal_grey_new",
+                DiffuseColor = new Vector3(0.64f, 0.64f, 0.64f),
+                SpecularExponent = 0,
+                AmbientColor = new Vector3(1, 1, 1),
+                SpecularColor = new Vector3(0, 0, 0),
+                EmissiveColor = new Vector3(0, 0, 0),
+                OpticalDensity = 1.5f,
+                Dissolve = 1.0f,
+                IlluminationModel = 2
+            }
+        }, o => o.WithStrictOrdering());
+    }
+
+    [Test]
+    public void ParseFromFile_SingleMesh_ShouldParseMaterialCorrectly()
+    {
+        var objPath = Path.Combine(Setup.TestDataDirectory, "obj", "single_mesh.obj");
+        var parser = new ObjParser();
+
+        var model = parser.Parse(objPath, Substitute.For<ILogger>());
+        model.Data!.Materials.Should().HaveCount(2);
+        model.Data!.Materials.Should().BeEquivalentTo(new List<ModelMaterial>
+        {
+            new ModelMaterial
+            {
+                Name = "Material",
+                DiffuseColor = new Vector3(0.8f, 0.8f, 0.8f),
+                SpecularExponent = 324,
+                AmbientColor = new Vector3(1, 1, 1),
+                SpecularColor = new Vector3(0.5f, 0.5f, 0.5f),
+                EmissiveColor = new Vector3(0, 0, 0),
+                OpticalDensity = 1.45f,
+                Dissolve = 1.0f,
+                IlluminationModel = 2
+            },
+            new ModelMaterial
+            {
+                Name = "None",
+                DiffuseColor = new Vector3(0.8f, 0.8f, 0.8f),
+                SpecularExponent = 500,
+                AmbientColor = new Vector3(0.8f, 0.8f, 0.8f),
+                SpecularColor = new Vector3(0.8f, 0.8f, 0.8f),
+                OpticalDensity = 1f,
+                Dissolve = 1.0f,
+                IlluminationModel = 2
+            }
+        }, o => o.WithStrictOrdering());
+    }
+
+    [Test]
+    public void ParseFromFile_TwoObjects_ShouldParseMaterialCorrectly()
+    {
+        var objPath = Path.Combine(Setup.TestDataDirectory, "obj", "two_objects.obj");
+        var parser = new ObjParser();
+
+        var model = parser.Parse(objPath, Substitute.For<ILogger>());
+        model.Data!.Materials.Should().HaveCount(2);
+        model.Data!.Materials.Should().BeEquivalentTo(new List<ModelMaterial>
+        {
+            new ModelMaterial
+            {
+                Name = "Material",
+                DiffuseColor = new Vector3(0.8f, 0.8f, 0.8f),
+                SpecularExponent = 324,
+                AmbientColor = new Vector3(1, 1, 1),
+                SpecularColor = new Vector3(0.5f, 0.5f, 0.5f),
+                EmissiveColor = new Vector3(0, 0, 0),
+                OpticalDensity = 1.45f,
+                Dissolve = 1.0f,
+                IlluminationModel = 2
+            },
+            new ModelMaterial
+            {
+                Name = "None",
+                DiffuseColor = new Vector3(0.8f, 0.8f, 0.8f),
+                SpecularExponent = 500,
+                AmbientColor = new Vector3(0.8f, 0.8f, 0.8f),
+                SpecularColor = new Vector3(0.8f, 0.8f, 0.8f),
+                OpticalDensity = 1f,
+                Dissolve = 1.0f,
+                IlluminationModel = 2
+            }
+        }, o => o.WithStrictOrdering());
     }
 }

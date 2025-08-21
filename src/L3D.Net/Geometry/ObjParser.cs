@@ -136,6 +136,10 @@ public class ObjParser : IObjParser
             yield return objMaterial?.EmissiveMap?.FileName;
             yield return objMaterial?.SpecularMap?.FileName;
             yield return objMaterial?.SpecularExponentMap?.FileName;
+            yield return objMaterial?.RoughnessMap?.FileName;
+            yield return objMaterial?.MetallicMap?.FileName;
+            yield return objMaterial?.SheenMap?.FileName;
+            yield return objMaterial?.Norm?.FileName;
         }
     }
 
@@ -196,38 +200,34 @@ public class ObjParser : IObjParser
             Name = objMaterial.Name ?? string.Empty
         };
 
-        if (!string.IsNullOrWhiteSpace(objMaterial.DiffuseMap?.FileName))
+        if (TryGetFilenameAndBytes(objMaterial.DiffuseMap, out var filename, out var content))
         {
-            material.DiffuseTextureName = objMaterial.DiffuseMap?.FileName ?? string.Empty;
-            if (files.TryGetValue(material.DiffuseTextureName, out var b)) material.DiffuseTextureBytes = b;
+            material.DiffuseTextureName = filename;
+            material.DiffuseTextureBytes = content;
         }
 
-        if (!string.IsNullOrWhiteSpace(objMaterial.AmbientMap?.FileName))
+        if (TryGetFilenameAndBytes(objMaterial.AmbientMap, out filename, out content))
         {
-            material.AmbientTextureName = objMaterial.AmbientMap?.FileName ?? string.Empty;
-            if (files.TryGetValue(material.AmbientTextureName, out var b)) material.AmbientTextureBytes = b;
+            material.AmbientTextureName = filename;
+            material.AmbientTextureBytes = content;
         }
 
-        if (!string.IsNullOrWhiteSpace(objMaterial.SpecularMap?.FileName))
+        if (TryGetFilenameAndBytes(objMaterial.SpecularMap, out filename, out content))
         {
-            material.SpecularTextureName = objMaterial.SpecularMap?.FileName ?? string.Empty;
-            if (files.TryGetValue(material.SpecularTextureName, out var b)) material.SpecularTextureBytes = b;
+            material.SpecularTextureName = filename;
+            material.SpecularTextureBytes = content;
         }
 
-        if (!string.IsNullOrWhiteSpace(objMaterial.EmissiveMap?.FileName))
+        if (TryGetFilenameAndBytes(objMaterial.EmissiveMap, out filename, out content))
         {
-            material.EmissiveTextureName = objMaterial.EmissiveMap?.FileName ?? string.Empty;
-            if (files.TryGetValue(material.EmissiveTextureName, out var b)) material.EmissiveTextureBytes = b;
+            material.EmissiveTextureName = filename;
+            material.EmissiveTextureBytes = content;
         }
 
-        var ambientColor = objMaterial.AmbientColor;
-        if (ambientColor is not null) material.AmbientColor = new Vector3(ambientColor.Color.X, ambientColor.Color.Y, ambientColor.Color.Z);
-        var diffuseColor = objMaterial.DiffuseColor;
-        if (diffuseColor is not null) material.DiffuseColor = new Vector3(diffuseColor.Color.X, diffuseColor.Color.Y, diffuseColor.Color.Z);
-        var specularColor = objMaterial.SpecularColor;
-        if (specularColor is not null) material.SpecularColor = new Vector3(specularColor.Color.X, specularColor.Color.Y, specularColor.Color.Z);
-        var emissiveColor = objMaterial.EmissiveColor;
-        if (emissiveColor is not null) material.EmissiveColor = new Vector3(emissiveColor.Color.X, emissiveColor.Color.Y, emissiveColor.Color.Z);
+        if (TryGetColor(objMaterial.AmbientColor, out var color)) material.AmbientColor = color;
+        if (TryGetColor(objMaterial.DiffuseColor, out color)) material.DiffuseColor = color!.Value;
+        if (TryGetColor(objMaterial.SpecularColor, out color)) material.SpecularColor = color;
+        if (TryGetColor(objMaterial.EmissiveColor, out color)) material.EmissiveColor = color;
 
         material.SpecularExponent = objMaterial.SpecularExponent;
         material.OpticalDensity = objMaterial.OpticalDensity;
@@ -239,5 +239,23 @@ public class ObjParser : IObjParser
         material.IlluminationModel = objMaterial.IlluminationModel;
 
         return material;
+
+        bool TryGetFilenameAndBytes(ObjMaterialMap? map, out string extractedFileName, out byte[] extractedContent)
+        {
+            extractedFileName = string.Empty;
+            extractedContent = [];
+            if (map is null) return false;
+            if (string.IsNullOrWhiteSpace(map.FileName)) return false;
+            extractedFileName = map.FileName ?? string.Empty;
+            files.TryGetValue(GetFileName(extractedFileName), out extractedContent);
+            return true;
+        }
+
+        bool TryGetColor(ObjMaterialColor? objColor, out Vector3? colorVector)
+        {
+            colorVector = null;
+            if (objColor is not null) colorVector = new Vector3(objColor.Color.X, objColor.Color.Y, objColor.Color.Z);
+            return objColor is not null;
+        }
     }
 }
