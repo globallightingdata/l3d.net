@@ -38,7 +38,13 @@ public class L3dXmlReaderTests
         return Directory.EnumerateFiles(directory, "*.xml").ToList();
     }
 
-    public static IEnumerable<string> GetNoRootTestFiles() => GetXmlFiles("no_root");
+    public static IEnumerable<TestCaseData> GetNoRootTestFiles()
+    {
+        foreach (var xmlFile in GetXmlFiles("no_root"))
+        {
+            yield return new TestCaseData(xmlFile).SetArgDisplayNames(xmlFile.Replace(Setup.TestDataDirectory, "", StringComparison.Ordinal));
+        }
+    }
 
     [Test]
     [TestCaseSource(nameof(GetNoRootTestFiles))]
@@ -54,7 +60,13 @@ public class L3dXmlReaderTests
         }
     }
 
-    private static IEnumerable<string> GetNoLocationTestFiles() => GetXmlFiles("no_scheme_location");
+    private static IEnumerable<TestCaseData> GetNoLocationTestFiles()
+    {
+        foreach (var xmlFile in GetXmlFiles("no_scheme_location"))
+        {
+            yield return new TestCaseData(xmlFile).SetArgDisplayNames(xmlFile.Replace(Setup.TestDataDirectory, "", StringComparison.Ordinal));
+        }
+    }
 
     [Test]
     [TestCaseSource(nameof(GetNoLocationTestFiles))]
@@ -72,7 +84,13 @@ public class L3dXmlReaderTests
         }
     }
 
-    private static IEnumerable<string> GetUnknownSchemeTestFiles() => GetXmlFiles("unknown_scheme");
+    private static IEnumerable<TestCaseData> GetUnknownSchemeTestFiles()
+    {
+        foreach (var se in GetXmlFiles("unknown_scheme"))
+        {
+            yield return new TestCaseData(se).SetArgDisplayNames(se.Replace(Setup.TestDataDirectory, "", StringComparison.Ordinal));
+        }
+    }
 
     [Test]
     [TestCaseSource(nameof(GetUnknownSchemeTestFiles))]
@@ -90,10 +108,13 @@ public class L3dXmlReaderTests
         }
     }
 
-    private static IEnumerable<string> GetInvalidTestFiles()
+    private static IEnumerable<TestCaseData> GetInvalidTestFiles()
     {
         Setup.Initialize();
-        return GetXmlFiles("invalid").Concat(Setup.InvalidVersionXmlFiles);
+        foreach (var se in GetXmlFiles("invalid").Concat(Setup.InvalidVersionXmlFiles))
+        {
+            yield return new TestCaseData(se).SetArgDisplayNames(se.Replace(Setup.TestDataDirectory, "", StringComparison.Ordinal));
+        }
     }
 
     [Test]
@@ -108,10 +129,13 @@ public class L3dXmlReaderTests
         act.Should().Throw<InvalidL3DException>();
     }
 
-    private static IEnumerable<string> GetValidTestFiles()
+    private static IEnumerable<TestCaseData> GetValidTestFiles()
     {
         Setup.Initialize();
-        return Setup.ExampleXmlFiles.Concat(Setup.ValidVersionXmlFiles);
+        foreach (var se in Setup.ExampleXmlFiles.Concat(Setup.ValidVersionXmlFiles))
+        {
+            yield return new TestCaseData(se).SetArgDisplayNames(se.Replace(Setup.TestDataDirectory, "", StringComparison.Ordinal));
+        }
     }
 
     [Test]

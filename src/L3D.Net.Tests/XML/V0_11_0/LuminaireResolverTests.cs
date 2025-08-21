@@ -21,6 +21,7 @@ public class LuminaireResolverTests
     [SetUp]
     public void Init()
     {
+        Setup.Initialize();
         _resolver = new LuminaireResolver(ObjParser.Instance, FileHandler.Instance);
     }
 
@@ -151,6 +152,108 @@ public class LuminaireResolverTests
         {
             model.Data.Materials[0].DiffuseTextureBytes.Should().BeEquivalentTo([0x01]);
             model.Data.Materials[1].DiffuseTextureBytes.Should().BeEquivalentTo([0x02]);
+        }
+    }
+
+    [Test]
+    public void ResolveModelMaterials_ShouldFillMaterials()
+    {
+        var model = new ObjModel3D
+        {
+            Data = new ModelData
+            {
+                Materials =
+                [
+                    new ModelMaterial
+                    {
+                        DiffuseTextureName = "Kd",
+                        AmbientTextureName = "Ka",
+                        SpecularTextureName = "Ks",
+                        EmissiveTextureName = "Ke",
+                        MetallicTextureName = "Pm",
+                        RoughnessTextureName = "Pr",
+                        SheenTextureName = "Ps",
+                        NormTextureName = "norm"
+                    }
+                ]
+            }
+        };
+        using var cache = Setup.TestDataDirectory.ToCache();
+        _resolver.ResolveModelMaterials(model, "obj", cache);
+        using (new AssertionScope())
+        {
+            model.Data!.Materials[0].DiffuseTextureName.Should().Be("Kd");
+            model.Data!.Materials[0].DiffuseTextureBytes.Should().BeEquivalentTo(File.ReadAllBytes(Path.Combine(Setup.TestDataDirectory, "obj", "Kd")));
+            model.Data!.Materials[0].AmbientTextureName.Should().Be("Ka");
+            model.Data!.Materials[0].AmbientTextureBytes.Should().BeEquivalentTo(File.ReadAllBytes(Path.Combine(Setup.TestDataDirectory, "obj", "Ka")));
+            model.Data!.Materials[0].SpecularTextureName.Should().Be("Ks");
+            model.Data!.Materials[0].SpecularTextureBytes.Should().BeEquivalentTo(File.ReadAllBytes(Path.Combine(Setup.TestDataDirectory, "obj", "Ks")));
+            model.Data!.Materials[0].EmissiveTextureName.Should().Be("Ke");
+            model.Data!.Materials[0].EmissiveTextureBytes.Should().BeEquivalentTo(File.ReadAllBytes(Path.Combine(Setup.TestDataDirectory, "obj", "Ke")));
+            model.Data!.Materials[0].MetallicTextureName.Should().Be("Pm");
+            model.Data!.Materials[0].MetallicTextureBytes.Should().BeEquivalentTo(File.ReadAllBytes(Path.Combine(Setup.TestDataDirectory, "obj", "Pm")));
+            model.Data!.Materials[0].RoughnessTextureName.Should().Be("Pr");
+            model.Data!.Materials[0].RoughnessTextureBytes.Should().BeEquivalentTo(File.ReadAllBytes(Path.Combine(Setup.TestDataDirectory, "obj", "Pr")));
+            model.Data!.Materials[0].SheenTextureName.Should().Be("Ps");
+            model.Data!.Materials[0].SheenTextureBytes.Should().BeEquivalentTo(File.ReadAllBytes(Path.Combine(Setup.TestDataDirectory, "obj", "Ps")));
+            model.Data!.Materials[0].NormTextureName.Should().Be("norm");
+            model.Data!.Materials[0].NormTextureBytes.Should().BeEquivalentTo(File.ReadAllBytes(Path.Combine(Setup.TestDataDirectory, "obj", "norm")));
+        }
+    }
+
+    [Test]
+    public void ResolveModelMaterials_ShouldNotOverwriteExistingBytes()
+    {
+        var bytes = new byte[] {0x16, 0x17};
+        var model = new ObjModel3D
+        {
+            Data = new ModelData
+            {
+                Materials =
+                [
+                    new ModelMaterial
+                    {
+                        DiffuseTextureName = "Kd",
+                        DiffuseTextureBytes = bytes,
+                        AmbientTextureName = "Ka",
+                        AmbientTextureBytes = bytes,
+                        SpecularTextureName = "Ks",
+                        SpecularTextureBytes = bytes,
+                        EmissiveTextureName = "Ke",
+                        EmissiveTextureBytes = bytes,
+                        MetallicTextureName = "Pm",
+                        MetallicTextureBytes = bytes,
+                        RoughnessTextureName = "Pr",
+                        RoughnessTextureBytes = bytes,
+                        SheenTextureName = "Ps",
+                        SheenTextureBytes = bytes,
+                        NormTextureName = "norm",
+                        NormTextureBytes = bytes
+                    }
+                ]
+            }
+        };
+        using var cache = Setup.TestDataDirectory.ToCache();
+        cache.Geometries["geom1"] = new Dictionary<string, Stream>();
+        _resolver.ResolveModelMaterials(model, "obj", cache);
+        using (new AssertionScope())
+        {
+            model.Data!.Materials[0].DiffuseTextureName.Should().Be("Kd");
+            model.Data!.Materials[0].DiffuseTextureBytes.Should().BeSameAs(bytes);
+            model.Data!.Materials[0].AmbientTextureName.Should().Be("Ka");
+            model.Data!.Materials[0].AmbientTextureBytes.Should().BeSameAs(bytes);
+            model.Data!.Materials[0].SpecularTextureName.Should().Be("Ks");
+            model.Data!.Materials[0].SpecularTextureBytes.Should().BeSameAs(bytes);
+            model.Data!.Materials[0].EmissiveTextureName.Should().Be("Ke");
+            model.Data!.Materials[0].EmissiveTextureBytes.Should().BeSameAs(bytes);
+            model.Data!.Materials[0].MetallicTextureName.Should().Be("Pm");
+            model.Data!.Materials[0].MetallicTextureBytes.Should().BeSameAs(bytes);
+            model.Data!.Materials[0].RoughnessTextureName.Should().Be("Pr");
+            model.Data!.Materials[0].RoughnessTextureBytes.Should().BeSameAs(bytes);
+            model.Data!.Materials[0].SheenTextureName.Should().Be("Ps");
+            model.Data!.Materials[0].SheenTextureBytes.Should().BeSameAs(bytes);
+            model.Data!.Materials[0].NormTextureName.Should().Be("norm");
+            model.Data!.Materials[0].NormTextureBytes.Should().BeSameAs(bytes);
         }
     }
 

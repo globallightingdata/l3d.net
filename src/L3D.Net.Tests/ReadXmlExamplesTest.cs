@@ -12,11 +12,16 @@ namespace L3D.Net.Tests;
 [TestFixture]
 public class ReadXmlExamplesTest
 {
-    private static List<Stream> ExampleFiles()
+    private static IEnumerable<TestCaseData> ExampleFiles()
     {
         Setup.Initialize();
-        var exampleFiles = Setup.ExampleXmlStreams.ToList();
-        return exampleFiles;
+        var streams = Setup.ExampleXmlStreams.ToList();
+        var files = Setup.ExampleXmlFiles.ToList();
+        for (var i = 0; i < streams.Count; i++)
+        {
+            yield return new TestCaseData(streams[i])
+                .SetArgDisplayNames(files[i].Replace(Setup.TestDataDirectory, "", StringComparison.Ordinal));
+        }
     }
 
     [Test]
@@ -33,10 +38,11 @@ public class ReadXmlExamplesTest
     [Explicit("Performance")]
     public void Reader_Performance_Test()
     {
-        var examples = ExampleFiles();
+        Setup.Initialize();
+        var examples = Setup.ExampleXmlStreams.ToList();
 
         var exampleCount = examples.Count;
-        var loopCount = 1000;
+        const int loopCount = 1000;
 
         var stopwatch = new Stopwatch();
         stopwatch.Start();

@@ -53,12 +53,21 @@ public class ReaderExampleTests
         Stream
     }
 
-    public static IEnumerable<ContainerTypeToTest> ContainerTypeToTestEnumValues => Enum.GetValues<ContainerTypeToTest>();
+    private static IEnumerable<TestCaseData> ReaderTestCases()
+    {
+        var containerTypes = Enum.GetValues<ContainerTypeToTest>();
+        foreach (var exampleDirectory in ExampleDirectories())
+        {
+            foreach (var containerTypeToTest in containerTypes)
+            {
+                yield return new TestCaseData(exampleDirectory, containerTypeToTest)
+                    .SetArgDisplayNames(new DirectoryInfo(exampleDirectory).Name, containerTypeToTest.ToString("G"));
+            }
+        }
+    }
 
-    [Test]
-    public void Reader_ShouldBeAbleToReadAllExampleFiles_ContainerPath([ValueSource(nameof(ExampleDirectories))] string exampleDirectory,
-        [ValueSource(nameof(ContainerTypeToTestEnumValues))]
-        ContainerTypeToTest containerTypeToTest)
+    [Test, TestCaseSource(nameof(ReaderTestCases))]
+    public void Reader_ShouldBeAbleToReadAllExampleFiles_ContainerPath(string exampleDirectory, ContainerTypeToTest containerTypeToTest)
     {
         var exampleName = Path.GetFileName(exampleDirectory).ToLower();
 

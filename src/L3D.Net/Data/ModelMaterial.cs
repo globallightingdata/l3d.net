@@ -54,17 +54,43 @@ public class ModelMaterial
 
     public float Dissolve { get; set; }
 
+    public float SpecularExponent { get; set; }
+
+    public float OpticalDensity { get; set; }
+
+    public int IlluminationModel { get; set; }
+
+    #region PBR Extensions
+
     public float Metallic { get; set; }
+
+    public string? MetallicTextureName { get; set; }
+
+    public byte[]? MetallicTextureBytes { get; set; }
 
     public float Roughness { get; set; }
 
-    public float SpecularExponent { get; set; }
+    public string? RoughnessTextureName { get; set; }
+
+    public byte[]? RoughnessTextureBytes { get; set; }
+
+    public float Sheen { get; set; }
+
+    public string? SheenTextureName { get; set; }
+
+    public byte[]? SheenTextureBytes { get; set; }
+
+    public string? NormTextureName { get; set; }
+
+    public byte[]? NormTextureBytes { get; set; }
 
     public float ClearCoatThickness { get; set; }
 
     public float ClearCoatRoughness { get; set; }
 
-    public float OpticalDensity { get; set; }
+    public float Anisotropy { get; set; }
 
-    public int IlluminationModel { get; set; }
+    public float AnisotropyRotation { get; set; }
+
+    #endregion
 }

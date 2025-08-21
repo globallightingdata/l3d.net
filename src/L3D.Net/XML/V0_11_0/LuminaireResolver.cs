@@ -85,6 +85,14 @@ internal class LuminaireResolver : ILuminaireResolver
             material.SpecularTextureBytes = _fileHandler.GetTextureBytes(cache, geomId, material.SpecularTextureName!);
         if (material.EmissiveTextureBytes is null && !string.IsNullOrWhiteSpace(material.EmissiveTextureName))
             material.EmissiveTextureBytes = _fileHandler.GetTextureBytes(cache, geomId, material.EmissiveTextureName!);
+        if (material.MetallicTextureBytes is null && !string.IsNullOrWhiteSpace(material.MetallicTextureName))
+            material.MetallicTextureBytes = _fileHandler.GetTextureBytes(cache, geomId, material.MetallicTextureName!);
+        if (material.RoughnessTextureBytes is null && !string.IsNullOrWhiteSpace(material.RoughnessTextureName))
+            material.RoughnessTextureBytes = _fileHandler.GetTextureBytes(cache, geomId, material.RoughnessTextureName!);
+        if (material.SheenTextureBytes is null && !string.IsNullOrWhiteSpace(material.SheenTextureName))
+            material.SheenTextureBytes = _fileHandler.GetTextureBytes(cache, geomId, material.SheenTextureName!);
+        if (material.NormTextureBytes is null && !string.IsNullOrWhiteSpace(material.NormTextureName))
+            material.NormTextureBytes = _fileHandler.GetTextureBytes(cache, geomId, material.NormTextureName!);
     }
 
 

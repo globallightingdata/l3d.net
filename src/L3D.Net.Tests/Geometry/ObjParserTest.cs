@@ -817,4 +817,52 @@ public class ObjParserTest
             }
         }, o => o.WithStrictOrdering());
     }
+
+    [Test]
+    public void ParseFromFile_FullMaterial_ShouldParseMaterialCorrectly()
+    {
+        var objPath = Path.Combine(Setup.TestDataDirectory, "obj", "full_material.obj");
+        var parser = new ObjParser();
+
+        var model = parser.Parse(objPath, Substitute.For<ILogger>());
+        model.Data!.Materials.Should().HaveCount(1);
+        model.Data!.Materials.Should().BeEquivalentTo(new List<ModelMaterial>
+        {
+            new ModelMaterial
+            {
+                Name = "Material",
+                DiffuseColor = new Vector3(0.81f, 0.82f, 0.83f),
+                DiffuseTextureName = "Kd",
+                DiffuseTextureBytes = File.ReadAllBytes(Path.Combine(Setup.TestDataDirectory, "obj", "Kd")),
+                SpecularExponent = 333.333f,
+                AmbientColor = new Vector3(0.91f, 0.92f, 0.93f),
+                AmbientTextureName = "Ka",
+                AmbientTextureBytes = File.ReadAllBytes(Path.Combine(Setup.TestDataDirectory, "obj", "Ka")),
+                SpecularColor = new Vector3(0.51f, 0.52f, 0.53f),
+                SpecularTextureName = "Ks",
+                SpecularTextureBytes = File.ReadAllBytes(Path.Combine(Setup.TestDataDirectory, "obj", "Ks")),
+                EmissiveColor = new Vector3(0.21f, 0.22f, 0.23f),
+                EmissiveTextureName = "Ke",
+                EmissiveTextureBytes = File.ReadAllBytes(Path.Combine(Setup.TestDataDirectory, "obj", "Ke")),
+                OpticalDensity = 1.45f,
+                Dissolve = 0.9f,
+                IlluminationModel = 3,
+                Anisotropy = 1.5f,
+                AnisotropyRotation = 1.4f,
+                Metallic = 0.8f,
+                MetallicTextureName = "Pm",
+                MetallicTextureBytes = File.ReadAllBytes(Path.Combine(Setup.TestDataDirectory, "obj", "Pm")),
+                Roughness = 0.7f,
+                RoughnessTextureName = "Pr",
+                RoughnessTextureBytes = File.ReadAllBytes(Path.Combine(Setup.TestDataDirectory, "obj", "Pr")),
+                Sheen = 0.6f,
+                SheenTextureName = "Ps",
+                SheenTextureBytes = File.ReadAllBytes(Path.Combine(Setup.TestDataDirectory, "obj", "Ps")),
+                ClearCoatThickness = 0.55f,
+                ClearCoatRoughness = 0.56f,
+                NormTextureName = "norm",
+                NormTextureBytes = File.ReadAllBytes(Path.Combine(Setup.TestDataDirectory, "obj", "norm"))
+            }
+        }, o => o.WithStrictOrdering());
+    }
 }

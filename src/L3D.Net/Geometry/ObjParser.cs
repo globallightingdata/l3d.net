@@ -145,11 +145,10 @@ public class ObjParser : IObjParser
 
     private static ModelData ConvertGeometry(ObjFile objFile, IEnumerable<ObjMaterialFile> objMaterialFiles, IReadOnlyDictionary<string, byte[]> files)
     {
-        var materials = objMaterialFiles
+        var materials = new List<ModelMaterial>(objMaterialFiles
             .SelectMany(file => file.Materials)
             .Distinct()
-            .Select(x => Convert(x, files))
-            .ToList();
+            .Select(x => Convert(x, files)));
         var faceGroups = objFile.Groups.Count > 0
             ? objFile.Groups.Where(group => group.Faces.Count > 0).Select(group => ConvertGroup(group, materials)).ToList()
             : [CreateDefaultFaceGroup(objFile, materials)];
@@ -197,7 +196,18 @@ public class ObjParser : IObjParser
     {
         var material = new ModelMaterial
         {
-            Name = objMaterial.Name ?? string.Empty
+            Name = objMaterial.Name ?? string.Empty,
+            SpecularExponent = objMaterial.SpecularExponent,
+            OpticalDensity = objMaterial.OpticalDensity,
+            Dissolve = objMaterial.DissolveFactor,
+            IlluminationModel = objMaterial.IlluminationModel,
+            Metallic = objMaterial.Metallic,
+            Roughness = objMaterial.Roughness,
+            Sheen = objMaterial.Sheen,
+            ClearCoatThickness = objMaterial.ClearCoatThickness,
+            ClearCoatRoughness = objMaterial.ClearCoatRoughness,
+            Anisotropy = objMaterial.Anisotropy,
+            AnisotropyRotation = objMaterial.AnisotropyRotation
         };
 
         if (TryGetFilenameAndBytes(objMaterial.DiffuseMap, out var filename, out var content))
@@ -224,19 +234,34 @@ public class ObjParser : IObjParser
             material.EmissiveTextureBytes = content;
         }
 
+        if (TryGetFilenameAndBytes(objMaterial.MetallicMap, out filename, out content))
+        {
+            material.MetallicTextureName = filename;
+            material.MetallicTextureBytes = content;
+        }
+
+        if (TryGetFilenameAndBytes(objMaterial.RoughnessMap, out filename, out content))
+        {
+            material.RoughnessTextureName = filename;
+            material.RoughnessTextureBytes = content;
+        }
+
+        if (TryGetFilenameAndBytes(objMaterial.SheenMap, out filename, out content))
+        {
+            material.SheenTextureName = filename;
+            material.SheenTextureBytes = content;
+        }
+
+        if (TryGetFilenameAndBytes(objMaterial.Norm, out filename, out content))
+        {
+            material.NormTextureName = filename;
+            material.NormTextureBytes = content;
+        }
+
         if (TryGetColor(objMaterial.AmbientColor, out var color)) material.AmbientColor = color;
         if (TryGetColor(objMaterial.DiffuseColor, out color)) material.DiffuseColor = color!.Value;
         if (TryGetColor(objMaterial.SpecularColor, out color)) material.SpecularColor = color;
         if (TryGetColor(objMaterial.EmissiveColor, out color)) material.EmissiveColor = color;
-
-        material.SpecularExponent = objMaterial.SpecularExponent;
-        material.OpticalDensity = objMaterial.OpticalDensity;
-        material.ClearCoatThickness = objMaterial.ClearCoatThickness;
-        material.ClearCoatRoughness = objMaterial.ClearCoatRoughness;
-        material.Metallic = objMaterial.Metallic;
-        material.Roughness = objMaterial.Roughness;
-        material.Dissolve = objMaterial.DissolveFactor;
-        material.IlluminationModel = objMaterial.IlluminationModel;
 
         return material;
 
@@ -251,7 +276,7 @@ public class ObjParser : IObjParser
             return true;
         }
 
-        bool TryGetColor(ObjMaterialColor? objColor, out Vector3? colorVector)
+        static bool TryGetColor(ObjMaterialColor? objColor, out Vector3? colorVector)
         {
             colorVector = null;
             if (objColor is not null) colorVector = new Vector3(objColor.Color.X, objColor.Color.Y, objColor.Color.Z);
