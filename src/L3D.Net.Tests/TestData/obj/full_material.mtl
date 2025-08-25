@@ -1,0 +1,24 @@
+newmtl Material
+Ns 333.333
+Ka 0.91 0.92 0.93
+map_Ka Ka
+Kd 0.81 0.82 0.83
+map_Kd Kd
+Ks 0.51 0.52 0.53
+map_Ks Ks
+Ke 0.21 0.22 0.23
+map_Ke Ke
+Ni 1.450000
+d 0.9
+Pm 0.8
+map_Pm Pm
+Pr 0.7
+map_Pr Pr
+Ps 0.6
+map_Ps Ps
+Pc 0.55
+Pcr 0.56
+norm norm
+aniso 1.5
+anisor 1.4
+illum 3

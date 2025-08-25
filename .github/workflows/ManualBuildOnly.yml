@@ -6,23 +6,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: |
-          8.0.x
-          9.0.x
-        dotnet-quality: 'ga'
-    - name: Restore dependencies
-      run: |
-       dotnet restore ./src/L3D.Net/L3D.Net.csproj
-       dotnet restore ./src/L3D.Net.Tests/L3D.Net.Tests.csproj
-    - name: Build
-      run: |
-       dotnet build --no-restore --configuration Release ./src/L3D.Net/L3D.Net.csproj
-       dotnet build --no-restore --configuration Debug ./src/L3D.Net.Tests/L3D.Net.Tests.csproj
-    - name: Test
-      run: dotnet test --no-build --verbosity normal ./src/L3D.Net.Tests/L3D.Net.Tests.csproj
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+          dotnet-quality: 'ga'
+      - name: Restore dependencies
+        run: |
+          dotnet restore ./src/L3D.Net/L3D.Net.csproj
+          dotnet restore ./src/L3D.Net.Tests/L3D.Net.Tests.csproj
+      - name: Build
+        run: |
+          dotnet build --no-restore --configuration Release ./src/L3D.Net/L3D.Net.csproj
+          dotnet build --no-restore --configuration Debug ./src/L3D.Net.Tests/L3D.Net.Tests.csproj
+      - name: Test
+        run: dotnet test --no-build --verbosity normal ./src/L3D.Net.Tests/L3D.Net.Tests.csproj

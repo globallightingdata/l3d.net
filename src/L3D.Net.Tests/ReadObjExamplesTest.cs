@@ -1,21 +1,25 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using L3D.Net.Geometry;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace L3D.Net.Tests;
 
 [TestFixture]
 public class ReadObjExamplesTest
 {
-    private static List<string> ExampleFiles()
+    private static IEnumerable<TestCaseData> ExampleFiles()
     {
         Setup.Initialize();
-        return Setup.ExampleObjFiles.ToList();
+        foreach (var exampleObjFile in Setup.ExampleObjFiles)
+        {
+            yield return new TestCaseData(exampleObjFile)
+                .SetArgDisplayNames(exampleObjFile.Replace(Setup.TestDataDirectory, "", StringComparison.Ordinal));
+        }
     }
 
     [Test]
