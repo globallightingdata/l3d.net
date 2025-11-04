@@ -23,5 +23,20 @@ public class Validator : IValidator
         return CreateContainerValidator().Validate(containerStream, flags);
     }
 
+    public ValidationResultContainer CreateValidationResult(string containerPath, Validation flags)
+    {
+        return CreateContainerValidator().CreateValidationResult(containerPath, flags);
+    }
+
+    public ValidationResultContainer CreateValidationResult(byte[] containerBytes, Validation flags)
+    {
+        return CreateContainerValidator().CreateValidationResult(containerBytes, flags);
+    }
+
+    public ValidationResultContainer CreateValidationResult(Stream containerStream, Validation flags)
+    {
+        return CreateContainerValidator().CreateValidationResult(containerStream, flags);
+    }
+
     private static IContainerValidator CreateContainerValidator() => new ContainerValidator(new FileHandler(), new XmlValidator(), new L3DXmlReader());
 }
