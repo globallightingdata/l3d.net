@@ -26,6 +26,54 @@
         <None Update="TestData\obj\norm">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <None Update="TestData\xml\v0.11.0\example_004\luminaire\e8fe9019-de32-44ce-a0fa-838485873ab5.mtl">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TestData\xml\v0.11.0\example_005\base\ecbf353d-7c04-4009-afd4-57f116d15673.mtl">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TestData\xml\v0.11.0\example_005\head\45e0071d-ebd8-46c1-9aa0-b4938784ec6d.mtl">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TestData\xml\v0.11.0\example_006\base\base_materials.txt">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TestData\xml\v0.11.0\example_006\base-head-con\con_0_materials.txt">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TestData\xml\v0.11.0\example_007\base\e0650e8f-ece1-44a2-ba6c-f043bc777be8.mtl">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TestData\xml\v0.11.0\example_007\base-head-con\799b25e7-89ae-4753-8e57-bcd655a87f16.mtl">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TestData\xml\v0.11.0\example_007\head\654a05d1-0e58-4e12-8765-704bf724e734.mtl">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TestData\xml\v0.11.0\example_002\arm\99f09f1c-f3c2-4c97-ac6c-bbff3610d8bb.mtl">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TestData\xml\v0.11.0\example_002\arm-head-con\22286fc9-712f-43aa-b825-9ff374819f81.mtl">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TestData\xml\v0.11.0\example_002\base\9daa3831-a939-4f83-81e7-086b46cd1ce0.mtl">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TestData\xml\v0.11.0\example_002\base-arm-con\3209cf4b-6ce9-412b-9066-667a36f6af7f.mtl">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TestData\xml\v0.11.0\example_006\head\head_0_materials.txt">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TestData\xml\v0.11.0\example_012\geom_1\luminaire_materials.txt">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TestData\xml\validation\example_013.l3d">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TestData\xml\validation\example_014.l3d">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>

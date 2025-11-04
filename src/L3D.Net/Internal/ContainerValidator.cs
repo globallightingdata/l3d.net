@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using L3D.Net.Extensions;
 
 namespace L3D.Net.Internal;
 
@@ -112,8 +113,8 @@ internal class ContainerValidator : IContainerValidator
 
         var geometryReferences = geometryParts.Select(x => x.GeometryReference).Where(x => x != null).ToArray();
         IModel3D[] models = geometryReferences.Where(x => x.Model != null).Select(x => x.Model).ToArray()!;
-        var mtlNames = models.SelectMany(x => x.ReferencedMaterialLibraryFiles.Keys).ToArray();
-        var textureNames = models.SelectMany(x => x.ReferencedTextureFiles.Keys).ToArray();
+        var mtlNames = models.Where(x => x.Data is not null).SelectMany(x => x.ReferencedMaterialLibraryFiles.Keys).ToArray();
+        var textureNames = models.Where(x => x.Data is not null).SelectMany(x => x.Data!.GetReferencedTextureFiles()).ToArray();
 
         var geometryDefinitions = luminaire.GeometryDefinitions;
         IModel3D[] listedModels = geometryDefinitions.Where(x => x.Model != null).Select(x => x.Model).ToArray()!;
@@ -124,36 +125,45 @@ internal class ContainerValidator : IContainerValidator
         {
             var objFileNames = geometryReferences.Select(x => x.FileName);
             var listedObjNames = geometryDefinitions.Select(x => x.FileName);
+            var alreadyReportedFiles = new HashSet<string>(StringComparer.Ordinal);
 
-            foreach (var objName in listedObjNames.Except(objFileNames))
+            foreach (var objName in listedObjNames.Except(objFileNames).Where(objName => alreadyReportedFiles.Add(objName)))
             {
                 yield return new UnusedFileValidationHint(objName);
             }
 
-            foreach (var mtlName in listedMtlNames.Except(mtlNames))
+            foreach (var mtlName in listedMtlNames.Except(mtlNames).Where(mtlName => alreadyReportedFiles.Add(mtlName)))
             {
                 yield return new UnusedFileValidationHint(mtlName);
             }
 
-            foreach (var textureName in listedTextureNames.Except(textureNames))
+            foreach (var textureName in listedTextureNames.Except(textureNames).Where(textureName => alreadyReportedFiles.Add(textureName)))
             {
                 yield return new UnusedFileValidationHint(textureName);
+            }
+
+            foreach (var fileInformation in listedModels.SelectMany(e => e.Files))
+            {
+                if (fileInformation.Value.Status is FileStatus.Unused && alreadyReportedFiles.Add(fileInformation.Key))
+                    yield return new UnusedFileValidationHint(fileInformation.Key);
             }
         }
 
         if (flags.HasFlag(Validation.HasAllMaterials))
         {
-            foreach (var mtlName in mtlNames.Except(listedMtlNames))
+            foreach (var listedMtlName in listedModels.SelectMany(x => x.Files)
+                         .Where(file => file.Value.Status is FileStatus.MissingMaterial))
             {
-                yield return new MissingMaterialValidationHint(mtlName);
+                yield return new MissingMaterialValidationHint(listedMtlName.Key);
             }
         }
 
         if (flags.HasFlag(Validation.HasAllTextures))
         {
-            foreach (var textureName in textureNames.Except(listedTextureNames))
+            foreach (var listedTextureName in listedModels.SelectMany(x => x.Files)
+                         .Where(file => file.Value.Status is FileStatus.MissingTexture))
             {
-                yield return new MissingTextureValidationHint(textureName);
+                yield return new MissingTextureValidationHint(listedTextureName.Key);
             }
         }
 

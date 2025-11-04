@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using L3D.Net.Internal;
 
 namespace L3D.Net.Geometry;
 
@@ -15,17 +16,6 @@ public class ObjParser : IObjParser
 {
     public static readonly ObjParser Instance = new();
     private static readonly ObjFileReaderSettings DefaultSettings = new() {HandleObjectNamesAsGroup = true, OnlyOneGroupNamePerLine = true};
-
-    private static string GetFileName(string path)
-    {
-        var stage1 = path.Split('\\').LastOrDefault();
-        if (string.IsNullOrEmpty(stage1))
-            return path;
-        var stage2 = stage1.Split('/').LastOrDefault();
-        if (string.IsNullOrEmpty(stage2))
-            return path;
-        return stage2;
-    }
 
     public IModel3D? Parse(string fileName, Dictionary<string, Stream> files, ILogger? logger = null)
     {
@@ -35,91 +25,189 @@ public class ObjParser : IObjParser
         stream.Seek(0, SeekOrigin.Begin);
         var objFile = ObjFile.FromStream(stream, DefaultSettings);
 
-        var objMaterialLibraries = CollectAvailableMaterialLibraries(logger, objFile, files).ToList();
+        var objMaterialLibraries = CollectMaterialLibraries(objFile, files, logger).ToArray();
 
         var textures = CollectAvailableTextures(objMaterialLibraries)
             .Distinct()
             .Where(x => !string.IsNullOrWhiteSpace(x))
-            .Select(GetFileName!)
-            .Where(files.ContainsKey)
+            .Select(FileHandler.GetCleanedFileName!)
             .ToList();
+
+        var fileInfos = new Dictionary<string, FileInformation>();
+        foreach (var file in files)
+        {
+            fileInfos[file.Key] = new FileInformation
+            {
+                Name = file.Key
+            };
+        }
+
+        fileInfos[fileName].Status = FileStatus.ReferencedGeometry;
+        fileInfos[fileName].Data = stream.ToArray();
+
+        foreach (var objMaterialLibrary in objMaterialLibraries)
+        {
+            if (fileInfos.TryGetValue(objMaterialLibrary.Item1, out var fileInfo))
+            {
+                fileInfo.Status = FileStatus.ReferencedMaterial;
+                fileInfo.Data = files[fileInfo.Name].ToArray();
+            }
+            else
+            {
+                fileInfos[objMaterialLibrary.Item1] = new FileInformation
+                {
+                    Name = objMaterialLibrary.Item1,
+                    Status = FileStatus.MissingMaterial
+                };
+            }
+        }
+
+        foreach (var texture in textures)
+        {
+            if (fileInfos.TryGetValue(texture, out var fileInfo))
+            {
+                fileInfo.Status = FileStatus.ReferencedTexture;
+                fileInfo.Data = files[fileInfo.Name].ToArray();
+            }
+            else
+            {
+                fileInfos[texture] = new FileInformation
+                {
+                    Name = texture,
+                    Status = FileStatus.MissingTexture
+                };
+            }
+        }
 
         return new ObjModel3D
         {
             FileName = fileName,
-            ReferencedMaterialLibraryFiles = objMaterialLibraries.ToDictionary(d => d.Item1, d => files[d.Item1].ToArray()),
-            ReferencedTextureFiles = textures.ToDictionary(d => d, d => files[d].ToArray()),
-            Data = ConvertGeometry(objFile, objMaterialLibraries.Select(tuple => tuple.Item2), files.ToDictionary(d => d.Key, d => d.Value.ToArray())),
-            ObjFile = stream.ToArray()
+            ReferencedMaterialLibraryFiles = objMaterialLibraries.Where(d => files.ContainsKey(d.Item1)).ToDictionary(d => d.Item1, d => files[d.Item1].ToArray()),
+            ReferencedTextureFiles = textures.Where(files.ContainsKey).ToDictionary(d => d, d => files[d].ToArray()),
+            Data = ConvertGeometry(objFile, objMaterialLibraries, fileInfos),
+            ObjFile = stream.ToArray(),
+            Files = fileInfos
         };
     }
 
     public IModel3D Parse(string filePath, ILogger? logger = null)
     {
         var directory = Path.GetDirectoryName(filePath) ?? throw new ArgumentException($"The file directory of '{filePath}' could not be determined");
-
-        ObjFile objFile;
-        byte[] fileBytes;
-        using (var fs = File.OpenRead(filePath))
+        var fileInfos = new Dictionary<string, FileInformation>();
+        foreach (var fileName in Directory.EnumerateFiles(directory).Select(FileHandler.GetCleanedFileName))
         {
-            objFile = ObjFile.FromStream(fs, DefaultSettings);
-            fileBytes = fs.ToArray();
+            fileInfos[fileName] = new FileInformation
+            {
+                Name = fileName
+            };
         }
 
-        var objMaterialLibraries = CollectAvailableMaterialLibraries(objFile, directory, logger).ToList();
-        var textures = CollectAvailableTextures(objMaterialLibraries).Distinct().Where(x => !string.IsNullOrWhiteSpace(x)).Select(GetFileName!).ToList();
-        var filePaths = objMaterialLibraries.Select(x => x.Item1).Union(textures).ToList();
-        filePaths.Add(filePath);
+        if (!fileInfos.TryGetValue(FileHandler.GetCleanedFileName(filePath), out var fileInfo)) throw new ArgumentException($"The file '{filePath}' does not exists");
+        fileInfo.Status = FileStatus.ReferencedGeometry;
+        fileInfo.Data = File.ReadAllBytes(filePath);
+        var fileBytes = fileInfo.Data!;
+        using var ms = new MemoryStream(fileBytes);
+        var objFile = ObjFile.FromStream(ms, DefaultSettings);
 
-        var files = filePaths.ToDictionary(GetFileName, d => File.ReadAllBytes(Path.Combine(directory, d)));
+        var objMaterialLibraries = CollectMaterialLibraries(objFile, directory, logger).ToList();
+        var textures = CollectAvailableTextures(objMaterialLibraries).Distinct().Where(x => !string.IsNullOrWhiteSpace(x)).Select(FileHandler.GetCleanedFileName!).ToList();
+
+        foreach (var objMaterialLibrary in objMaterialLibraries)
+        {
+            if (fileInfos.TryGetValue(objMaterialLibrary.Item1, out fileInfo))
+            {
+                fileInfo.Status = FileStatus.ReferencedMaterial;
+                fileInfo.Data = File.ReadAllBytes(Path.Combine(directory, fileInfo.Name));
+            }
+            else
+            {
+                fileInfos[objMaterialLibrary.Item1] = new FileInformation
+                {
+                    Name = objMaterialLibrary.Item1,
+                    Status = FileStatus.MissingMaterial
+                };
+            }
+        }
+
+        foreach (var texture in textures)
+        {
+            if (fileInfos.TryGetValue(texture, out fileInfo))
+            {
+                fileInfo.Status = FileStatus.ReferencedTexture;
+                fileInfo.Data = File.ReadAllBytes(Path.Combine(directory, fileInfo.Name));
+            }
+            else
+            {
+                fileInfos[texture] = new FileInformation
+                {
+                    Name = texture,
+                    Status = FileStatus.MissingTexture
+                };
+            }
+        }
 
         return new ObjModel3D
         {
-            FileName = GetFileName(filePath),
-            ReferencedMaterialLibraryFiles = objMaterialLibraries.Select(tuple => tuple.Item1).ToDictionary(d => d, d => files[d]),
-            ReferencedTextureFiles = textures.ToDictionary(d => d, d => files[d]),
-            Data = ConvertGeometry(objFile, objMaterialLibraries.Select(tuple => tuple.Item2).ToList(), files),
-            ObjFile = fileBytes
+            FileName = FileHandler.GetCleanedFileName(filePath),
+            ReferencedMaterialLibraryFiles = objMaterialLibraries
+                .Where(d => fileInfos.TryGetValue(d.Item1, out fileInfo) && fileInfo.Status == FileStatus.ReferencedMaterial)
+                .ToDictionary(d => d.Item1, d => fileInfos[d.Item1].Data!),
+            ReferencedTextureFiles = textures
+                .Where(d => fileInfos.TryGetValue(d, out fileInfo) && fileInfo.Status == FileStatus.ReferencedTexture)
+                .ToDictionary(d => d, d => fileInfos[d].Data!),
+            Data = ConvertGeometry(objFile, objMaterialLibraries, fileInfos),
+            ObjFile = fileBytes,
+            Files = fileInfos
         };
     }
 
-    private static IEnumerable<Tuple<string, ObjMaterialFile>> CollectAvailableMaterialLibraries(ObjFile objFile, string directory, ILogger? logger = null)
+    private static IEnumerable<Tuple<string, ObjMaterialFile?>> CollectMaterialLibraries(ObjFile objFile, string directory, ILogger? logger = null)
         => objFile.MaterialLibraries.Select(mtl =>
         {
             try
             {
-                mtl = GetFileName(mtl);
+                mtl = FileHandler.GetCleanedFileName(mtl);
                 var materialFile = Path.Combine(directory, mtl);
-                return Tuple.Create(mtl, ObjMaterialFile.FromFile(materialFile));
+                if (!File.Exists(materialFile))
+                {
+                    logger?.LogWarning("Material '{Name}' could not be loaded", mtl);
+                    return new Tuple<string, ObjMaterialFile?>(mtl, null);
+                }
+
+                return Tuple.Create<string, ObjMaterialFile?>(mtl, ObjMaterialFile.FromFile(materialFile));
             }
             catch (Exception e)
             {
-                // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                logger?.Log(LogLevel.Warning, e.Message);
-                return null;
+                logger?.LogWarning(e, "Material '{Name}' could not be loaded", mtl);
+                return new Tuple<string, ObjMaterialFile?>(mtl, null);
             }
-        }).Where(x => x != null)!;
+        });
 
-    private static IEnumerable<Tuple<string, ObjMaterialFile>> CollectAvailableMaterialLibraries(ILogger? logger, ObjFile objFile, IReadOnlyDictionary<string, Stream> files)
+    private static IEnumerable<Tuple<string, ObjMaterialFile?>> CollectMaterialLibraries(ObjFile objFile, IReadOnlyDictionary<string, Stream> files, ILogger? logger)
         => objFile.MaterialLibraries.Select(mtl =>
         {
             try
             {
-                mtl = GetFileName(mtl);
-                var materialFile = files[mtl];
+                mtl = FileHandler.GetCleanedFileName(mtl);
+                if (!files.TryGetValue(mtl, out var materialFile))
+                {
+                    logger?.LogWarning("Material '{Name}' could not be loaded", mtl);
+                    return new Tuple<string, ObjMaterialFile?>(mtl, null);
+                }
+
                 materialFile.Seek(0, SeekOrigin.Begin);
-                return Tuple.Create(mtl, ObjMaterialFile.FromStream(materialFile));
+                return Tuple.Create<string, ObjMaterialFile?>(mtl, ObjMaterialFile.FromStream(materialFile));
             }
             catch (Exception e)
             {
-                logger?.LogWarning(e, "Material could not be loaded");
-                return null;
+                logger?.LogWarning(e, "Material '{Name}' could not be loaded", mtl);
+                return new Tuple<string, ObjMaterialFile?>(mtl, null);
             }
-        }).Where(x => x != null)!;
+        });
 
-    private static IEnumerable<string?> CollectAvailableTextures(IEnumerable<Tuple<string, ObjMaterialFile>> objMaterials)
+    private static IEnumerable<string?> CollectAvailableTextures(IEnumerable<Tuple<string, ObjMaterialFile?>> objMaterials)
     {
-        foreach (var objMaterial in objMaterials.SelectMany(materialFile => materialFile.Item2.Materials))
+        foreach (var objMaterial in objMaterials.Where(mtl => mtl.Item2 is not null).SelectMany(materialFile => materialFile.Item2!.Materials))
         {
             yield return objMaterial?.AmbientMap?.FileName;
             yield return objMaterial?.BumpMap?.FileName;
@@ -143,10 +231,11 @@ public class ObjParser : IObjParser
         }
     }
 
-    private static ModelData ConvertGeometry(ObjFile objFile, IEnumerable<ObjMaterialFile> objMaterialFiles, IReadOnlyDictionary<string, byte[]> files)
+    private static ModelData ConvertGeometry(ObjFile objFile, IEnumerable<Tuple<string, ObjMaterialFile?>> objMaterialFiles, IReadOnlyDictionary<string, FileInformation> files)
     {
         var materials = new List<ModelMaterial>(objMaterialFiles
-            .SelectMany(file => file.Materials)
+            .Where(x => x.Item2 is not null)
+            .SelectMany(x => x.Item2!.Materials)
             .Distinct()
             .Select(x => Convert(x, files)));
         var faceGroups = objFile.Groups.Count > 0
@@ -192,7 +281,7 @@ public class ObjParser : IObjParser
         TextureCoordinateIndex = vertex.Texture
     };
 
-    private static ModelMaterial Convert(ObjMaterial objMaterial, IReadOnlyDictionary<string, byte[]> files)
+    private static ModelMaterial Convert(ObjMaterial objMaterial, IReadOnlyDictionary<string, FileInformation> files)
     {
         var material = new ModelMaterial
         {
@@ -212,51 +301,59 @@ public class ObjParser : IObjParser
 
         if (TryGetFilenameAndBytes(objMaterial.DiffuseMap, out var filename, out var content))
         {
-            material.DiffuseTextureName = filename;
             material.DiffuseTextureBytes = content;
         }
 
+        material.DiffuseTextureName = filename ?? string.Empty;
+
         if (TryGetFilenameAndBytes(objMaterial.AmbientMap, out filename, out content))
         {
-            material.AmbientTextureName = filename;
             material.AmbientTextureBytes = content;
         }
 
+        material.AmbientTextureName = filename;
+
         if (TryGetFilenameAndBytes(objMaterial.SpecularMap, out filename, out content))
         {
-            material.SpecularTextureName = filename;
             material.SpecularTextureBytes = content;
         }
 
+        material.SpecularTextureName = filename;
+
         if (TryGetFilenameAndBytes(objMaterial.EmissiveMap, out filename, out content))
         {
-            material.EmissiveTextureName = filename;
             material.EmissiveTextureBytes = content;
         }
 
+        material.EmissiveTextureName = filename;
+
         if (TryGetFilenameAndBytes(objMaterial.MetallicMap, out filename, out content))
         {
-            material.MetallicTextureName = filename;
             material.MetallicTextureBytes = content;
         }
 
+        material.MetallicTextureName = filename;
+
         if (TryGetFilenameAndBytes(objMaterial.RoughnessMap, out filename, out content))
         {
-            material.RoughnessTextureName = filename;
             material.RoughnessTextureBytes = content;
         }
 
+        material.RoughnessTextureName = filename;
+
         if (TryGetFilenameAndBytes(objMaterial.SheenMap, out filename, out content))
         {
-            material.SheenTextureName = filename;
             material.SheenTextureBytes = content;
         }
 
+        material.SheenTextureName = filename;
+
         if (TryGetFilenameAndBytes(objMaterial.Norm, out filename, out content))
         {
-            material.NormTextureName = filename;
             material.NormTextureBytes = content;
         }
+
+        material.NormTextureName = filename;
 
         if (TryGetColor(objMaterial.AmbientColor, out var color)) material.AmbientColor = color;
         if (TryGetColor(objMaterial.DiffuseColor, out color)) material.DiffuseColor = color!.Value;
@@ -265,14 +362,16 @@ public class ObjParser : IObjParser
 
         return material;
 
-        bool TryGetFilenameAndBytes(ObjMaterialMap? map, out string extractedFileName, out byte[] extractedContent)
+        bool TryGetFilenameAndBytes(ObjMaterialMap? map, out string? extractedFileName, out byte[] extractedContent)
         {
-            extractedFileName = string.Empty;
+            extractedFileName = null;
             extractedContent = [];
             if (map is null) return false;
             if (string.IsNullOrWhiteSpace(map.FileName)) return false;
             extractedFileName = map.FileName ?? string.Empty;
-            files.TryGetValue(GetFileName(extractedFileName), out extractedContent);
+            if (!files.TryGetValue(FileHandler.GetCleanedFileName(extractedFileName), out var fileInfo)) return false;
+            if (fileInfo.Data is null) return false;
+            extractedContent = fileInfo.Data!;
             return true;
         }
 

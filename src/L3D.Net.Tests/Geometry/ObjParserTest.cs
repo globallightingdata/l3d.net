@@ -5,6 +5,7 @@ using System.Numerics;
 using FluentAssertions;
 using L3D.Net.Data;
 using L3D.Net.Geometry;
+using L3D.Net.Internal.Abstract;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
@@ -558,6 +559,7 @@ public class ObjParserTest
 
         model.FileName.Should().BeEquivalentTo(Path.GetFileName(tmpFile));
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(0);
+        model.Files.Values.Should().ContainSingle(e => e.Status == FileStatus.MissingMaterial);
         model.ReferencedTextureFiles.Should().HaveCount(0);
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(0);
@@ -587,6 +589,7 @@ public class ObjParserTest
 
         model!.FileName.Should().BeEquivalentTo("textured_cube.obj");
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(0);
+        model.Files.Values.Should().ContainSingle(e => e.Status == FileStatus.MissingMaterial);
         model.ReferencedTextureFiles.Should().HaveCount(0);
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(0);
@@ -614,6 +617,7 @@ public class ObjParserTest
 
         model.FileName.Should().BeEquivalentTo(Path.GetFileName(tmpFile));
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(0);
+        model.Files.Values.Should().ContainSingle(e => e.Status == FileStatus.MissingMaterial);
         model.ReferencedTextureFiles.Should().HaveCount(0);
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(0);
@@ -643,6 +647,7 @@ public class ObjParserTest
 
         model!.FileName.Should().BeEquivalentTo("textured_cube.obj");
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(0);
+        model.Files.Values.Should().ContainSingle(e => e.Status == FileStatus.MissingMaterial);
         model.ReferencedTextureFiles.Should().HaveCount(0);
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(0);
