@@ -30,7 +30,7 @@ internal class ContainerValidator : IContainerValidator
 
         using var cache = _fileHandler.ExtractContainer(containerPath);
 
-        return ValidateCache(cache, flags).ToArray();
+        return ValidateCache(cache, flags).Select(e => e.Item1).ToArray();
     }
 
     public IEnumerable<ValidationHint> Validate(byte[] containerBytes, Validation flags)
@@ -40,7 +40,7 @@ internal class ContainerValidator : IContainerValidator
 
         using var cache = _fileHandler.ExtractContainer(containerBytes);
 
-        return ValidateCache(cache, flags).ToArray();
+        return ValidateCache(cache, flags).Select(e => e.Item1).ToArray();
     }
 
     public IEnumerable<ValidationHint> Validate(Stream containerStream, Validation flags)
@@ -50,16 +50,58 @@ internal class ContainerValidator : IContainerValidator
 
         using var cache = _fileHandler.ExtractContainer(containerStream);
 
-        return ValidateCache(cache, flags).ToArray();
+        return ValidateCache(cache, flags).Select(e => e.Item1).ToArray();
     }
 
-    private IEnumerable<ValidationHint> ValidateCache(ContainerCache? cache, Validation flags)
+    public ValidationResultContainer CreateValidationResult(string containerPath, Validation flags)
+    {
+        if (string.IsNullOrWhiteSpace(containerPath))
+            throw new ArgumentException(@"Value cannot be null or whitespace.", nameof(containerPath));
+
+        using var cache = _fileHandler.ExtractContainer(containerPath);
+        var validationHints = ValidateCache(cache, flags).ToArray();
+        return new ValidationResultContainer
+        {
+            ValidationHints = validationHints.Select(e => e.Item1).ToArray(),
+            Luminaire = validationHints.FirstOrDefault(e => e.Item2 is not null).Item2
+        };
+    }
+
+    public ValidationResultContainer CreateValidationResult(byte[] containerBytes, Validation flags)
+    {
+        if (containerBytes == null || containerBytes.LongLength == 0)
+            throw new ArgumentException(@"Value cannot be null or empty array.", nameof(containerBytes));
+
+        using var cache = _fileHandler.ExtractContainer(containerBytes);
+        var validationHints = ValidateCache(cache, flags).ToArray();
+        return new ValidationResultContainer
+        {
+            ValidationHints = validationHints.Select(e => e.Item1).ToArray(),
+            Luminaire = validationHints.FirstOrDefault(e => e.Item2 is not null).Item2
+        };
+    }
+
+    public ValidationResultContainer CreateValidationResult(Stream containerStream, Validation flags)
+    {
+        if (containerStream == null || containerStream.Length == 0)
+            throw new ArgumentException(@"Value cannot be null or empty array.", nameof(containerStream));
+
+        using var cache = _fileHandler.ExtractContainer(containerStream);
+        var validationHints = ValidateCache(cache, flags).ToArray();
+        return new ValidationResultContainer
+        {
+            ValidationHints = validationHints.Select(e => e.Item1).ToArray(),
+            Luminaire = validationHints.FirstOrDefault(e => e.Item2 is not null).Item2
+        };
+    }
+
+    private IEnumerable<(ValidationHint, Luminaire?)> ValidateCache(ContainerCache? cache, Validation flags)
     {
         if (cache == null)
         {
             if (flags.HasFlag(Validation.IsZipPackage))
             {
-                yield return new InvalidZipValidationHint();
+                yield return (new InvalidZipValidationHint(), null);
             }
 
             yield break;
@@ -69,7 +111,7 @@ internal class ContainerValidator : IContainerValidator
         {
             if (flags.HasFlag(Validation.HasStructureXml))
             {
-                yield return new StructureXmlMissingValidationHint();
+                yield return (new StructureXmlMissingValidationHint(), null);
             }
 
             yield break;
@@ -83,7 +125,7 @@ internal class ContainerValidator : IContainerValidator
 
             foreach (var validationHint in xsdValidationHints)
             {
-                yield return validationHint;
+                yield return (validationHint, null);
             }
         }
 
@@ -94,7 +136,7 @@ internal class ContainerValidator : IContainerValidator
 
         if (flags.HasFlag(Validation.IsProductValid) && luminaire == null)
         {
-            yield return new NotAL3DValidationHint();
+            yield return (new NotAL3DValidationHint(), luminaire);
             yield break;
         }
 
@@ -107,7 +149,7 @@ internal class ContainerValidator : IContainerValidator
         {
             foreach (var geometryPart in geometryParts.Where(geometryPart => geometryPart.GeometryReference.Model == null))
             {
-                yield return new MissingGeometryReferenceValidationHint(geometryPart.GeometryReference.GeometryId);
+                yield return (new MissingGeometryReferenceValidationHint(geometryPart.GeometryReference.GeometryId), luminaire);
             }
         }
 
@@ -129,23 +171,23 @@ internal class ContainerValidator : IContainerValidator
 
             foreach (var objName in listedObjNames.Except(objFileNames).Where(objName => alreadyReportedFiles.Add(objName)))
             {
-                yield return new UnusedFileValidationHint(objName);
+                yield return (new UnusedFileValidationHint(objName), luminaire);
             }
 
             foreach (var mtlName in listedMtlNames.Except(mtlNames).Where(mtlName => alreadyReportedFiles.Add(mtlName)))
             {
-                yield return new UnusedFileValidationHint(mtlName);
+                yield return (new UnusedFileValidationHint(mtlName), luminaire);
             }
 
             foreach (var textureName in listedTextureNames.Except(textureNames).Where(textureName => alreadyReportedFiles.Add(textureName)))
             {
-                yield return new UnusedFileValidationHint(textureName);
+                yield return (new UnusedFileValidationHint(textureName), luminaire);
             }
 
             foreach (var fileInformation in listedModels.SelectMany(e => e.Files))
             {
                 if (fileInformation.Value.Status is FileStatus.Unused && alreadyReportedFiles.Add(fileInformation.Key))
-                    yield return new UnusedFileValidationHint(fileInformation.Key);
+                    yield return (new UnusedFileValidationHint(fileInformation.Key), luminaire);
             }
         }
 
@@ -154,7 +196,7 @@ internal class ContainerValidator : IContainerValidator
             foreach (var listedMtlName in listedModels.SelectMany(x => x.Files)
                          .Where(file => file.Value.Status is FileStatus.MissingMaterial))
             {
-                yield return new MissingMaterialValidationHint(listedMtlName.Key);
+                yield return (new MissingMaterialValidationHint(listedMtlName.Key), luminaire);
             }
         }
 
@@ -163,7 +205,7 @@ internal class ContainerValidator : IContainerValidator
             foreach (var listedTextureName in listedModels.SelectMany(x => x.Files)
                          .Where(file => file.Value.Status is FileStatus.MissingTexture))
             {
-                yield return new MissingTextureValidationHint(listedTextureName.Key);
+                yield return (new MissingTextureValidationHint(listedTextureName.Key), luminaire);
             }
         }
 
@@ -171,36 +213,31 @@ internal class ContainerValidator : IContainerValidator
 
         foreach (var validationHint in allParts.SelectMany(part => ValidatePart(part, allParts, flags)))
         {
-            yield return validationHint;
+            yield return (validationHint, luminaire);
         }
 
         if (flags.HasFlag(Validation.NameConvention))
         {
             foreach (var duplicatedName in allParts.Select(x => x.Name).GroupBy(x => x).Where(group => group.Count() > 1).Select(group => group.Key))
             {
-                yield return new L3DContentValidationHint(
-                    $"{nameof(Part.Name)} of {nameof(Part)} '{duplicatedName}' has be unique");
+                yield return (new L3DContentValidationHint($"{nameof(Part.Name)} of {nameof(Part)} '{duplicatedName}' has be unique"), luminaire);
             }
         }
 
         if (flags.HasFlag(Validation.MandatoryField))
         {
             if (string.IsNullOrWhiteSpace(luminaire.Header.CreatedWithApplication))
-                yield return new L3DContentValidationHint(
-                    $"{nameof(Header.CreatedWithApplication)} of {nameof(Header)} must not be null or whitespace");
+                yield return (new L3DContentValidationHint($"{nameof(Header.CreatedWithApplication)} of {nameof(Header)} must not be null or whitespace"), luminaire);
 
             if (luminaire.GeometryDefinitions.Count == 0)
-                yield return new L3DContentValidationHint(
-                    $"{nameof(Luminaire.GeometryDefinitions)} of {nameof(Luminaire)} must not be empty");
+                yield return (new L3DContentValidationHint($"{nameof(Luminaire.GeometryDefinitions)} of {nameof(Luminaire)} must not be empty"), luminaire);
 
             if (luminaire.Parts.Count == 0)
-                yield return new L3DContentValidationHint(
-                    $"{nameof(Luminaire.Parts)} of {nameof(Luminaire)} must not be empty");
+                yield return (new L3DContentValidationHint($"{nameof(Luminaire.Parts)} of {nameof(Luminaire)} must not be empty"), luminaire);
         }
 
         if (flags.HasFlag(Validation.HasLightEmittingPart) && !allParts.OfType<LightEmittingPart>().Any())
-            yield return new L3DContentValidationHint(
-                $"{nameof(Luminaire.Parts)} of {nameof(Luminaire)} must not be empty");
+            yield return (new L3DContentValidationHint($"{nameof(Luminaire.Parts)} of {nameof(Luminaire)} must not be empty"), luminaire);
     }
 
     private static IEnumerable<ValidationHint> ValidatePart(Part part, Part[] allParts, Validation flags) => part switch

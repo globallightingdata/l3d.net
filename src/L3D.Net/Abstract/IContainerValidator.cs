@@ -10,4 +10,10 @@ internal interface IContainerValidator
     IEnumerable<ValidationHint> Validate(byte[] containerBytes, Validation flags);
 
     IEnumerable<ValidationHint> Validate(Stream containerStream, Validation flags);
+
+    ValidationResultContainer CreateValidationResult(string containerPath, Validation flags);
+
+    ValidationResultContainer CreateValidationResult(byte[] containerBytes, Validation flags);
+
+    ValidationResultContainer CreateValidationResult(Stream containerStream, Validation flags);
 }
