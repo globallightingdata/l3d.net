@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using FluentAssertions;
@@ -77,10 +78,14 @@ public class XmlValidatorTests
         result.Should().NotBeEmpty();
     }
 
-    private static IEnumerable<string> GetValidTestFiles()
+    private static IEnumerable<TestCaseData> GetValidTestFiles()
     {
         Setup.Initialize();
-        return Setup.ExampleXmlFiles.Concat(Setup.ValidVersionXmlFiles);
+        foreach (var file in Setup.ExampleXmlFiles.Concat(Setup.ValidVersionXmlFiles))
+        {
+            yield return new TestCaseData(file)
+                .SetArgDisplayNames(file.Replace(Setup.TestDataDirectory, "", StringComparison.Ordinal));
+        }
     }
 
     [Test]
