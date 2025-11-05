@@ -657,7 +657,7 @@ public partial class ContainerValidatorTests
         MockLuminaireHasInvalidAxisRotations(context);
 
         var result = CreateValidationResultContainer(containerTypeToTest, context, Validation.MinMaxRestriction);
-        result.ValidationHints.Should().Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(6);
+        result.ValidationHints.Should().Contain(d => d.Message == ErrorMessages.InvalidL3DContent).And.HaveCount(5);
     }
 
     [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]

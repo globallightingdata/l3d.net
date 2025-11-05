@@ -26,7 +26,7 @@ internal class ContainerValidator : IContainerValidator
     public IEnumerable<ValidationHint> Validate(string containerPath, Validation flags)
     {
         if (string.IsNullOrWhiteSpace(containerPath))
-            throw new ArgumentException(@"Value cannot be null or whitespace.", nameof(containerPath));
+            throw new ArgumentException("Value cannot be null or whitespace.", nameof(containerPath));
 
         using var cache = _fileHandler.ExtractContainer(containerPath);
 
@@ -36,7 +36,7 @@ internal class ContainerValidator : IContainerValidator
     public IEnumerable<ValidationHint> Validate(byte[] containerBytes, Validation flags)
     {
         if (containerBytes == null || containerBytes.LongLength == 0)
-            throw new ArgumentException(@"Value cannot be null or empty array.", nameof(containerBytes));
+            throw new ArgumentException("Value cannot be null or empty array.", nameof(containerBytes));
 
         using var cache = _fileHandler.ExtractContainer(containerBytes);
 
@@ -46,7 +46,7 @@ internal class ContainerValidator : IContainerValidator
     public IEnumerable<ValidationHint> Validate(Stream containerStream, Validation flags)
     {
         if (containerStream == null || containerStream.Length == 0)
-            throw new ArgumentException(@"Value cannot be null or empty array.", nameof(containerStream));
+            throw new ArgumentException("Value cannot be null or empty array.", nameof(containerStream));
 
         using var cache = _fileHandler.ExtractContainer(containerStream);
 
@@ -56,7 +56,7 @@ internal class ContainerValidator : IContainerValidator
     public ValidationResultContainer CreateValidationResult(string containerPath, Validation flags)
     {
         if (string.IsNullOrWhiteSpace(containerPath))
-            throw new ArgumentException(@"Value cannot be null or whitespace.", nameof(containerPath));
+            throw new ArgumentException("Value cannot be null or whitespace.", nameof(containerPath));
 
         using var cache = _fileHandler.ExtractContainer(containerPath);
         var validationHints = ValidateCache(cache, flags).ToArray();
@@ -70,7 +70,7 @@ internal class ContainerValidator : IContainerValidator
     public ValidationResultContainer CreateValidationResult(byte[] containerBytes, Validation flags)
     {
         if (containerBytes == null || containerBytes.LongLength == 0)
-            throw new ArgumentException(@"Value cannot be null or empty array.", nameof(containerBytes));
+            throw new ArgumentException("Value cannot be null or empty array.", nameof(containerBytes));
 
         using var cache = _fileHandler.ExtractContainer(containerBytes);
         var validationHints = ValidateCache(cache, flags).ToArray();
@@ -84,7 +84,7 @@ internal class ContainerValidator : IContainerValidator
     public ValidationResultContainer CreateValidationResult(Stream containerStream, Validation flags)
     {
         if (containerStream == null || containerStream.Length == 0)
-            throw new ArgumentException(@"Value cannot be null or empty array.", nameof(containerStream));
+            throw new ArgumentException("Value cannot be null or empty array.", nameof(containerStream));
 
         using var cache = _fileHandler.ExtractContainer(containerStream);
         var validationHints = ValidateCache(cache, flags).ToArray();
@@ -345,42 +345,28 @@ internal class ContainerValidator : IContainerValidator
         if (TryValidatePartName(jointPart, flags, out var nameHint))
             yield return nameHint!;
 
-        if (flags.HasFlag(Validation.MinMaxRestriction) && jointPart.XAxis != null)
+        if (flags.HasFlag(Validation.MinMaxRestriction))
         {
-            if (jointPart.XAxis.Max <= jointPart.XAxis.Min)
-                yield return new L3DContentValidationHint(
-                    $"{nameof(AxisRotation.Max)} of {nameof(JointPart.XAxis)} '{jointPart.Name}' must be greater than {nameof(AxisRotation.Min)}");
-
-            if (jointPart.XAxis.Step <= 0)
-                yield return new L3DContentValidationHint(
-                    $"{nameof(AxisRotation.Step)} of {nameof(JointPart.XAxis)} '{jointPart.Name}' must be greater than 0");
-        }
-
-        if (flags.HasFlag(Validation.MinMaxRestriction) && jointPart.YAxis != null)
-        {
-            if (jointPart.YAxis.Max <= jointPart.YAxis.Min)
-                yield return new L3DContentValidationHint(
-                    $"{nameof(AxisRotation.Max)} of {nameof(JointPart.YAxis)} '{jointPart.Name}' must be greater than {nameof(AxisRotation.Min)}");
-
-            if (jointPart.YAxis.Step <= 0)
-                yield return new L3DContentValidationHint(
-                    $"{nameof(AxisRotation.Step)} of {nameof(JointPart.YAxis)} '{jointPart.Name}' must be greater than 0");
-        }
-
-        if (flags.HasFlag(Validation.MinMaxRestriction) && jointPart.ZAxis != null)
-        {
-            if (jointPart.ZAxis.Max <= jointPart.ZAxis.Min)
-                yield return new L3DContentValidationHint(
-                    $"{nameof(AxisRotation.Max)} of {nameof(JointPart.ZAxis)} '{jointPart.Name}' must be greater than {nameof(AxisRotation.Min)}");
-
-            if (jointPart.ZAxis.Step <= 0)
-                yield return new L3DContentValidationHint(
-                    $"{nameof(AxisRotation.Step)} of {nameof(JointPart.ZAxis)} '{jointPart.Name}' must be greater than 0");
+            foreach (var validationHint in ValidateAxisRotation(jointPart.XAxis, nameof(JointPart.XAxis), jointPart))
+                yield return validationHint;
+            foreach (var validationHint in ValidateAxisRotation(jointPart.YAxis, nameof(JointPart.YAxis), jointPart))
+                yield return validationHint;
+            foreach (var validationHint in ValidateAxisRotation(jointPart.ZAxis, nameof(JointPart.ZAxis), jointPart))
+                yield return validationHint;
         }
 
         if (flags.HasFlag(Validation.MandatoryField) && !jointPart.Geometries.Any())
-            yield return new L3DContentValidationHint(
-                $"{nameof(JointPart.Geometries)} of {nameof(JointPart)} '{jointPart.Name}' must not be empty");
+            yield return new L3DContentValidationHint($"{nameof(JointPart.Geometries)} of {nameof(JointPart)} '{jointPart.Name}' must not be empty");
+    }
+
+    private static IEnumerable<ValidationHint> ValidateAxisRotation(AxisRotation? axisRotation, string axisName, JointPart jointPart)
+    {
+        if (axisRotation is null) yield break;
+        if (axisRotation.Max <= axisRotation.Min)
+            yield return new L3DContentValidationHint($"{nameof(AxisRotation.Max)} of {axisName} '{jointPart.Name}' must be greater than {nameof(AxisRotation.Min)}");
+
+        if (axisRotation.Step < 0)
+            yield return new L3DContentValidationHint($"{nameof(AxisRotation.Step)} of {axisName} '{jointPart.Name}' must be greater than or equal to 0");
     }
 
     private static IEnumerable<ValidationHint> ValidateLightEmittingPart(LightEmittingPart lightEmittingPart, Validation flags)
