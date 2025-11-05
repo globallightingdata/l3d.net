@@ -12,10 +12,13 @@ namespace L3D.Net.Tests.XML.V0_11_0;
 [TestFixture]
 public class XmlDtoSerializerTests
 {
+    private XmlDtoSerializer _serializer = null!;
+
     [SetUp]
     public void SetUp()
     {
         Setup.Initialize();
+        _serializer = new XmlDtoSerializer();
     }
 
     private static IEnumerable<Stream> ExampleFiles()
@@ -27,12 +30,10 @@ public class XmlDtoSerializerTests
     [Test]
     public void Serialize_ShouldThrowArgumentNullException_WhenDtoIsNull()
     {
-        var serializer = new XmlDtoSerializer();
-
         var action = () =>
         {
             using var ms = new MemoryStream();
-            serializer.Serialize(null!, ms);
+            _serializer.Serialize(null!, ms);
         };
 
         action.Should().Throw<ArgumentNullException>();
@@ -41,9 +42,7 @@ public class XmlDtoSerializerTests
     [Test]
     public void Serialize_ShouldThrowArgumentException_WhenStreamIsNullOrEmpty()
     {
-        var serializer = new XmlDtoSerializer();
-
-        var action = () => serializer.Serialize(new LuminaireDto(), null!);
+        var action = () => _serializer.Serialize(new LuminaireDto(), null!);
 
         action.Should().Throw<ArgumentException>();
     }
@@ -52,14 +51,12 @@ public class XmlDtoSerializerTests
     [TestCaseSource(nameof(ExampleFiles))]
     public void ExampleTest(Stream stream)
     {
-        var serializer = new XmlDtoSerializer();
-
-        var dto = serializer.Deserialize(stream);
+        var dto = _serializer.Deserialize(stream);
 
         stream.Seek(0, SeekOrigin.Begin);
 
         using var ms = new MemoryStream();
-        serializer.Serialize(dto, ms);
+        _serializer.Serialize(dto, ms);
         ms.Seek(0, SeekOrigin.Begin);
 
         var exampleDocument = XDocument.Load(stream);

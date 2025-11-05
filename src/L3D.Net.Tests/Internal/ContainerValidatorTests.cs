@@ -54,16 +54,14 @@ public partial class ContainerValidatorTests
 
     private static IEnumerable<ContainerTypeToTest> ContainerTypeToTestEnumValues => Enum.GetValues<ContainerTypeToTest>();
 
-    private static IEnumerable<string?> EmptyStringValues => [null, "", string.Empty, " ", "    "];
-
     private static IEnumerable<TestCaseData> ContainerTypeToTestEnumValuesAndEmptyStrings()
     {
-        foreach (var emptyString in EmptyStringValues)
+        foreach (var containerTypeToTest in Enum.GetValues<ContainerTypeToTest>())
         {
-            foreach (var containerTypeToTest in Enum.GetValues<ContainerTypeToTest>())
-            {
-                yield return new TestCaseData(containerTypeToTest, emptyString);
-            }
+            yield return new TestCaseData(containerTypeToTest, null).SetArgDisplayNames(containerTypeToTest.ToString("G"), "<null>");
+            yield return new TestCaseData(containerTypeToTest, string.Empty).SetArgDisplayNames(containerTypeToTest.ToString("G"), "");
+            yield return new TestCaseData(containerTypeToTest, " ").SetArgDisplayNames(containerTypeToTest.ToString("G"), " ");
+            yield return new TestCaseData(containerTypeToTest, "    ").SetArgDisplayNames(containerTypeToTest.ToString("G"), "    ");
         }
     }
 

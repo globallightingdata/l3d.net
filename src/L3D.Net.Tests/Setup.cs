@@ -12,7 +12,12 @@ namespace L3D.Net.Tests;
 public static class Setup
 {
     private static bool _isInitialized;
+
+#if NET9_0_OR_GREATER
+    private static readonly System.Threading.Lock Lock = new();
+#else
     private static readonly object Lock = new();
+#endif
 
     private static readonly MemoryStream Stream = new();
 

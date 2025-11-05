@@ -154,17 +154,11 @@ internal class ContainerValidator : IContainerValidator
         }
 
         var geometryReferences = geometryParts.Select(x => x.GeometryReference).Where(x => x != null).ToArray();
-        IModel3D[] models = geometryReferences.Where(x => x.Model != null).Select(x => x.Model).ToArray()!;
-        var mtlNames = models.Where(x => x.Data is not null).SelectMany(x => x.ReferencedMaterialLibraryFiles.Keys).ToArray();
-        var textureNames = models.Where(x => x.Data is not null).SelectMany(x => x.Data!.GetReferencedTextureFiles()).ToArray();
-
-        var geometryDefinitions = luminaire.GeometryDefinitions;
-        IModel3D[] listedModels = geometryDefinitions.Where(x => x.Model != null).Select(x => x.Model).ToArray()!;
-        var listedMtlNames = listedModels.SelectMany(x => x.ReferencedMaterialLibraryFiles.Keys).ToArray();
-        var listedTextureNames = listedModels.SelectMany(x => x.ReferencedTextureFiles.Keys).ToArray();
+        var models = geometryReferences.Where(x => x.Model != null).Select(x => x.Model!).ToArray();
 
         if (flags.HasFlag(Validation.AreAllFileDefinitionsUsed))
         {
+            var geometryDefinitions = luminaire.GeometryDefinitions;
             var objFileNames = geometryReferences.Select(x => x.FileName);
             var listedObjNames = geometryDefinitions.Select(x => x.FileName);
             var alreadyReportedFiles = new HashSet<string>(StringComparer.Ordinal);
@@ -174,11 +168,17 @@ internal class ContainerValidator : IContainerValidator
                 yield return (new UnusedFileValidationHint(objName), luminaire);
             }
 
+            var listedModels = geometryDefinitions.Where(x => x.Model != null).Select(x => x.Model!).ToArray();
+
+            var listedMtlNames = listedModels.SelectMany(x => x.ReferencedMaterialLibraryFiles.Keys);
+            var mtlNames = models.Where(x => x.Data is not null).SelectMany(x => x.ReferencedMaterialLibraryFiles.Keys);
             foreach (var mtlName in listedMtlNames.Except(mtlNames).Where(mtlName => alreadyReportedFiles.Add(mtlName)))
             {
                 yield return (new UnusedFileValidationHint(mtlName), luminaire);
             }
 
+            var listedTextureNames = listedModels.SelectMany(x => x.ReferencedTextureFiles.Keys);
+            var textureNames = models.Where(x => x.Data is not null).SelectMany(x => x.Data!.GetReferencedTextureFiles());
             foreach (var textureName in listedTextureNames.Except(textureNames).Where(textureName => alreadyReportedFiles.Add(textureName)))
             {
                 yield return (new UnusedFileValidationHint(textureName), luminaire);
@@ -193,7 +193,7 @@ internal class ContainerValidator : IContainerValidator
 
         if (flags.HasFlag(Validation.HasAllMaterials))
         {
-            foreach (var listedMtlName in listedModels.SelectMany(x => x.Files)
+            foreach (var listedMtlName in models.SelectMany(x => x.Files)
                          .Where(file => file.Value.Status is FileStatus.MissingMaterial))
             {
                 yield return (new MissingMaterialValidationHint(listedMtlName.Key), luminaire);
@@ -202,7 +202,7 @@ internal class ContainerValidator : IContainerValidator
 
         if (flags.HasFlag(Validation.HasAllTextures))
         {
-            foreach (var listedTextureName in listedModels.SelectMany(x => x.Files)
+            foreach (var listedTextureName in models.SelectMany(x => x.Files)
                          .Where(file => file.Value.Status is FileStatus.MissingTexture))
             {
                 yield return (new MissingTextureValidationHint(listedTextureName.Key), luminaire);
@@ -283,7 +283,18 @@ internal class ContainerValidator : IContainerValidator
         if (TryValidatePartName(lightEmittingSurfacePart, flags, out var nameHint))
             yield return nameHint!;
 
-        foreach (var faceAssignment in lightEmittingSurfacePart.FaceAssignments)
+        foreach (var validationHint in ValidateFaceAssignments(lightEmittingSurfacePart.FaceAssignments, flags, lightEmittingSurfacePart, model))
+            yield return validationHint;
+
+        foreach (var validationHint in ValidateLightEmittingPartIntensityMapping(lightEmittingSurfacePart, flags, leos))
+            yield return validationHint;
+    }
+
+    private static IEnumerable<ValidationHint> ValidateFaceAssignments(List<FaceAssignment> faceAssignments, Validation flags, LightEmittingSurfacePart lightEmittingSurfacePart,
+        IModel3D? model)
+    {
+        if (!flags.HasFlag(Validation.MinMaxRestriction) && !flags.HasFlag(Validation.FaceReferences)) yield break;
+        foreach (var faceAssignment in faceAssignments)
         {
             if (flags.HasFlag(Validation.MinMaxRestriction) && faceAssignment.GroupIndex < 0)
                 yield return new L3DContentValidationHint(
@@ -304,35 +315,52 @@ internal class ContainerValidator : IContainerValidator
                 }
                 case FaceRangeAssignment faceRangeAssignment:
                 {
-                    if (flags.HasFlag(Validation.MinMaxRestriction) && faceRangeAssignment.FaceIndexBegin < 0)
-                        yield return new L3DContentValidationHint(
-                            $"{nameof(FaceRangeAssignment.FaceIndexBegin)} of {nameof(FaceRangeAssignment)} '{lightEmittingSurfacePart.Name}' must be greater equals 0");
-
-                    if (flags.HasFlag(Validation.MinMaxRestriction) && faceRangeAssignment.FaceIndexEnd <= faceRangeAssignment.FaceIndexBegin)
-                        yield return new L3DContentValidationHint(
-                            $"{nameof(FaceRangeAssignment.FaceIndexEnd)} of {nameof(FaceRangeAssignment)} '{lightEmittingSurfacePart.Name}' must be greater than {nameof(FaceRangeAssignment.FaceIndexBegin)}");
-
-                    for (var faceIndex = faceRangeAssignment.FaceIndexBegin; faceIndex <= faceRangeAssignment.FaceIndexEnd; faceIndex++)
+                    if (flags.HasFlag(Validation.MinMaxRestriction))
                     {
-                        if (flags.HasFlag(Validation.FaceReferences) && !(model?.IsFaceIndexValid(faceRangeAssignment.GroupIndex, faceIndex) ?? false))
+                        if (faceRangeAssignment.FaceIndexBegin < 0)
                             yield return new L3DContentValidationHint(
-                                $"{nameof(FaceRangeAssignment.GroupIndex)}, {nameof(faceIndex)} of {nameof(FaceRangeAssignment)} '{lightEmittingSurfacePart.Name}' must be defined within the parent model definition");
+                                $"{nameof(FaceRangeAssignment.FaceIndexBegin)} of {nameof(FaceRangeAssignment)} '{lightEmittingSurfacePart.Name}' must be greater equals 0");
+
+                        if (faceRangeAssignment.FaceIndexEnd <= faceRangeAssignment.FaceIndexBegin)
+                            yield return new L3DContentValidationHint(
+                                $"{nameof(FaceRangeAssignment.FaceIndexEnd)} of {nameof(FaceRangeAssignment)} '{lightEmittingSurfacePart.Name}' must be greater than {nameof(FaceRangeAssignment.FaceIndexBegin)}");
                     }
+
+                    if (flags.HasFlag(Validation.FaceReferences))
+                    {
+                        for (var faceIndex = faceRangeAssignment.FaceIndexBegin; faceIndex <= faceRangeAssignment.FaceIndexEnd; faceIndex++)
+                        {
+                            if (!(model?.IsFaceIndexValid(faceRangeAssignment.GroupIndex, faceIndex) ?? false))
+                                yield return new L3DContentValidationHint(
+                                    $"{nameof(FaceRangeAssignment.GroupIndex)}, {nameof(faceIndex)} of {nameof(FaceRangeAssignment)} '{lightEmittingSurfacePart.Name}' must be defined within the parent model definition");
+                        }
+                    }
+
 
                     break;
                 }
             }
         }
+    }
+
+    private static IEnumerable<ValidationHint> ValidateLightEmittingPartIntensityMapping(LightEmittingSurfacePart lightEmittingSurfacePart, Validation flags,
+        LightEmittingPart[] leos)
+    {
+        if (!(flags.HasFlag(Validation.NameReferences) || flags.HasFlag(Validation.MinMaxRestriction)))
+            yield break;
 
         foreach (var intensityMapping in lightEmittingSurfacePart.LightEmittingPartIntensityMapping)
         {
-            if (flags.HasFlag(Validation.NameReferences) && string.IsNullOrWhiteSpace(intensityMapping.Key))
-                yield return new L3DContentValidationHint(
-                    $"{nameof(LightEmittingSurfacePart.LightEmittingPartIntensityMapping)}.[{intensityMapping.Key}] of {nameof(LightEmittingSurfacePart)} '{lightEmittingSurfacePart.Name}' must not be null or whitespace");
+            if (flags.HasFlag(Validation.NameReferences))
+            {
+                if (string.IsNullOrWhiteSpace(intensityMapping.Key))
+                    yield return new L3DContentValidationHint(
+                        $"{nameof(LightEmittingSurfacePart.LightEmittingPartIntensityMapping)}.[{intensityMapping.Key}] of {nameof(LightEmittingSurfacePart)} '{lightEmittingSurfacePart.Name}' must not be null or whitespace");
 
-            if (flags.HasFlag(Validation.NameReferences) && leos.All(d => !string.Equals(d.Name, intensityMapping.Key, StringComparison.Ordinal)))
-                yield return new L3DContentValidationHint(
-                    $"{nameof(LightEmittingSurfacePart.LightEmittingPartIntensityMapping)}.[{intensityMapping.Key}] of {nameof(LightEmittingSurfacePart)} '{lightEmittingSurfacePart.Name}' must be defined in any {nameof(LightEmittingPart)}.{nameof(LightEmittingPart.Name)}");
+                if (leos.All(d => !string.Equals(d.Name, intensityMapping.Key, StringComparison.Ordinal)))
+                    yield return new L3DContentValidationHint(
+                        $"{nameof(LightEmittingSurfacePart.LightEmittingPartIntensityMapping)}.[{intensityMapping.Key}] of {nameof(LightEmittingSurfacePart)} '{lightEmittingSurfacePart.Name}' must be defined in any {nameof(LightEmittingPart)}.{nameof(LightEmittingPart.Name)}");
+            }
 
             if (flags.HasFlag(Validation.MinMaxRestriction) && intensityMapping.Value is < 0 or > 1)
                 yield return new L3DContentValidationHint(
@@ -379,18 +407,14 @@ internal class ContainerValidator : IContainerValidator
 
         switch (lightEmittingPart.Shape)
         {
-            case Circle circle:
-                if (circle.Diameter <= 0)
-                    yield return new L3DContentValidationHint(
-                        $"{nameof(Circle.Diameter)} of {nameof(LightEmittingPart.Shape)} '{lightEmittingPart.Name}' must be greater than 0");
+            case Circle {Diameter: <= 0}:
+                yield return new L3DContentValidationHint($"{nameof(Circle.Diameter)} of {nameof(LightEmittingPart.Shape)} '{lightEmittingPart.Name}' must be greater than 0");
                 break;
             case Rectangle rectangle:
                 if (rectangle.SizeX <= 0)
-                    yield return new L3DContentValidationHint(
-                        $"{nameof(Rectangle.SizeX)} of {nameof(LightEmittingPart.Shape)} '{lightEmittingPart.Name}' must be greater than 0");
+                    yield return new L3DContentValidationHint($"{nameof(Rectangle.SizeX)} of {nameof(LightEmittingPart.Shape)} '{lightEmittingPart.Name}' must be greater than 0");
                 if (rectangle.SizeY <= 0)
-                    yield return new L3DContentValidationHint(
-                        $"{nameof(Rectangle.SizeY)} of {nameof(LightEmittingPart.Shape)} '{lightEmittingPart.Name}' must be greater than 0");
+                    yield return new L3DContentValidationHint($"{nameof(Rectangle.SizeY)} of {nameof(LightEmittingPart.Shape)} '{lightEmittingPart.Name}' must be greater than 0");
                 break;
         }
     }
@@ -411,7 +435,6 @@ internal class ContainerValidator : IContainerValidator
         {
             yield return new L3DContentValidationHint(
                 $"{nameof(GeometryPart.GeometryReference.GeometryId)} of {nameof(GeometryPart.GeometryReference)} '{geometryPart.Name}' must be not null or whitespace");
-            yield break;
         }
 
         if (geometryPart.GeometryReference.Model == null)
