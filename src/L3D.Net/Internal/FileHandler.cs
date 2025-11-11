@@ -17,6 +17,17 @@ internal class FileHandler : IFileHandler
 {
     public static readonly FileHandler Instance = new();
 
+    internal static string GetCleanedFileName(string path)
+    {
+        var stage1 = path.Split('\\').LastOrDefault();
+        if (string.IsNullOrEmpty(stage1))
+            return path;
+        var stage2 = stage1.Split('/').LastOrDefault();
+        if (string.IsNullOrEmpty(stage2))
+            return path;
+        return stage2;
+    }
+
     public void CreateContainerFile(ContainerCache cache, string containerPath)
     {
         using var memoryStream = CreateL3DStream(cache);
@@ -192,12 +203,14 @@ internal class FileHandler : IFileHandler
 
         foreach (var materialLibraryFile in model3D.ReferencedMaterialLibraryFiles)
         {
-            CopyFile(materialLibraryFile.Key, materialLibraryFile.Value, geometryId, cache);
+            if (materialLibraryFile.Value is {Length: > 0})
+                CopyFile(materialLibraryFile.Key, materialLibraryFile.Value, geometryId, cache);
         }
 
         foreach (var textureFile in model3D.ReferencedTextureFiles)
         {
-            CopyFile(textureFile.Key, textureFile.Value, geometryId, cache);
+            if (textureFile.Value is {Length: > 0})
+                CopyFile(textureFile.Key, textureFile.Value, geometryId, cache);
         }
     }
 

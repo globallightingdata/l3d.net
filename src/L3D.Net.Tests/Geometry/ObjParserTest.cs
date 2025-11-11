@@ -5,6 +5,7 @@ using System.Numerics;
 using FluentAssertions;
 using L3D.Net.Data;
 using L3D.Net.Geometry;
+using L3D.Net.Internal.Abstract;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
@@ -14,6 +15,22 @@ namespace L3D.Net.Tests.Geometry;
 [TestFixture]
 public class ObjParserTest
 {
+    private string _tempDir = null!;
+
+    [SetUp]
+    public void Init()
+    {
+        _tempDir = Path.Combine(Path.GetTempPath(), GetType().Name);
+        if (!Directory.Exists(_tempDir)) Directory.CreateDirectory(_tempDir);
+    }
+
+    [TearDown]
+    public void Cleanup()
+    {
+        if (Directory.Exists(_tempDir))
+            Directory.Delete(_tempDir, true);
+    }
+
     [Test]
     public void Parse_ShouldParseTwoGroupsObjCorrectly()
     {
@@ -549,7 +566,7 @@ public class ObjParserTest
     {
         var examplePath = Path.Combine(Setup.ExamplesDirectory, "example_008");
         var objPath = Path.Combine(examplePath, "cube", "textured_cube.obj");
-        var tmpFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        var tmpFile = Path.Combine(_tempDir, Path.GetRandomFileName());
         File.Copy(objPath, tmpFile);
 
         var parser = new ObjParser();
@@ -558,6 +575,7 @@ public class ObjParserTest
 
         model.FileName.Should().BeEquivalentTo(Path.GetFileName(tmpFile));
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(0);
+        model.Files.Values.Should().ContainSingle(e => e.Status == FileStatus.MissingMaterial);
         model.ReferencedTextureFiles.Should().HaveCount(0);
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(0);
@@ -587,6 +605,7 @@ public class ObjParserTest
 
         model!.FileName.Should().BeEquivalentTo("textured_cube.obj");
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(0);
+        model.Files.Values.Should().ContainSingle(e => e.Status == FileStatus.MissingMaterial);
         model.ReferencedTextureFiles.Should().HaveCount(0);
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(0);
@@ -605,7 +624,7 @@ public class ObjParserTest
     {
         var examplePath = Path.Combine(Setup.ExamplesDirectory, "example_011");
         var objPath = Path.Combine(examplePath, "cube", "textured_cube.obj");
-        var tmpFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        var tmpFile = Path.Combine(_tempDir, Path.GetRandomFileName());
         File.Copy(objPath, tmpFile);
 
         var parser = new ObjParser();
@@ -614,6 +633,7 @@ public class ObjParserTest
 
         model.FileName.Should().BeEquivalentTo(Path.GetFileName(tmpFile));
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(0);
+        model.Files.Values.Should().ContainSingle(e => e.Status == FileStatus.MissingMaterial);
         model.ReferencedTextureFiles.Should().HaveCount(0);
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(0);
@@ -643,6 +663,7 @@ public class ObjParserTest
 
         model!.FileName.Should().BeEquivalentTo("textured_cube.obj");
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(0);
+        model.Files.Values.Should().ContainSingle(e => e.Status == FileStatus.MissingMaterial);
         model.ReferencedTextureFiles.Should().HaveCount(0);
         model.Data!.FaceGroups.Should().HaveCount(1);
         model.Data.Materials.Should().HaveCount(0);

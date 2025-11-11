@@ -1468,4 +1468,120 @@ public static class ExamplesExtensions
 
         return Resolver.Resolve(luminaire, cache)!;
     }
+
+    public static Luminaire BuildExample013(this Luminaire luminaire)
+    {
+        var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_013");
+        var cubeObjPath = Path.Combine(exampleDirectory, "cube", "textured_cube.obj");
+        var cache = exampleDirectory.ToCache();
+
+        luminaire.Header = new Header
+        {
+            CreatedWithApplication = "Example-Tool",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
+            CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
+        };
+
+        var baseDefinition = CreateFileDefinition("cube", cubeObjPath, GeometricUnits.m, cache);
+
+        luminaire.GeometryDefinitions = [baseDefinition];
+
+        luminaire.Parts =
+        [
+            new()
+            {
+                Name = "luminaire",
+                GeometryReference = baseDefinition,
+                LightEmittingObjects =
+                [
+                    new(new Rectangle
+                    {
+                        SizeX = 0.5,
+                        SizeY = 0.25
+                    })
+                    {
+                        Name = "leo"
+                    }
+                ],
+                LightEmittingSurfaces =
+                [
+                    new()
+                    {
+                        Name = "les",
+                        FaceAssignments =
+                        [
+                            new SingleFaceAssignment
+                            {
+                                FaceIndex = 3
+                            }
+                        ],
+                        LightEmittingPartIntensityMapping = new Dictionary<string, double>
+                        {
+                            ["leo"] = 1
+                        }
+                    }
+                ]
+            }
+        ];
+
+        return Resolver.Resolve(luminaire, cache)!;
+    }
+
+    public static Luminaire BuildExample014(this Luminaire luminaire)
+    {
+        var exampleDirectory = Path.Combine(Setup.ExamplesDirectory, "example_014");
+        var cubeObjPath = Path.Combine(exampleDirectory, "cube", "textured_cube.obj");
+        var cache = exampleDirectory.ToCache();
+
+        luminaire.Header = new Header
+        {
+            CreatedWithApplication = "Example-Tool",
+            FormatVersion = new FormatVersion {Major = 0, Minor = 11},
+            CreationTimeCode = new DateTime(2021, 03, 03, 10, 10, 10, DateTimeKind.Utc)
+        };
+
+        var baseDefinition = CreateFileDefinition("cube", cubeObjPath, GeometricUnits.m, cache);
+
+        luminaire.GeometryDefinitions = [baseDefinition];
+
+        luminaire.Parts =
+        [
+            new()
+            {
+                Name = "luminaire",
+                GeometryReference = baseDefinition,
+                LightEmittingObjects =
+                [
+                    new(new Rectangle
+                    {
+                        SizeX = 0.5,
+                        SizeY = 0.25
+                    })
+                    {
+                        Name = "leo"
+                    }
+                ],
+                LightEmittingSurfaces =
+                [
+                    new()
+                    {
+                        Name = "les",
+                        FaceAssignments =
+                        [
+                            new SingleFaceAssignment
+                            {
+                                FaceIndex = 3
+                            }
+                        ],
+                        LightEmittingPartIntensityMapping = new Dictionary<string, double>
+                        {
+                            ["leo"] = 1
+                        }
+                    }
+                ]
+            }
+        ];
+
+        return Resolver.Resolve(luminaire, cache)!;
+    }
 }

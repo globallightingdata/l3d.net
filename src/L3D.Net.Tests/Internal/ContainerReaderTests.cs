@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using FluentAssertions;
 using L3D.Net.Data;
 using L3D.Net.Exceptions;
@@ -154,10 +153,14 @@ public class ContainerReaderTests
         act.Should().Throw<InvalidL3DException>().WithMessage("No L3D could be read");
     }
 
-    private static List<string> ExampleFiles()
+    private static IEnumerable<TestCaseData> ExampleFiles()
     {
         Setup.Initialize();
-        return Setup.ExampleObjFiles.ToList();
+        foreach (var exampleObjFile in Setup.ExampleObjFiles)
+        {
+            yield return new TestCaseData(exampleObjFile)
+                .SetArgDisplayNames(exampleObjFile.Replace(Setup.TestDataDirectory, "", StringComparison.Ordinal));
+        }
     }
 
     [Test]

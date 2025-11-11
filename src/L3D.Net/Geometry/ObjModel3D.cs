@@ -16,6 +16,8 @@ public class ObjModel3D : IModel3D
 
     public Dictionary<string, byte[]> ReferencedTextureFiles { get; set; } = new();
 
+    public Dictionary<string, FileInformation> Files { get; set; } = new();
+
     public bool IsFaceIndexValid(int groupIndex, int faceIndex)
     {
         if (Data == null)

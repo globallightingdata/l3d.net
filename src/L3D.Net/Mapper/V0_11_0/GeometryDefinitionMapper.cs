@@ -4,7 +4,7 @@ using System;
 
 namespace L3D.Net.Mapper.V0_11_0;
 
-public class GeometryDefinitionMapper : DtoMapperBase<GeometryFileDefinition, GeometryDefinitionDto>
+public sealed class GeometryDefinitionMapper : DtoMapperBase<GeometryFileDefinition, GeometryDefinitionDto>
 {
     public static readonly GeometryDefinitionMapper Instance = new();
 

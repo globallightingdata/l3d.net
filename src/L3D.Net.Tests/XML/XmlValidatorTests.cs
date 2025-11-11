@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using FluentAssertions;
@@ -11,86 +12,83 @@ namespace L3D.Net.Tests.XML;
 [TestFixture]
 public class XmlValidatorTests
 {
+    private XmlValidator _xmlValidator = null!;
+
+    [SetUp]
+    public void SetUp()
+    {
+        Setup.Initialize();
+        _xmlValidator = new XmlValidator();
+    }
+
     private static IEnumerable<string> GetXmlFiles(string testDirectory)
     {
         Setup.Initialize();
         var directory = Path.Combine(Setup.TestDataDirectory, "xml", "validation", testDirectory);
-        return Directory.EnumerateFiles(directory, "*.xml").ToList();
+        return Directory.EnumerateFiles(directory, "*.xml");
     }
 
-    public static IEnumerable<string> GetNoRootTestFiles() => GetXmlFiles("no_root");
+    private static IEnumerable<TestCaseData> GenerateXmlTestCases(string testDirectory) => GenerateXmlTestCases(GetXmlFiles(testDirectory));
+
+    private static IEnumerable<TestCaseData> GenerateXmlTestCases(IEnumerable<string> files)
+        => files.Select(file => new TestCaseData(file).SetArgDisplayNames(file.Replace(Setup.TestDataDirectory, "", StringComparison.Ordinal)));
+
+    public static IEnumerable<TestCaseData> GetNoRootTestFiles() => GenerateXmlTestCases("no_root");
 
     [Test]
     [TestCaseSource(nameof(GetNoRootTestFiles))]
     public void ValidateFile_ShouldCreateValidationHintWithExpectedMessage_WhenXmlHasNoRoot(string testFile)
     {
-        var xmlValidator = new XmlValidator();
-
         using var fs = File.OpenRead(testFile);
-        var result = xmlValidator.ValidateStream(fs);
+        var result = _xmlValidator.ValidateStream(fs);
 
         result.Should().ContainSingle(d => d.Message == ErrorMessages.StructureXmlNotReadable);
     }
 
-    private static IEnumerable<string> GetNoLocationTestFiles() => GetXmlFiles("no_scheme_location");
+    private static IEnumerable<TestCaseData> GetNoLocationTestFiles() => GenerateXmlTestCases("no_scheme_location");
 
     [Test]
     [TestCaseSource(nameof(GetNoLocationTestFiles))]
     public void ValidateFile_ShouldCreateValidationHintWithExpectedMessage_WhenSchemeLocationIsMissing(string testFile)
     {
-        var xmlValidator = new XmlValidator();
-
         using var fs = File.OpenRead(testFile);
-        var result = xmlValidator.ValidateStream(fs);
+        var result = _xmlValidator.ValidateStream(fs);
 
         result.Should().ContainSingle(d => d.Message == ErrorMessages.StructureXmlVersionMissing);
     }
 
-    private static IEnumerable<string> GetUnknownSchemeTestFiles() => GetXmlFiles("unknown_scheme");
+    private static IEnumerable<TestCaseData> GetUnknownSchemeTestFiles() => GenerateXmlTestCases("unknown_scheme");
 
     [Test]
     [TestCaseSource(nameof(GetUnknownSchemeTestFiles))]
     public void ValidateFile_ShouldCreateValidationHintWithExpectedMessage_WhenSchemeIsNotKnown(string testFile)
     {
-        var xmlValidator = new XmlValidator();
-
         using var fs = File.OpenRead(testFile);
-        var result = xmlValidator.ValidateStream(fs);
+        var result = _xmlValidator.ValidateStream(fs);
 
         result.Should().ContainSingle(d => d.Message == ErrorMessages.StructureXmlVersionNotReadable);
     }
 
-    private static IEnumerable<string> GetInvalidTestFiles()
-    {
-        Setup.Initialize();
-        return GetXmlFiles("invalid").Concat(Setup.InvalidVersionXmlFiles);
-    }
+    private static IEnumerable<TestCaseData> GetInvalidTestFiles() => GenerateXmlTestCases("invalid").Concat(GenerateXmlTestCases(Setup.InvalidVersionXmlFiles));
 
     [Test]
     [TestCaseSource(nameof(GetInvalidTestFiles))]
     public void ValidateFile_ShouldCreateValidationHints_WhenXmlIsInvalid(string testFile)
     {
-        var xmlValidator = new XmlValidator();
         using var fs = File.OpenRead(testFile);
-        var result = xmlValidator.ValidateStream(fs);
+        var result = _xmlValidator.ValidateStream(fs);
 
         result.Should().NotBeEmpty();
     }
 
-    private static IEnumerable<string> GetValidTestFiles()
-    {
-        Setup.Initialize();
-        return Setup.ExampleXmlFiles.Concat(Setup.ValidVersionXmlFiles);
-    }
+    private static IEnumerable<TestCaseData> GetValidTestFiles() => GenerateXmlTestCases(Setup.ExampleXmlFiles.Concat(Setup.ValidVersionXmlFiles));
 
     [Test]
     [TestCaseSource(nameof(GetValidTestFiles))]
     public void ValidateFile_ShouldReturnNoValidationHints_WhenXmlIsValid(string testFile)
     {
-        var xmlValidator = new XmlValidator();
-
         using var fs = File.OpenRead(testFile);
-        var result = xmlValidator.ValidateStream(fs);
+        var result = _xmlValidator.ValidateStream(fs);
 
         result.Should().BeEmpty();
     }

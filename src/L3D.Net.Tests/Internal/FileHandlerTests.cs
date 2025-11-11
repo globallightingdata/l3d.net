@@ -17,15 +17,18 @@ public class FileHandlerTests
 {
     private readonly List<string> _filesToDelete = [];
     private readonly List<string> _directoriesToDelete = [];
+    private string _tempDir = null!;
 
     [SetUp]
     public void Init()
     {
+        _tempDir = Path.Combine(Path.GetTempPath(), GetType().Name);
+        if (!Directory.Exists(_tempDir)) Directory.CreateDirectory(_tempDir);
         var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
         var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
         var geometryDirectories = Directory.GetDirectories(sourceDirectory);
-        var targetZipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".zip");
-        var testDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        var targetZipPath = Path.Combine(_tempDir, Guid.NewGuid() + ".zip");
+        var testDirectory = Path.Combine(_tempDir, Guid.NewGuid().ToString());
 
         _filesToDelete.Add(targetZipPath);
         _directoriesToDelete.Add(testDirectory);
@@ -65,6 +68,9 @@ public class FileHandlerTests
                 // ignored
             }
         }
+
+        if (Directory.Exists(_tempDir))
+            Directory.Delete(_tempDir, true);
     }
 
     private IModel3D CreateFakeModel3D()
@@ -83,8 +89,8 @@ public class FileHandlerTests
         var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
         var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
         var geometryDirectories = Directory.GetDirectories(sourceDirectory);
-        var targetZipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".zip");
-        var testDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        var targetZipPath = Path.Combine(_tempDir, Guid.NewGuid() + ".zip");
+        var testDirectory = Path.Combine(_tempDir, Guid.NewGuid().ToString());
 
         _filesToDelete.Add(targetZipPath);
         _directoriesToDelete.Add(testDirectory);
@@ -140,7 +146,7 @@ public class FileHandlerTests
     [TestCaseSource(typeof(Setup), nameof(Setup.EmptyStringValues))]
     public void LoadModelFiles_ShouldThrowArgumentException_WhenModelHasNullOrEmptyLibraryPaths(string? path)
     {
-        var targetTestDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        var targetTestDirectory = Path.Combine(_tempDir, Guid.NewGuid().ToString());
         _directoriesToDelete.Add(targetTestDirectory);
         var model3D = CreateFakeModel3D();
 
@@ -156,7 +162,7 @@ public class FileHandlerTests
     [TestCaseSource(typeof(Setup), nameof(Setup.EmptyStringValues))]
     public void LoadModelFiles_ShouldThrowArgumentException_WhenModelHasNullOrEmptyTexturePaths(string? path)
     {
-        var targetTestDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        var targetTestDirectory = Path.Combine(_tempDir, Guid.NewGuid().ToString());
         _directoriesToDelete.Add(targetTestDirectory);
         var model3D = CreateFakeModel3D();
 

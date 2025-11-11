@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace L3D.Net.Mapper.V0_11_0;
 
-public class Vector3DMapper : DtoMapperBase<Vector3, Vector3Dto>
+public sealed class Vector3DMapper : DtoMapperBase<Vector3, Vector3Dto>
 {
     public static readonly Vector3DMapper Instance = new();
 

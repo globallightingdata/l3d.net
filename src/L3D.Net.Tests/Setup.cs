@@ -12,13 +12,20 @@ namespace L3D.Net.Tests;
 public static class Setup
 {
     private static bool _isInitialized;
+
+#if NET9_0_OR_GREATER
+    private static readonly System.Threading.Lock Lock = new();
+#else
     private static readonly object Lock = new();
+#endif
 
     private static readonly MemoryStream Stream = new();
 
     public static string TestDataDirectory { get; private set; } = null!;
 
     public static string ExamplesDirectory { get; private set; } = null!;
+
+    public static string ValidationDirectory { get; private set; } = null!;
 
     public static string ValidVersionsDirectory { get; private set; } = null!;
 
@@ -47,8 +54,9 @@ public static class Setup
             TestDataDirectory = Path.Combine(testBinDirectory, "TestData");
 
             ExamplesDirectory = Path.Combine(TestDataDirectory, "xml", "v0.11.0");
-            ValidVersionsDirectory = Path.Combine(TestDataDirectory, "xml", "validation", "valid_versions");
-            InvalidVersionsDirectory = Path.Combine(TestDataDirectory, "xml", "validation", "invalid_versions");
+            ValidationDirectory = Path.Combine(TestDataDirectory, "xml", "validation");
+            ValidVersionsDirectory = Path.Combine(ValidationDirectory, "valid_versions");
+            InvalidVersionsDirectory = Path.Combine(ValidationDirectory, "invalid_versions");
 
             ExampleXmlFiles = Directory.EnumerateFiles(ExamplesDirectory, "*.xml", SearchOption.AllDirectories).ToList();
             ExampleXmlStreams =
@@ -113,6 +121,8 @@ public static class Setup
         ["example_009"] = luminaire => luminaire.BuildExample009(),
         ["example_010"] = luminaire => luminaire.BuildExample010(),
         ["example_011"] = luminaire => luminaire.BuildExample011(),
-        ["example_012"] = luminaire => luminaire.BuildExample012()
+        ["example_012"] = luminaire => luminaire.BuildExample012(),
+        ["example_013"] = luminaire => luminaire.BuildExample013(),
+        ["example_014"] = luminaire => luminaire.BuildExample014()
     };
 }

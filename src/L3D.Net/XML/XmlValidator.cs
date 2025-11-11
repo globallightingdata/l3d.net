@@ -149,7 +149,7 @@ public class XmlValidator : IXmlValidator
         try
         {
             var xsdResourceName = $"L3D.Net.XSD.V{version.Major}_{version.Minor}_{version.Build}.xsd";
-            var currentAssembly = Assembly.GetAssembly(typeof(XmlValidator));
+            var currentAssembly = Assembly.GetAssembly(typeof(XmlValidator))!;
             using var xsdResource = currentAssembly.GetManifestResourceStream(xsdResourceName);
             using var reader = new StreamReader(xsdResource!, Encoding.UTF8);
             content = reader.ReadToEnd();

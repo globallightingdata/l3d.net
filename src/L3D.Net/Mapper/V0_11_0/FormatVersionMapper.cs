@@ -3,7 +3,7 @@ using L3D.Net.XML.V0_11_0.Dto;
 
 namespace L3D.Net.Mapper.V0_11_0;
 
-public class FormatVersionMapper : DtoMapperBase<FormatVersion, FormatVersionDto>
+public sealed class FormatVersionMapper : DtoMapperBase<FormatVersion, FormatVersionDto>
 {
     public static readonly FormatVersionMapper Instance = new();
 

@@ -47,7 +47,7 @@ internal class LuminaireResolver : ILuminaireResolver
         if (source.Model is not null || !cache.Geometries.TryGetValue(source.GeometryId, out var files))
             return source;
 
-        source.Model = _objParser.Parse(source.FileName, files!, logger);
+        source.Model = _objParser.Parse(source.FileName, files, logger);
 
         if (source.Model is null) return source;
 

@@ -4,7 +4,7 @@ using System;
 
 namespace L3D.Net.Mapper.V0_11_0;
 
-public class ShapeMapper : DtoMapperBase<Shape, ShapeDto>
+public sealed class ShapeMapper : DtoMapperBase<Shape, ShapeDto>
 {
     public static readonly ShapeMapper Instance = new();
 

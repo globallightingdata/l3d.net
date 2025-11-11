@@ -5,15 +5,17 @@ namespace L3D.Net.Internal.Abstract;
 
 public interface IModel3D
 {
-    string FileName { get; set; }
+    public string FileName { get; set; }
 
-    byte[] ObjFile { get; set; }
+    public byte[] ObjFile { get; set; }
 
-    Dictionary<string, byte[]> ReferencedMaterialLibraryFiles { get; set; }
+    public Dictionary<string, byte[]> ReferencedMaterialLibraryFiles { get; set; }
 
-    Dictionary<string, byte[]> ReferencedTextureFiles { get; set; }
+    public Dictionary<string, byte[]> ReferencedTextureFiles { get; set; }
 
-    bool IsFaceIndexValid(int groupIndex, int faceIndex);
+    public bool IsFaceIndexValid(int groupIndex, int faceIndex);
 
-    ModelData? Data { get; }
+    public ModelData? Data { get; }
+
+    public Dictionary<string, FileInformation> Files { get; set; }
 }

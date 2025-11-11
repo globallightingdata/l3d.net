@@ -23,5 +23,5 @@ public enum Validation
     HasLightEmittingPart = 1 << 14,
     LuminaireContentValid = MandatoryField | MinMaxRestriction | NameConvention | GeometryReferences | FaceReferences | NameReferences | HasLightEmittingPart,
     Container = IsZipPackage | HasStructureXml | IsXmlValid | IsProductValid | DoesReferencedObjectsExist,
-    All = Container | AreAllFileDefinitionsUsed | HasAllMaterials | LuminaireContentValid
+    All = Container | AreAllFileDefinitionsUsed | HasAllMaterials | LuminaireContentValid | HasAllTextures
 }
