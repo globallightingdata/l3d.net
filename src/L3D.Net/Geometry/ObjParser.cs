@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using L3D.Net.Internal;
+using System.Diagnostics.CodeAnalysis;
 
 namespace L3D.Net.Geometry;
 
@@ -94,98 +95,44 @@ public class ObjParser : IObjParser
         };
     }
 
-    public IModel3D Parse(string filePath, ILogger? logger = null)
+    public IModel3D? Parse(string filePath, ILogger? logger = null)
     {
         var directory = Path.GetDirectoryName(filePath) ?? throw new ArgumentException($"The file directory of '{filePath}' could not be determined");
-        var fileInfos = new Dictionary<string, FileInformation>();
-        foreach (var fileName in Directory.EnumerateFiles(directory).Select(FileHandler.GetCleanedFileName))
+        var files = new Dictionary<string, Stream>();
+        foreach (var fullPath in Directory.EnumerateFiles(directory))
         {
-            fileInfos[fileName] = new FileInformation
-            {
-                Name = fileName
-            };
+            if (TryGetFileStream(fullPath, out var stream))
+                files[FileHandler.GetCleanedFileName(fullPath)] = stream;
         }
 
-        if (!fileInfos.TryGetValue(FileHandler.GetCleanedFileName(filePath), out var fileInfo)) throw new ArgumentException($"The file '{filePath}' does not exists");
-        fileInfo.Status = FileStatus.ReferencedGeometry;
-        fileInfo.Data = File.ReadAllBytes(filePath);
-        var fileBytes = fileInfo.Data!;
-        using var ms = new MemoryStream(fileBytes);
-        var objFile = ObjFile.FromStream(ms, ObjFileReaderSettings);
-
-        var objMaterialLibraries = CollectMaterialLibraries(objFile, directory, logger).ToList();
-        var textures = CollectAvailableTextures(objMaterialLibraries).Distinct().Where(x => !string.IsNullOrWhiteSpace(x)).Select(FileHandler.GetCleanedFileName!).ToList();
-
-        foreach (var objMaterialLibrary in objMaterialLibraries)
+        try
         {
-            if (fileInfos.TryGetValue(objMaterialLibrary.Item1, out fileInfo))
-            {
-                fileInfo.Status = FileStatus.ReferencedMaterial;
-                fileInfo.Data = File.ReadAllBytes(Path.Combine(directory, fileInfo.Name));
-            }
-            else
-            {
-                fileInfos[objMaterialLibrary.Item1] = new FileInformation
-                {
-                    Name = objMaterialLibrary.Item1,
-                    Status = FileStatus.MissingMaterial
-                };
-            }
+            return Parse(FileHandler.GetCleanedFileName(filePath), files, logger);
         }
-
-        foreach (var texture in textures)
+        finally
         {
-            if (fileInfos.TryGetValue(texture, out fileInfo))
+            foreach (var keyValuePair in files)
             {
-                fileInfo.Status = FileStatus.ReferencedTexture;
-                fileInfo.Data = File.ReadAllBytes(Path.Combine(directory, fileInfo.Name));
+                keyValuePair.Value.Dispose();
             }
-            else
-            {
-                fileInfos[texture] = new FileInformation
-                {
-                    Name = texture,
-                    Status = FileStatus.MissingTexture
-                };
-            }
+
+            files.Clear();
         }
-
-        return new ObjModel3D
-        {
-            FileName = FileHandler.GetCleanedFileName(filePath),
-            ReferencedMaterialLibraryFiles = objMaterialLibraries
-                .Where(d => fileInfos.TryGetValue(d.Item1, out fileInfo) && fileInfo.Status == FileStatus.ReferencedMaterial)
-                .ToDictionary(d => d.Item1, d => fileInfos[d.Item1].Data!),
-            ReferencedTextureFiles = textures
-                .Where(d => fileInfos.TryGetValue(d, out fileInfo) && fileInfo.Status == FileStatus.ReferencedTexture)
-                .ToDictionary(d => d, d => fileInfos[d].Data!),
-            Data = ConvertGeometry(objFile, objMaterialLibraries, fileInfos),
-            ObjFile = fileBytes,
-            Files = fileInfos
-        };
     }
 
-    private static IEnumerable<Tuple<string, ObjMaterialFile?>> CollectMaterialLibraries(ObjFile objFile, string directory, ILogger? logger = null)
-        => objFile.MaterialLibraries.Select(mtl =>
+    private static bool TryGetFileStream(string path, [NotNullWhen(true)] out Stream? stream)
+    {
+        try
         {
-            try
-            {
-                mtl = FileHandler.GetCleanedFileName(mtl);
-                var materialFile = Path.Combine(directory, mtl);
-                if (!File.Exists(materialFile))
-                {
-                    logger?.LogWarning("Material '{Name}' could not be loaded", mtl);
-                    return new Tuple<string, ObjMaterialFile?>(mtl, null);
-                }
-
-                return Tuple.Create<string, ObjMaterialFile?>(mtl, ObjMaterialFile.FromFile(materialFile, ObjMaterialFileReaderSettings));
-            }
-            catch (Exception e)
-            {
-                logger?.LogWarning(e, "Material '{Name}' could not be loaded", mtl);
-                return new Tuple<string, ObjMaterialFile?>(mtl, null);
-            }
-        });
+            stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            return true;
+        }
+        catch
+        {
+            stream = null;
+            return false;
+        }
+    }
 
     private static IEnumerable<Tuple<string, ObjMaterialFile?>> CollectMaterialLibraries(ObjFile objFile, IReadOnlyDictionary<string, Stream> files, ILogger? logger)
         => objFile.MaterialLibraries.Select(mtl =>
@@ -213,25 +160,25 @@ public class ObjParser : IObjParser
     {
         foreach (var objMaterial in objMaterials.Where(mtl => mtl.Item2 is not null).SelectMany(materialFile => materialFile.Item2!.Materials))
         {
-            yield return objMaterial?.AmbientMap?.FileName;
-            yield return objMaterial?.BumpMap?.FileName;
-            yield return objMaterial?.DecalMap?.FileName;
-            yield return objMaterial?.DiffuseMap?.FileName;
-            yield return objMaterial?.DispMap?.FileName;
-            yield return objMaterial?.DissolveMap?.FileName;
-            yield return objMaterial?.ReflectionMap.CubeBack?.FileName;
-            yield return objMaterial?.ReflectionMap.CubeBottom?.FileName;
-            yield return objMaterial?.ReflectionMap.CubeFront?.FileName;
-            yield return objMaterial?.ReflectionMap.CubeLeft?.FileName;
-            yield return objMaterial?.ReflectionMap.CubeRight?.FileName;
-            yield return objMaterial?.ReflectionMap.CubeTop?.FileName;
-            yield return objMaterial?.EmissiveMap?.FileName;
-            yield return objMaterial?.SpecularMap?.FileName;
-            yield return objMaterial?.SpecularExponentMap?.FileName;
-            yield return objMaterial?.RoughnessMap?.FileName;
-            yield return objMaterial?.MetallicMap?.FileName;
-            yield return objMaterial?.SheenMap?.FileName;
-            yield return objMaterial?.Norm?.FileName;
+            yield return objMaterial.AmbientMap?.FileName;
+            yield return objMaterial.BumpMap?.FileName;
+            yield return objMaterial.DecalMap?.FileName;
+            yield return objMaterial.DiffuseMap?.FileName;
+            yield return objMaterial.DispMap?.FileName;
+            yield return objMaterial.DissolveMap?.FileName;
+            yield return objMaterial.ReflectionMap.CubeBack?.FileName;
+            yield return objMaterial.ReflectionMap.CubeBottom?.FileName;
+            yield return objMaterial.ReflectionMap.CubeFront?.FileName;
+            yield return objMaterial.ReflectionMap.CubeLeft?.FileName;
+            yield return objMaterial.ReflectionMap.CubeRight?.FileName;
+            yield return objMaterial.ReflectionMap.CubeTop?.FileName;
+            yield return objMaterial.EmissiveMap?.FileName;
+            yield return objMaterial.SpecularMap?.FileName;
+            yield return objMaterial.SpecularExponentMap?.FileName;
+            yield return objMaterial.RoughnessMap?.FileName;
+            yield return objMaterial.MetallicMap?.FileName;
+            yield return objMaterial.SheenMap?.FileName;
+            yield return objMaterial.Norm?.FileName;
         }
     }
 

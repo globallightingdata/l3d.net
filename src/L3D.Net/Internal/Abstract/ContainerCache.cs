@@ -19,7 +19,7 @@ public sealed class ContainerCache : IDisposable
         StructureXml?.Dispose();
         foreach (var stream in Geometries.Values.SelectMany(x => x.Values))
         {
-            stream?.Dispose();
+            stream.Dispose();
         }
 
         _disposed = true;

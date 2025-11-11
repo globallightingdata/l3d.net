@@ -1,5 +1,7 @@
 ﻿using System;
+#if !NET8_0_OR_GREATER
 using System.Runtime.Serialization;
+#endif
 
 namespace L3D.Net.Exceptions;
 
@@ -18,7 +20,9 @@ public class InvalidL3DException : L3DNetBaseException
     {
     }
 
+#if !NET8_0_OR_GREATER
     protected InvalidL3DException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
     }
+#endif
 }

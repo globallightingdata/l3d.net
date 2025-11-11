@@ -153,7 +153,7 @@ internal class ContainerValidator : IContainerValidator
             }
         }
 
-        var geometryReferences = geometryParts.Select(x => x.GeometryReference).Where(x => x != null).ToArray();
+        var geometryReferences = geometryParts.Select(x => x.GeometryReference).ToArray();
         var models = geometryReferences.Where(x => x.Model != null).Select(x => x.Model!).ToArray();
 
         if (flags.HasFlag(Validation.AreAllFileDefinitionsUsed))

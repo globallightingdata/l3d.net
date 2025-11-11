@@ -203,13 +203,13 @@ internal class FileHandler : IFileHandler
 
         foreach (var materialLibraryFile in model3D.ReferencedMaterialLibraryFiles)
         {
-            if (materialLibraryFile.Value is not null)
+            if (materialLibraryFile.Value is {Length: > 0})
                 CopyFile(materialLibraryFile.Key, materialLibraryFile.Value, geometryId, cache);
         }
 
         foreach (var textureFile in model3D.ReferencedTextureFiles)
         {
-            if (textureFile.Value is not null)
+            if (textureFile.Value is {Length: > 0})
                 CopyFile(textureFile.Key, textureFile.Value, geometryId, cache);
         }
     }

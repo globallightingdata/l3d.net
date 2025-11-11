@@ -161,7 +161,7 @@ public class ObjParserTest
 
         var parser = new ObjParser();
 
-        var model = parser.Parse(objPath, Substitute.For<ILogger>());
+        var model = parser.Parse(objPath, Substitute.For<ILogger>())!;
 
         model.FileName.Should().BeEquivalentTo(Path.GetFileName(objPath));
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(1);
@@ -250,7 +250,7 @@ public class ObjParserTest
 
         var parser = new ObjParser();
 
-        var model = parser.Parse(objPath, Substitute.For<ILogger>());
+        var model = parser.Parse(objPath, Substitute.For<ILogger>())!;
 
         model.FileName.Should().BeEquivalentTo(Path.GetFileName(objPath));
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(1);
@@ -339,7 +339,7 @@ public class ObjParserTest
 
         var parser = new ObjParser();
 
-        var model = parser.Parse(objPath, Substitute.For<ILogger>());
+        var model = parser.Parse(objPath, Substitute.For<ILogger>())!;
 
         model.FileName.Should().BeEquivalentTo(Path.GetFileName(objPath));
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(1);
@@ -428,7 +428,7 @@ public class ObjParserTest
 
         var parser = new ObjParser();
 
-        var model = parser.Parse(objPath, Substitute.For<ILogger>());
+        var model = parser.Parse(objPath, Substitute.For<ILogger>())!;
 
         model.FileName.Should().BeEquivalentTo(Path.GetFileName(objPath));
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(1);
@@ -469,7 +469,7 @@ public class ObjParserTest
 
         var parser = new ObjParser();
 
-        var model = parser.Parse(objPath, Substitute.For<ILogger>());
+        var model = parser.Parse(objPath, Substitute.For<ILogger>())!;
 
         model.FileName.Should().BeEquivalentTo(Path.GetFileName(objPath));
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(1);
@@ -511,7 +511,7 @@ public class ObjParserTest
 
         var parser = new ObjParser();
 
-        var model = parser.Parse(objPath, Substitute.For<ILogger>());
+        var model = parser.Parse(objPath, Substitute.For<ILogger>())!;
 
         model.FileName.Should().BeEquivalentTo(Path.GetFileName(objPath));
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(1);
@@ -555,7 +555,7 @@ public class ObjParserTest
 
         var parser = new ObjParser();
 
-        var model = parser.Parse(tmpFile, Substitute.For<ILogger>());
+        var model = parser.Parse(tmpFile, Substitute.For<ILogger>())!;
 
         model.FileName.Should().BeEquivalentTo(Path.GetFileName(tmpFile));
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(0);
@@ -613,7 +613,7 @@ public class ObjParserTest
 
         var parser = new ObjParser();
 
-        var model = parser.Parse(tmpFile, Substitute.For<ILogger>());
+        var model = parser.Parse(tmpFile, Substitute.For<ILogger>())!;
 
         model.FileName.Should().BeEquivalentTo(Path.GetFileName(tmpFile));
         model.ReferencedMaterialLibraryFiles.Should().HaveCount(0);
@@ -720,7 +720,7 @@ public class ObjParserTest
         var objPath = Path.Combine(Setup.TestDataDirectory, "obj", "sconce_01.obj");
         var parser = new ObjParser();
 
-        var model = parser.Parse(objPath, Substitute.For<ILogger>());
+        var model = parser.Parse(objPath, Substitute.For<ILogger>())!;
         model.Data!.Materials.Should().HaveCount(2);
         model.Data!.Materials.Should().BeEquivalentTo(new List<ModelMaterial>
         {
@@ -757,7 +757,7 @@ public class ObjParserTest
         var objPath = Path.Combine(Setup.TestDataDirectory, "obj", "single_mesh.obj");
         var parser = new ObjParser();
 
-        var model = parser.Parse(objPath, Substitute.For<ILogger>());
+        var model = parser.Parse(objPath, Substitute.For<ILogger>())!;
         model.Data!.Materials.Should().HaveCount(2);
         model.Data!.Materials.Should().BeEquivalentTo(new List<ModelMaterial>
         {
@@ -793,7 +793,7 @@ public class ObjParserTest
         var objPath = Path.Combine(Setup.TestDataDirectory, "obj", "two_objects.obj");
         var parser = new ObjParser();
 
-        var model = parser.Parse(objPath, Substitute.For<ILogger>());
+        var model = parser.Parse(objPath, Substitute.For<ILogger>())!;
         model.Data!.Materials.Should().HaveCount(2);
         model.Data!.Materials.Should().BeEquivalentTo(new List<ModelMaterial>
         {
@@ -829,7 +829,7 @@ public class ObjParserTest
         var objPath = Path.Combine(Setup.TestDataDirectory, "obj", "full_material.obj");
         var parser = new ObjParser();
 
-        var model = parser.Parse(objPath, Substitute.For<ILogger>());
+        var model = parser.Parse(objPath, Substitute.For<ILogger>())!;
         model.Data!.Materials.Should().HaveCount(1);
         model.Data!.Materials.Should().BeEquivalentTo(new List<ModelMaterial>
         {
