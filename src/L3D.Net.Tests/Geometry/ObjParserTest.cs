@@ -15,6 +15,22 @@ namespace L3D.Net.Tests.Geometry;
 [TestFixture]
 public class ObjParserTest
 {
+    private string _tempDir = null!;
+
+    [SetUp]
+    public void Init()
+    {
+        _tempDir = Path.Combine(Path.GetTempPath(), GetType().Name);
+        if (!Directory.Exists(_tempDir)) Directory.CreateDirectory(_tempDir);
+    }
+
+    [TearDown]
+    public void Cleanup()
+    {
+        if (Directory.Exists(_tempDir))
+            Directory.Delete(_tempDir, true);
+    }
+
     [Test]
     public void Parse_ShouldParseTwoGroupsObjCorrectly()
     {
@@ -550,7 +566,7 @@ public class ObjParserTest
     {
         var examplePath = Path.Combine(Setup.ExamplesDirectory, "example_008");
         var objPath = Path.Combine(examplePath, "cube", "textured_cube.obj");
-        var tmpFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        var tmpFile = Path.Combine(_tempDir, Path.GetRandomFileName());
         File.Copy(objPath, tmpFile);
 
         var parser = new ObjParser();
@@ -608,7 +624,7 @@ public class ObjParserTest
     {
         var examplePath = Path.Combine(Setup.ExamplesDirectory, "example_011");
         var objPath = Path.Combine(examplePath, "cube", "textured_cube.obj");
-        var tmpFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        var tmpFile = Path.Combine(_tempDir, Path.GetRandomFileName());
         File.Copy(objPath, tmpFile);
 
         var parser = new ObjParser();
