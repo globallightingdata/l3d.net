@@ -15,7 +15,11 @@ namespace L3D.Net.Geometry;
 public class ObjParser : IObjParser
 {
     public static readonly ObjParser Instance = new();
-    private static readonly ObjFileReaderSettings DefaultSettings = new() {HandleObjectNamesAsGroup = true, OnlyOneGroupNamePerLine = true};
+
+    private static readonly ObjFileReaderSettings ObjFileReaderSettings = new()
+        {HandleObjectNamesAsGroup = true, OnlyOneGroupNamePerLine = true, KeepWhitespacesOfMtlLibReferences = true};
+
+    private static readonly ObjMaterialFileReaderSettings ObjMaterialFileReaderSettings = new() {KeepWhitespacesOfMapFileReferences = true};
 
     public IModel3D? Parse(string fileName, Dictionary<string, Stream> files, ILogger? logger = null)
     {
@@ -23,7 +27,7 @@ public class ObjParser : IObjParser
             return null;
 
         stream.Seek(0, SeekOrigin.Begin);
-        var objFile = ObjFile.FromStream(stream, DefaultSettings);
+        var objFile = ObjFile.FromStream(stream, ObjFileReaderSettings);
 
         var objMaterialLibraries = CollectMaterialLibraries(objFile, files, logger).ToArray();
 
@@ -107,7 +111,7 @@ public class ObjParser : IObjParser
         fileInfo.Data = File.ReadAllBytes(filePath);
         var fileBytes = fileInfo.Data!;
         using var ms = new MemoryStream(fileBytes);
-        var objFile = ObjFile.FromStream(ms, DefaultSettings);
+        var objFile = ObjFile.FromStream(ms, ObjFileReaderSettings);
 
         var objMaterialLibraries = CollectMaterialLibraries(objFile, directory, logger).ToList();
         var textures = CollectAvailableTextures(objMaterialLibraries).Distinct().Where(x => !string.IsNullOrWhiteSpace(x)).Select(FileHandler.GetCleanedFileName!).ToList();
@@ -174,7 +178,7 @@ public class ObjParser : IObjParser
                     return new Tuple<string, ObjMaterialFile?>(mtl, null);
                 }
 
-                return Tuple.Create<string, ObjMaterialFile?>(mtl, ObjMaterialFile.FromFile(materialFile));
+                return Tuple.Create<string, ObjMaterialFile?>(mtl, ObjMaterialFile.FromFile(materialFile, ObjMaterialFileReaderSettings));
             }
             catch (Exception e)
             {
@@ -196,7 +200,7 @@ public class ObjParser : IObjParser
                 }
 
                 materialFile.Seek(0, SeekOrigin.Begin);
-                return Tuple.Create<string, ObjMaterialFile?>(mtl, ObjMaterialFile.FromStream(materialFile));
+                return Tuple.Create<string, ObjMaterialFile?>(mtl, ObjMaterialFile.FromStream(materialFile, ObjMaterialFileReaderSettings));
             }
             catch (Exception e)
             {
