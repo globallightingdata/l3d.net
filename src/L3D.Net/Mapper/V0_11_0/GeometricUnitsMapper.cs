@@ -4,7 +4,7 @@ using System;
 
 namespace L3D.Net.Mapper.V0_11_0;
 
-public class GeometricUnitsMapper : DtoMapperBase<GeometricUnits, GeometricUnitsDto>
+public sealed class GeometricUnitsMapper : DtoMapperBase<GeometricUnits, GeometricUnitsDto>
 {
     public static readonly GeometricUnitsMapper Instance = new();
 

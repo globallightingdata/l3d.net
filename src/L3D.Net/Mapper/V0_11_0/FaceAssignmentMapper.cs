@@ -4,7 +4,7 @@ using System;
 
 namespace L3D.Net.Mapper.V0_11_0;
 
-public class FaceAssignmentMapper : DtoMapperBase<FaceAssignment, FaceAssignmentDto>
+public sealed class FaceAssignmentMapper : DtoMapperBase<FaceAssignment, FaceAssignmentDto>
 {
     public static readonly FaceAssignmentMapper Instance = new();
 
