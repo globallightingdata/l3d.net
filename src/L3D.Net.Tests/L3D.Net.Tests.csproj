@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
         <IsPackable>false</IsPackable>
-        <LangVersion>13.0</LangVersion>
+        <LangVersion>14.0</LangVersion>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
@@ -12,7 +12,7 @@
         <PackageReference Include="NSubstitute" Version="5.3.0" />
         <PackageReference Include="NUnit" Version="4.4.0" />
         <PackageReference Include="NUnit3TestAdapter" Version="5.2.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     </ItemGroup>
 
     <ItemGroup>
