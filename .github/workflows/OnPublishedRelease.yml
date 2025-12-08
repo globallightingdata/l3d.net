@@ -28,7 +28,7 @@ jobs:
           dotnet build --no-restore --configuration Release
       - name: Test
         working-directory: ./src
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test --no-build --configuration Release --verbosity normal
       - name: publish on nuget.org
         id: publish_nuget
         uses: alirezanet/publish-nuget@v3.1.0
