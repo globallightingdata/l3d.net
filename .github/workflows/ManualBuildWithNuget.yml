@@ -30,4 +30,4 @@ jobs:
         run: dotnet test --no-build --configuration Release --verbosity normal
       - name: Publish on nuget.org
         working-directory: ./src
-        run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.PUSH_NUGET }} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
