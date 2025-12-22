@@ -28,14 +28,6 @@ jobs:
       - name: Test
         working-directory: ./src
         run: dotnet test --no-build --configuration Release --verbosity normal
-      - name: publish on nuget.org
-        id: publish_nuget
-        uses: alirezanet/publish-nuget@v3.1.0
-        with:
-          PROJECT_FILE_PATH: ./src/L3D.Net/L3D.Net.csproj
-          PACKAGE_NAME: L3D.Net
-          VERSION_STATIC: 1.0.0
-          TAG_COMMIT: false
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-          NUGET_SOURCE: https://api.nuget.org
-          INCLUDE_SYMBOLS: false
+      - name: Publish on nuget.org
+        working-directory: ./src
+        run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.PUSH_NUGET }} --source https://api.nuget.org/v3/index.json
