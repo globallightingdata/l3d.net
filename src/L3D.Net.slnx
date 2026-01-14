@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/Build/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="global.json" />
+  </Folder>
+  <Folder Name="/.github/">
+    <File Path="../.github/workflows/ManualBuildOnly.yml" />
+    <File Path="../.github/workflows/ManualBuildWithNuget.yml" />
+    <File Path="../.github/workflows/OnPublishedRelease.yml" />
+    <File Path="../.github/workflows/OnPushDevelop.yml" />
+  </Folder>
+  <Project Path="L3D.Net.Tests/L3D.Net.Tests.csproj" />
+  <Project Path="L3D.Net/L3D.Net.csproj" />
+</Solution>

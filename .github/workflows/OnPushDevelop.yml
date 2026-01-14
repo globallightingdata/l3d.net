@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Setup .NET
@@ -17,25 +17,19 @@ jobs:
           dotnet-version: |
             8.0.x
             9.0.x
+            10.0.x
           dotnet-quality: 'ga'
       - name: Restore dependencies
+        working-directory: ./src
         run: |
-          dotnet restore ./src/L3D.Net/L3D.Net.csproj
-          dotnet restore ./src/L3D.Net.Tests/L3D.Net.Tests.csproj
+          dotnet restore
       - name: Build
+        working-directory: ./src
         run: |
-          dotnet build --no-restore --configuration Release ./src/L3D.Net/L3D.Net.csproj
-          dotnet build --no-restore --configuration Debug ./src/L3D.Net.Tests/L3D.Net.Tests.csproj
+          dotnet build --no-restore --configuration Release
       - name: Test
-        run: dotnet test --no-build --verbosity normal ./src/L3D.Net.Tests/L3D.Net.Tests.csproj
-      - name: publish on nuget.org
-        id: publish_nuget
-        uses: alirezanet/publish-nuget@v3.1.0
-        with:
-          PROJECT_FILE_PATH: ./src/L3D.Net/L3D.Net.csproj
-          PACKAGE_NAME: L3D.Net
-          VERSION_STATIC: 1.0.0
-          TAG_COMMIT: false
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-          NUGET_SOURCE: https://api.nuget.org
-          INCLUDE_SYMBOLS: false
+        working-directory: ./src
+        run: dotnet test --no-build --configuration Release --verbosity normal
+      - name: Publish on nuget.org
+        working-directory: ./src
+        run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json

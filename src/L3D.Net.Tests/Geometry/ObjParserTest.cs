@@ -20,7 +20,7 @@ public class ObjParserTest
     [SetUp]
     public void Init()
     {
-        _tempDir = Path.Combine(Path.GetTempPath(), GetType().Name);
+        _tempDir = Path.Combine(Path.GetTempPath(), GetType().Name + System.Guid.NewGuid().ToString("N"));
         if (!Directory.Exists(_tempDir)) Directory.CreateDirectory(_tempDir);
     }
 

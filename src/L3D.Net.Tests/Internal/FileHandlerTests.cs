@@ -22,7 +22,7 @@ public class FileHandlerTests
     [SetUp]
     public void Init()
     {
-        _tempDir = Path.Combine(Path.GetTempPath(), GetType().Name);
+        _tempDir = Path.Combine(Path.GetTempPath(), GetType().Name + Guid.NewGuid().ToString("N"));
         if (!Directory.Exists(_tempDir)) Directory.CreateDirectory(_tempDir);
         var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
         var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
