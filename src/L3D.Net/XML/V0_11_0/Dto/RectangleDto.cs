@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 namespace L3D.Net.XML.V0_11_0.Dto;
 
 /// <remarks />
-[Serializable()]
+[Serializable]
 //[XmlType(AnonymousType = true)]
 public class RectangleDto : ShapeDto
 {

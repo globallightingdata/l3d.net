@@ -5,7 +5,9 @@ using System.Runtime.Serialization;
 
 namespace L3D.Net.Exceptions;
 
+#if !NET8_0_OR_GREATER
 [Serializable]
+#endif
 public class InvalidL3DException : L3DNetBaseException
 {
     public InvalidL3DException()

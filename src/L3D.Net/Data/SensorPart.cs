@@ -1,5 +1,3 @@
 ﻿namespace L3D.Net.Data;
 
-public class SensorPart : TransformablePart
-{
-}
+public class SensorPart : TransformablePart;

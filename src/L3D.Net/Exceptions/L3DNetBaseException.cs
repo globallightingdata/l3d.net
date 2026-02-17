@@ -5,7 +5,9 @@ using System.Runtime.Serialization;
 
 namespace L3D.Net.Exceptions;
 
+#if !NET8_0_OR_GREATER
 [Serializable]
+#endif
 public abstract class L3DNetBaseException : Exception
 {
     protected L3DNetBaseException()

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -20,7 +21,7 @@ public class ObjParserTest
     [SetUp]
     public void Init()
     {
-        _tempDir = Path.Combine(Path.GetTempPath(), GetType().Name + System.Guid.NewGuid().ToString("N"));
+        _tempDir = Path.Combine(Path.GetTempPath(), GetType().Name + System.Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture));
         if (!Directory.Exists(_tempDir)) Directory.CreateDirectory(_tempDir);
     }
 

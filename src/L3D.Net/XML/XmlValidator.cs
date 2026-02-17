@@ -76,14 +76,9 @@ public class XmlValidator : IXmlValidator
         {
             xmlDocument.Validate(schemeSet, (_, ev) =>
             {
-                if (ev.Severity == XmlSeverityType.Error)
-                {
-                    validationHints.Add(new StructureXmlValidationHint(ErrorMessages.StructureXmlContentError, ev.Message, Severity.Error));
-                }
-                else
-                {
-                    validationHints.Add(new StructureXmlValidationHint(ErrorMessages.StructureXmlContentWarning, ev.Message, Severity.Warning));
-                }
+                validationHints.Add(ev.Severity == XmlSeverityType.Error
+                    ? new StructureXmlValidationHint(ErrorMessages.StructureXmlContentError, ev.Message, Severity.Error)
+                    : new StructureXmlValidationHint(ErrorMessages.StructureXmlContentWarning, ev.Message, Severity.Warning));
             });
         }
         catch (Exception e)

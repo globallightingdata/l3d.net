@@ -92,7 +92,7 @@ internal class FileHandler : IFileHandler
 
             var entries = archive.Entries;
 
-            if (canThrow && !entries.Any(e => e.FullName.Equals(Constants.L3dXmlFilename)))
+            if (canThrow && !entries.Any(e => e.FullName.Equals(Constants.L3dXmlFilename, StringComparison.Ordinal)))
                 throw new InvalidL3DException("StructureXml could not be found");
 
             var cache = new ContainerCache();
@@ -201,16 +201,16 @@ internal class FileHandler : IFileHandler
 
         CopyFile(model3D.FileName, model3D.ObjFile, geometryId, cache);
 
-        foreach (var materialLibraryFile in model3D.ReferencedMaterialLibraryFiles)
+        foreach (var materialLibraryFile in model3D.ReferencedMaterialLibraryFiles
+                     .Where(x => x.Value is {Length: > 0}))
         {
-            if (materialLibraryFile.Value is {Length: > 0})
-                CopyFile(materialLibraryFile.Key, materialLibraryFile.Value, geometryId, cache);
+            CopyFile(materialLibraryFile.Key, materialLibraryFile.Value, geometryId, cache);
         }
 
-        foreach (var textureFile in model3D.ReferencedTextureFiles)
+        foreach (var textureFile in model3D.ReferencedTextureFiles
+                     .Where(x => x.Value is {Length: > 0}))
         {
-            if (textureFile.Value is {Length: > 0})
-                CopyFile(textureFile.Key, textureFile.Value, geometryId, cache);
+            CopyFile(textureFile.Key, textureFile.Value, geometryId, cache);
         }
     }
 

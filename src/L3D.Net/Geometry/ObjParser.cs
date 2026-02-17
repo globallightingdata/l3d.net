@@ -26,9 +26,9 @@ public class ObjParser : IObjParser
         if (!files.TryGetValue(fileName, out var stream))
             return null;
         var fileInfos = new Dictionary<string, FileInformation>();
-        foreach (var file in files)
+        foreach (var fileKey in files.Select(x => x.Key))
         {
-            fileInfos[file.Key] = new FileInformation {Name = file.Key};
+            fileInfos[fileKey] = new FileInformation {Name = fileKey};
         }
 
         fileInfos[fileName].Status = FileStatus.ReferencedGeometry;
@@ -91,18 +91,18 @@ public class ObjParser : IObjParser
 
     private static void FillMaterialFileInfos(Dictionary<string, FileInformation> fileInfos, Tuple<string, ObjMaterialFile?>[] objMaterialLibraries, Func<string, byte[]> getBytes)
     {
-        foreach (var objMaterialLibrary in objMaterialLibraries)
+        foreach (var objMaterialLibraryPath in objMaterialLibraries.Select(x => x.Item1))
         {
-            if (fileInfos.TryGetValue(objMaterialLibrary.Item1, out var fileInfo))
+            if (fileInfos.TryGetValue(objMaterialLibraryPath, out var fileInfo))
             {
                 fileInfo.Status = FileStatus.ReferencedMaterial;
                 fileInfo.Data = getBytes(fileInfo.Name);
             }
             else
             {
-                fileInfos[objMaterialLibrary.Item1] = new FileInformation
+                fileInfos[objMaterialLibraryPath] = new FileInformation
                 {
-                    Name = objMaterialLibrary.Item1,
+                    Name = objMaterialLibraryPath,
                     Status = FileStatus.MissingMaterial
                 };
             }

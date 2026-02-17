@@ -63,7 +63,7 @@ internal class ContainerValidator : IContainerValidator
         return new ValidationResultContainer
         {
             ValidationHints = validationHints.Select(e => e.Item1).ToArray(),
-            Luminaire = validationHints.FirstOrDefault(e => e.Item2 is not null).Item2
+            Luminaire = Array.Find(validationHints, e => e.Item2 is not null).Item2
         };
     }
 
@@ -77,7 +77,7 @@ internal class ContainerValidator : IContainerValidator
         return new ValidationResultContainer
         {
             ValidationHints = validationHints.Select(e => e.Item1).ToArray(),
-            Luminaire = validationHints.FirstOrDefault(e => e.Item2 is not null).Item2
+            Luminaire = Array.Find(validationHints, e => e.Item2 is not null).Item2
         };
     }
 
@@ -91,7 +91,7 @@ internal class ContainerValidator : IContainerValidator
         return new ValidationResultContainer
         {
             ValidationHints = validationHints.Select(e => e.Item1).ToArray(),
-            Luminaire = validationHints.FirstOrDefault(e => e.Item2 is not null).Item2
+            Luminaire = Array.Find(validationHints, e => e.Item2 is not null).Item2
         };
     }
 
@@ -184,10 +184,10 @@ internal class ContainerValidator : IContainerValidator
                 yield return (new UnusedFileValidationHint(textureName), luminaire);
             }
 
-            foreach (var fileInformation in listedModels.SelectMany(e => e.Files))
+            foreach (var fileInformation in listedModels.SelectMany(e => e.Files
+                         .Where(fileInformation => fileInformation.Value.Status is FileStatus.Unused && alreadyReportedFiles.Add(fileInformation.Key))))
             {
-                if (fileInformation.Value.Status is FileStatus.Unused && alreadyReportedFiles.Add(fileInformation.Key))
-                    yield return (new UnusedFileValidationHint(fileInformation.Key), luminaire);
+                yield return (new UnusedFileValidationHint(fileInformation.Key), luminaire);
             }
         }
 
@@ -357,7 +357,7 @@ internal class ContainerValidator : IContainerValidator
                     yield return new L3DContentValidationHint(
                         $"{nameof(LightEmittingSurfacePart.LightEmittingPartIntensityMapping)}.[{intensityMapping.Key}] of {nameof(LightEmittingSurfacePart)} '{lightEmittingSurfacePart.Name}' must not be null or whitespace");
 
-                if (leos.All(d => !string.Equals(d.Name, intensityMapping.Key, StringComparison.Ordinal)))
+                if (Array.TrueForAll(leos, d => !string.Equals(d.Name, intensityMapping.Key, StringComparison.Ordinal)))
                     yield return new L3DContentValidationHint(
                         $"{nameof(LightEmittingSurfacePart.LightEmittingPartIntensityMapping)}.[{intensityMapping.Key}] of {nameof(LightEmittingSurfacePart)} '{lightEmittingSurfacePart.Name}' must be defined in any {nameof(LightEmittingPart)}.{nameof(LightEmittingPart.Name)}");
             }

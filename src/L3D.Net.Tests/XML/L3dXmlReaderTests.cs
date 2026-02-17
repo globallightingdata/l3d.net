@@ -87,7 +87,9 @@ public class L3dXmlReaderTests
 
     [Test]
     [TestCaseSource(nameof(GetInvalidTestFiles))]
+#pragma warning disable S4144 // Methods should not have identical implementations
     public void Read_ShouldThrow_WhenXmlIsInvalid(string testFile)
+#pragma warning restore S4144 // Methods should not have identical implementations
     {
         using var cache = Path.GetDirectoryName(testFile)!.ToCache(Path.GetFileName(testFile));
         // ReSharper disable once AccessToDisposedClosure
