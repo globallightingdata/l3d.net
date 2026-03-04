@@ -17,7 +17,7 @@ public class ObjParser : IObjParser
     public static readonly ObjParser Instance = new();
 
     private static readonly ObjFileReaderSettings ObjFileReaderSettings = new()
-        {HandleObjectNamesAsGroup = true, OnlyOneGroupNamePerLine = true, KeepWhitespacesOfMtlLibReferences = true};
+        {HandleObjectNamesAsGroup = true, OnlyOneGroupNamePerLine = true, KeepWhitespacesOfMtlLibReferences = true, HandleEachGroupOccurrenceAsNewGroup = true};
 
     private static readonly ObjMaterialFileReaderSettings ObjMaterialFileReaderSettings = new() {KeepWhitespacesOfMapFileReferences = true};
 

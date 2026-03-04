@@ -25,9 +25,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="JeremyAnsel.Media.WavefrontObj" Version="3.0.68" />
+        <PackageReference Include="JeremyAnsel.Media.WavefrontObj" Version="3.0.74" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.3" />
         <PackageReference Include="MinVer" PrivateAssets="all" Version="7.0.0" />
+    </ItemGroup>
+
+    <ItemGroup Condition="$(TargetFramework) == 'netstandard2.0' OR $(TargetFramework) == 'netstandard2.1'">
+        <PackageReference Include="IsExternalInit" PrivateAssets="all" Version="1.0.3" />
     </ItemGroup>
 
     <ItemGroup>
