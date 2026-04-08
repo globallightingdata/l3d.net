@@ -59,7 +59,7 @@ internal class FileHandler : IFileHandler
 
         var memoryStream = new MemoryStream();
         using var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true);
-        var entry = archive.CreateEntry(Constants.L3dXmlFilename);
+        var entry = archive.CreateEntry(Constants.L3DXmlFilename);
 
         cache.StructureXml.Seek(0, SeekOrigin.Begin);
         using (var entryStream = entry.Open())
@@ -92,14 +92,14 @@ internal class FileHandler : IFileHandler
 
             var entries = archive.Entries;
 
-            if (canThrow && !entries.Any(e => e.FullName.Equals(Constants.L3dXmlFilename, StringComparison.Ordinal)))
+            if (canThrow && !entries.Any(e => e.FullName.Equals(Constants.L3DXmlFilename, StringComparison.Ordinal)))
                 throw new InvalidL3DException("StructureXml could not be found");
 
             var cache = new ContainerCache();
 
             foreach (var entry in entries)
             {
-                if (entry.FullName.Equals(Constants.L3dXmlFilename, StringComparison.Ordinal))
+                if (entry.FullName.Equals(Constants.L3DXmlFilename, StringComparison.Ordinal))
                 {
                     using (var entryStream = entry.Open())
                     {

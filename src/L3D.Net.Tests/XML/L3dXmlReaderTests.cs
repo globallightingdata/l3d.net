@@ -13,7 +13,7 @@ using NUnit.Framework;
 namespace L3D.Net.Tests.XML;
 
 [TestFixture]
-public class L3dXmlReaderTests
+public class L3DXmlReaderTests
 {
     private L3DXmlReader _reader = null!;
 

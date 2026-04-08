@@ -14,13 +14,13 @@ internal class ContainerValidator : IContainerValidator
 {
     private readonly IFileHandler _fileHandler;
     private readonly IXmlValidator _xmlValidator;
-    private readonly IL3DXmlReader _l3dXmlReader;
+    private readonly IL3DXmlReader _l3DXmlReader;
 
     public ContainerValidator(IFileHandler fileHandler, IXmlValidator xmlValidator, IL3DXmlReader l3DXmlReader)
     {
         _fileHandler = fileHandler ?? throw new ArgumentNullException(nameof(fileHandler));
         _xmlValidator = xmlValidator ?? throw new ArgumentNullException(nameof(xmlValidator));
-        _l3dXmlReader = l3DXmlReader ?? throw new ArgumentNullException(nameof(l3DXmlReader));
+        _l3DXmlReader = l3DXmlReader ?? throw new ArgumentNullException(nameof(l3DXmlReader));
     }
 
     public IEnumerable<ValidationHint> Validate(string containerPath, Validation flags)
@@ -136,7 +136,7 @@ internal class ContainerValidator : IContainerValidator
         if (Array.Exists(xsdValidationHints, d => d.Severity == Severity.Error))
             yield break;
 
-        var luminaire = _l3dXmlReader.Read(cache);
+        var luminaire = _l3DXmlReader.Read(cache);
 
         if (flags.HasFlag(Validation.IsProductValid) && luminaire == null)
         {

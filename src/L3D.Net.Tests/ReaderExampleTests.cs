@@ -80,7 +80,7 @@ public class ReaderExampleTests
 
         luminaire = buildFunc(luminaire);
 
-        var containerPath = Path.Combine(containerTempDirectory, "luminaire" + Constants.L3dExtension);
+        var containerPath = Path.Combine(containerTempDirectory, "luminaire" + Constants.L3DExtension);
 
         switch (containerTypeToTest)
         {

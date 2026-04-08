@@ -26,7 +26,7 @@ public class FileHandlerTests
         _tempDir = Path.Combine(Path.GetTempPath(), GetType().Name + Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture));
         if (!Directory.Exists(_tempDir)) Directory.CreateDirectory(_tempDir);
         var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
-        var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
+        var sourceXml = Path.Combine(sourceDirectory, Constants.L3DXmlFilename);
         var geometryDirectories = Directory.GetDirectories(sourceDirectory);
         var targetZipPath = Path.Combine(_tempDir, Guid.NewGuid() + ".zip");
         var testDirectory = Path.Combine(_tempDir, Guid.NewGuid().ToString());
@@ -88,7 +88,7 @@ public class FileHandlerTests
     public void CreateContainerFile_ShouldZipGivenDirectoryToGivenPath()
     {
         var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
-        var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
+        var sourceXml = Path.Combine(sourceDirectory, Constants.L3DXmlFilename);
         var geometryDirectories = Directory.GetDirectories(sourceDirectory);
         var targetZipPath = Path.Combine(_tempDir, Guid.NewGuid() + ".zip");
         var testDirectory = Path.Combine(_tempDir, Guid.NewGuid().ToString());
@@ -260,7 +260,7 @@ public class FileHandlerTests
     public void ExtractContainerOrThrow_ShouldThrow_WhenPathIsInvalid()
     {
         var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
-        var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
+        var sourceXml = Path.Combine(sourceDirectory, Constants.L3DXmlFilename);
         var fileHandler = new FileHandler();
         var act = () => fileHandler.ExtractContainerOrThrow(sourceXml);
         act.Should().Throw<InvalidDataException>();
@@ -270,7 +270,7 @@ public class FileHandlerTests
     public void ExtractContainerOrThrow_ShouldThrow_WhenBytesAreInvalid()
     {
         var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
-        var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
+        var sourceXml = Path.Combine(sourceDirectory, Constants.L3DXmlFilename);
         var fileHandler = new FileHandler();
         var act = () => fileHandler.ExtractContainerOrThrow(File.ReadAllBytes(sourceXml));
         act.Should().Throw<InvalidDataException>();
@@ -280,7 +280,7 @@ public class FileHandlerTests
     public void ExtractContainerOrThrow_ShouldThrow_WhenStreamIsInvalid()
     {
         var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
-        var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
+        var sourceXml = Path.Combine(sourceDirectory, Constants.L3DXmlFilename);
         var fileHandler = new FileHandler();
         using var fs = File.OpenRead(sourceXml);
         // ReSharper disable once AccessToDisposedClosure
@@ -292,7 +292,7 @@ public class FileHandlerTests
     public void ExtractContainer_ShouldNotThrow_WhenPathIsInvalid()
     {
         var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
-        var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
+        var sourceXml = Path.Combine(sourceDirectory, Constants.L3DXmlFilename);
         var fileHandler = new FileHandler();
         var act = () => fileHandler.ExtractContainer(sourceXml);
         act.Should().NotThrow();
@@ -302,7 +302,7 @@ public class FileHandlerTests
     public void ExtractContainer_ShouldNotThrow_WhenBytesAreInvalid()
     {
         var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
-        var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
+        var sourceXml = Path.Combine(sourceDirectory, Constants.L3DXmlFilename);
         var fileHandler = new FileHandler();
         var act = () => fileHandler.ExtractContainer(File.ReadAllBytes(sourceXml));
         act.Should().NotThrow();
@@ -312,7 +312,7 @@ public class FileHandlerTests
     public void ExtractContainer_ShouldNotThrow_WhenStreamIsInvalid()
     {
         var sourceDirectory = Path.Combine(Setup.ExamplesDirectory, "example_002");
-        var sourceXml = Path.Combine(sourceDirectory, Constants.L3dXmlFilename);
+        var sourceXml = Path.Combine(sourceDirectory, Constants.L3DXmlFilename);
         var fileHandler = new FileHandler();
         using var fs = File.OpenRead(sourceXml);
         // ReSharper disable once AccessToDisposedClosure
