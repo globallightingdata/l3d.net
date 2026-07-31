@@ -281,6 +281,25 @@ public partial class ContainerValidatorTests
     }
 
     [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
+    public void CreateValidationResult_ShouldReturnEmptyValidationHints_WhenGroupsParsedCorrect_RealExample(ContainerTypeToTest containerTypeToTest)
+    {
+        var validator = new ContainerValidator(new FileHandler(), new XmlValidator(), new L3DXmlReader());
+        var path = Path.Combine(Setup.ValidationDirectory, "example_015.l3d");
+        const Validation flags = Validation.All;
+
+        var validationResult = containerTypeToTest switch
+        {
+            ContainerTypeToTest.Path => validator.CreateValidationResult(path, flags),
+            ContainerTypeToTest.Bytes => validator.CreateValidationResult(File.ReadAllBytes(path), flags),
+            ContainerTypeToTest.Stream => validator.CreateValidationResult(new MemoryStream(File.ReadAllBytes(path)), flags),
+            _ => throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null)
+        };
+
+        validationResult.ValidationHints.Should().BeEmpty();
+        validationResult.Luminaire.Should().NotBeNull();
+    }
+
+    [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
     public void CreateValidationResult_ShouldReturnValidationHint_WhenLuminaireHasMissingMaterialUsingFilesDictionaryAndFlagIsSet(ContainerTypeToTest containerTypeToTest)
     {
         var context = CreateContext();

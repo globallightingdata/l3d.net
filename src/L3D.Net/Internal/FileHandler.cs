@@ -59,7 +59,7 @@ internal class FileHandler : IFileHandler
 
         var memoryStream = new MemoryStream();
         using var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true);
-        var entry = archive.CreateEntry(Constants.L3dXmlFilename);
+        var entry = archive.CreateEntry(Constants.L3DXmlFilename);
 
         cache.StructureXml.Seek(0, SeekOrigin.Begin);
         using (var entryStream = entry.Open())
@@ -92,14 +92,14 @@ internal class FileHandler : IFileHandler
 
             var entries = archive.Entries;
 
-            if (canThrow && !entries.Any(e => e.FullName.Equals(Constants.L3dXmlFilename)))
+            if (canThrow && !entries.Any(e => e.FullName.Equals(Constants.L3DXmlFilename, StringComparison.Ordinal)))
                 throw new InvalidL3DException("StructureXml could not be found");
 
             var cache = new ContainerCache();
 
             foreach (var entry in entries)
             {
-                if (entry.FullName.Equals(Constants.L3dXmlFilename, StringComparison.Ordinal))
+                if (entry.FullName.Equals(Constants.L3DXmlFilename, StringComparison.Ordinal))
                 {
                     using (var entryStream = entry.Open())
                     {
@@ -201,16 +201,16 @@ internal class FileHandler : IFileHandler
 
         CopyFile(model3D.FileName, model3D.ObjFile, geometryId, cache);
 
-        foreach (var materialLibraryFile in model3D.ReferencedMaterialLibraryFiles)
+        foreach (var materialLibraryFile in model3D.ReferencedMaterialLibraryFiles
+                     .Where(x => x.Value is {Length: > 0}))
         {
-            if (materialLibraryFile.Value is {Length: > 0})
-                CopyFile(materialLibraryFile.Key, materialLibraryFile.Value, geometryId, cache);
+            CopyFile(materialLibraryFile.Key, materialLibraryFile.Value, geometryId, cache);
         }
 
-        foreach (var textureFile in model3D.ReferencedTextureFiles)
+        foreach (var textureFile in model3D.ReferencedTextureFiles
+                     .Where(x => x.Value is {Length: > 0}))
         {
-            if (textureFile.Value is {Length: > 0})
-                CopyFile(textureFile.Key, textureFile.Value, geometryId, cache);
+            CopyFile(textureFile.Key, textureFile.Value, geometryId, cache);
         }
     }
 

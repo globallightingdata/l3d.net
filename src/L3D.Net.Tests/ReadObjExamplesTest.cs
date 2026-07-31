@@ -27,12 +27,12 @@ public class ReadObjExamplesTest
     public void ObjParser_ShouldBeAbleToReadAllExamples(string filePath)
     {
         var geometry = Path.GetDirectoryName(filePath)!;
-        var l3d = Path.GetDirectoryName(geometry)!;
+        var l3D = Path.GetDirectoryName(geometry)!;
         var fileName = Path.GetFileName(filePath);
         var parser = new ObjParser();
         var act = () =>
         {
-            using var cache = l3d.ToCache();
+            using var cache = l3D.ToCache();
             return parser.Parse(fileName, cache.Geometries[Path.GetFileName(geometry)], Substitute.For<ILogger>());
         };
         act.Should().NotThrow();

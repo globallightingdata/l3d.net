@@ -5,9 +5,9 @@ namespace L3D.Net.Abstract;
 
 public interface IReader
 {
-    Luminaire ReadContainer(string containerPath);
+    public Luminaire ReadContainer(string containerPath);
 
-    Luminaire ReadContainer(byte[] containerBytes);
+    public Luminaire ReadContainer(byte[] containerBytes);
 
-    Luminaire ReadContainer(Stream containerStream);
+    public Luminaire ReadContainer(Stream containerStream);
 }

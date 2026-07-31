@@ -6,5 +6,5 @@ namespace L3D.Net.Internal.Abstract;
 
 public interface IXmlValidator
 {
-    IEnumerable<ValidationHint> ValidateStream(Stream xmlStream);
+    public IEnumerable<ValidationHint> ValidateStream(Stream xmlStream);
 }

@@ -50,11 +50,11 @@ internal class L3DXmlReader : IL3DXmlReader
                 throw new InvalidL3DException(
                     "XML document does not reference a valid XSD scheme in namespace (http://www.w3.org/2001/XMLSchema-instance)!");
 
-            var versionInformation = xmlDocument.XPathSelectElement(Constants.L3dFormatVersionPath)?.Attributes()
+            var versionInformation = xmlDocument.XPathSelectElement(Constants.L3DFormatVersionPath)?.Attributes()
                 .ToDictionary(d => d.Name.LocalName, d => d.Value);
 
             if (versionInformation == null ||
-                Constants.L3dFormatVersionRequiredFields.Except(versionInformation.Keys).Any() ||
+                Constants.L3DFormatVersionRequiredFields.Except(versionInformation.Keys).Any() ||
                 !TryGetVersion(versionInformation, out var version))
                 throw new InvalidL3DException("The version is not known");
 
@@ -70,13 +70,13 @@ internal class L3DXmlReader : IL3DXmlReader
 
     private static bool TryGetVersion(IReadOnlyDictionary<string, string> fields, out Version? version)
     {
-        if (!fields.TryGetValue(Constants.L3dFormatVersionMajor, out var majorValue) || !int.TryParse(majorValue, out var major))
+        if (!fields.TryGetValue(Constants.L3DFormatVersionMajor, out var majorValue) || !int.TryParse(majorValue, out var major))
         {
             version = null;
             return false;
         }
 
-        if (!fields.TryGetValue(Constants.L3dFormatVersionMinor, out var minorValue) || !int.TryParse(minorValue, out var minor))
+        if (!fields.TryGetValue(Constants.L3DFormatVersionMinor, out var minorValue) || !int.TryParse(minorValue, out var minor))
         {
             version = null;
             return false;
@@ -84,7 +84,7 @@ internal class L3DXmlReader : IL3DXmlReader
 
         var preRelease = 0;
 
-        if (fields.TryGetValue(Constants.L3dFormatVersionPreRelease, out var preReleaseValue) && (!int.TryParse(preReleaseValue, out preRelease) || preRelease < 0))
+        if (fields.TryGetValue(Constants.L3DFormatVersionPreRelease, out var preReleaseValue) && (!int.TryParse(preReleaseValue, out preRelease) || preRelease < 0))
         {
             version = null;
             return false;

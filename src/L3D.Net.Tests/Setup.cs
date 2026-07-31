@@ -97,13 +97,13 @@ public static class Setup
 
     public static IEnumerable<TestCaseData> EmptyByteArrayValues()
     {
-        yield return new TestCaseData(null).SetArgDisplayNames("<null>");
+        yield return new TestCaseData((object?) null).SetArgDisplayNames("<null>");
         yield return new TestCaseData(Array.Empty<byte>()).SetArgDisplayNames("<empty byte array>");
     }
 
     public static IEnumerable<TestCaseData> EmptyStreamValues()
     {
-        yield return new TestCaseData(null).SetArgDisplayNames("<null>");
+        yield return new TestCaseData((object?) null).SetArgDisplayNames("<null>");
         yield return new TestCaseData(Stream).SetArgDisplayNames("<empty stream>");
     }
 

@@ -69,7 +69,7 @@ public class ReaderExampleTests
     [Test, TestCaseSource(nameof(ReaderTestCases))]
     public void Reader_ShouldBeAbleToReadAllExampleFiles_ContainerPath(string exampleDirectory, ContainerTypeToTest containerTypeToTest)
     {
-        var exampleName = Path.GetFileName(exampleDirectory).ToLower();
+        var exampleName = Path.GetFileName(exampleDirectory).ToLowerInvariant();
 
         if (!Setup.ExampleBuilderMapping.TryGetValue(exampleName, out var buildFunc))
             throw new Exception($"No test code for example '{exampleName}' available!");
@@ -80,7 +80,7 @@ public class ReaderExampleTests
 
         luminaire = buildFunc(luminaire);
 
-        var containerPath = Path.Combine(containerTempDirectory, "luminaire" + Constants.L3dExtension);
+        var containerPath = Path.Combine(containerTempDirectory, "luminaire" + Constants.L3DExtension);
 
         switch (containerTypeToTest)
         {

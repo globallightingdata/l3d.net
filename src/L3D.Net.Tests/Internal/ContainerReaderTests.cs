@@ -51,7 +51,7 @@ public class ContainerReaderTests
     }
 
     [Test]
-    public void Constructor_ShouldThrowArgumentNullException_WhenL3dXmlReaderIsNull()
+    public void Constructor_ShouldThrowArgumentNullException_WhenL3DXmlReaderIsNull()
     {
         var action = () => _ = new ContainerReader(
             Substitute.For<IFileHandler>(),
@@ -112,7 +112,7 @@ public class ContainerReaderTests
     }
 
     [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
-    public void Read_ShouldCallL3dXmlReaderRead(ContainerTypeToTest containerTypeToTest)
+    public void Read_ShouldCallL3DXmlReaderRead(ContainerTypeToTest containerTypeToTest)
     {
         switch (containerTypeToTest)
         {

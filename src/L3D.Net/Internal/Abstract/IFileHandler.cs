@@ -4,25 +4,25 @@ namespace L3D.Net.Internal.Abstract;
 
 internal interface IFileHandler
 {
-    void CreateContainerFile(ContainerCache cache, string containerPath);
+    public void CreateContainerFile(ContainerCache cache, string containerPath);
 
-    byte[] CreateContainerByteArray(ContainerCache cache);
+    public byte[] CreateContainerByteArray(ContainerCache cache);
 
-    void AppendContainerToStream(ContainerCache cache, Stream stream);
+    public void AppendContainerToStream(ContainerCache cache, Stream stream);
 
-    void AddModelFilesToCache(IModel3D model3D, string geometryId, ContainerCache cache);
+    public void AddModelFilesToCache(IModel3D model3D, string geometryId, ContainerCache cache);
 
-    ContainerCache ExtractContainerOrThrow(string containerPath);
+    public ContainerCache ExtractContainerOrThrow(string containerPath);
 
-    ContainerCache ExtractContainerOrThrow(byte[] containerBytes);
+    public ContainerCache ExtractContainerOrThrow(byte[] containerBytes);
 
-    ContainerCache ExtractContainerOrThrow(Stream containerStream);
+    public ContainerCache ExtractContainerOrThrow(Stream containerStream);
 
-    ContainerCache? ExtractContainer(string containerPath);
+    public ContainerCache? ExtractContainer(string containerPath);
 
-    ContainerCache? ExtractContainer(byte[] containerBytes);
+    public ContainerCache? ExtractContainer(byte[] containerBytes);
 
-    ContainerCache? ExtractContainer(Stream containerStream);
+    public ContainerCache? ExtractContainer(Stream containerStream);
 
-    byte[] GetTextureBytes(ContainerCache cache, string geomId, string textureName);
+    public byte[] GetTextureBytes(ContainerCache cache, string geomId, string textureName);
 }

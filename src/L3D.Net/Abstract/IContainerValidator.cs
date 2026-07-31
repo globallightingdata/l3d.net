@@ -5,15 +5,15 @@ namespace L3D.Net.Abstract;
 
 internal interface IContainerValidator
 {
-    IEnumerable<ValidationHint> Validate(string containerPath, Validation flags);
+    public IEnumerable<ValidationHint> Validate(string containerPath, Validation flags);
 
-    IEnumerable<ValidationHint> Validate(byte[] containerBytes, Validation flags);
+    public IEnumerable<ValidationHint> Validate(byte[] containerBytes, Validation flags);
 
-    IEnumerable<ValidationHint> Validate(Stream containerStream, Validation flags);
+    public IEnumerable<ValidationHint> Validate(Stream containerStream, Validation flags);
 
-    ValidationResultContainer CreateValidationResult(string containerPath, Validation flags);
+    public ValidationResultContainer CreateValidationResult(string containerPath, Validation flags);
 
-    ValidationResultContainer CreateValidationResult(byte[] containerBytes, Validation flags);
+    public ValidationResultContainer CreateValidationResult(byte[] containerBytes, Validation flags);
 
-    ValidationResultContainer CreateValidationResult(Stream containerStream, Validation flags);
+    public ValidationResultContainer CreateValidationResult(Stream containerStream, Validation flags);
 }
