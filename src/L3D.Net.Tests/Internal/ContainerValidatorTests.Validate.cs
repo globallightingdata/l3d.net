@@ -339,6 +339,24 @@ public partial class ContainerValidatorTests
     }
 
     [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
+    public void Validate_ShouldReturnNoValidationHint_WhenLuminaireIsExample16_RealExample(ContainerTypeToTest containerTypeToTest)
+    {
+        var validator = new ContainerValidator(new FileHandler(), new XmlValidator(), new L3DXmlReader());
+        var path = Path.Combine(Setup.ValidationDirectory, "example_016.l3d");
+        const Validation flags = Validation.HasAllTextures;
+
+        var validationResult = containerTypeToTest switch
+        {
+            ContainerTypeToTest.Path => validator.Validate(path, flags),
+            ContainerTypeToTest.Bytes => validator.Validate(File.ReadAllBytes(path), flags),
+            ContainerTypeToTest.Stream => validator.Validate(new MemoryStream(File.ReadAllBytes(path)), flags),
+            _ => throw new ArgumentOutOfRangeException(nameof(containerTypeToTest), containerTypeToTest, null)
+        };
+
+        validationResult.Should().BeEmpty();
+    }
+
+    [Test, TestCaseSource(nameof(ContainerTypeToTestEnumValues))]
     public void Validate_ShouldReturnValidationHint_WhenLuminaireHasMissingTextureUsingFilesDictionaryAndFlagIsSet(ContainerTypeToTest containerTypeToTest)
     {
         var context = CreateContext();
